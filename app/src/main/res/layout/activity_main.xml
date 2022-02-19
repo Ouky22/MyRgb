@@ -41,8 +41,8 @@
 
     <ImageView
         android:id="@+id/iv_rgb_circle"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="390dp"
+        android:layout_height="390dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
@@ -52,18 +52,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_top"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/rgb_circle"
+        app:layout_constraintDimensionRatio="H,1:1"/>
+
+    <ImageView
+        android:id="@+id/iv_bulb"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="64dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/iv_rgb_circle"
+        app:layout_constraintEnd_toEndOf="@id/iv_rgb_circle"
+        app:layout_constraintStart_toStartOf="@id/iv_rgb_circle"
+        app:layout_constraintTop_toTopOf="@id/iv_rgb_circle"
+        app:srcCompat="@drawable/ic_bulb" />
 
     <View
         android:id="@+id/divider_bottom"
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/seekBar_brightness"
-        android:layout_marginBottom="32dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBar_brightness"
@@ -72,10 +85,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@+id/linear_layout_buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="32dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linear_layout_buttons"
@@ -94,6 +107,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
+            android:importantForAccessibility="no"
             tools:text="Sofa" />
 
 
@@ -104,6 +118,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
+            android:importantForAccessibility="no"
             tools:text="Bett" />
 
 
@@ -114,6 +129,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
+            android:importantForAccessibility="no"
             tools:text="Tisch" />
     </LinearLayout>
 
