@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LedController</string>
+    <string name="rgb_show">RGB show</string>
+    <string name="alarm">Alarm</string>
+    <string name="sofa">Sofa</string>
+    <string name="bed">Bett</string>
+    <string name="table">Tisch</string>
 </resources>

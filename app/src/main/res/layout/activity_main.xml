@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/green"
     tools:context=".MainActivity">
 
     <Button
@@ -13,9 +14,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:importantForAccessibility="no"
+        android:text="@string/rgb_show"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="rgb show" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_alarm_clock"
@@ -24,9 +25,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="35dp"
         android:importantForAccessibility="no"
+        android:text="@string/alarm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="alarm" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <View
@@ -104,7 +105,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:importantForAccessibility="no"
-            tools:text="Sofa" />
+            android:text="@string/sofa" />
 
 
         <Button
@@ -115,7 +116,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:importantForAccessibility="no"
-            tools:text="Bett" />
+            android:text="@string/bed" />
 
 
         <Button
@@ -126,7 +127,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:importantForAccessibility="no"
-            tools:text="Tisch" />
+            android:text="@string/table" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
