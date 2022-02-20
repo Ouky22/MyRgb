@@ -9,22 +9,24 @@
 
     <Button
         android:id="@+id/btn_rgb_show"
+        style="@style/Widget.LedControllerV2.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:importantForAccessibility="no"
+        android:drawableLeft="@drawable/ic_rgb_show"
         android:text="@string/rgb_show"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_alarm_clock"
+        style="@style/Widget.LedControllerV2.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="35dp"
-        android:importantForAccessibility="no"
+        android:drawableLeft="@drawable/ic_alarm"
         android:text="@string/alarm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +38,7 @@
         android:layout_height="5dp"
         android:layout_marginHorizontal="12dp"
         android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
+        android:background="@color/green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_rgb_show" />
@@ -72,19 +74,31 @@
         android:layout_marginHorizontal="12dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
-        android:background="?android:attr/listDivider"
+        android:background="@color/green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_rgb_circle" />
 
+    <ImageView
+        android:id="@+id/iv_brightness_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/seekBar_brightness"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/seekBar_brightness"
+        app:srcCompat="@drawable/ic_brightness"
+        android:layout_marginStart="16dp"/>
+
     <SeekBar
         android:id="@+id/seekBar_brightness"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="20dp"
+        android:progressDrawable="@drawable/custom_seekbar"
+        android:thumb="@drawable/seekbar_thumb"
         app:layout_constraintBottom_toTopOf="@id/linear_layout_buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_brightness_icon"
         app:layout_constraintTop_toBottomOf="@+id/divider_bottom" />
 
     <LinearLayout
@@ -99,34 +113,34 @@
 
         <Button
             android:id="@+id/btn_sofa"
+            style="@style/Widget.LedControllerV2.TextButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
-            android:importantForAccessibility="no"
             android:text="@string/sofa" />
 
 
         <Button
             android:id="@+id/btn_bed"
+            style="@style/Widget.LedControllerV2.TextButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
-            android:importantForAccessibility="no"
             android:text="@string/bed" />
 
 
         <Button
             android:id="@+id/btn_desk"
+            style="@style/Widget.LedControllerV2.TextButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
-            android:importantForAccessibility="no"
             android:text="@string/table" />
     </LinearLayout>
 
