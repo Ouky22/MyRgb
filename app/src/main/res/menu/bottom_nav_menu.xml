@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_dest"
+        android:icon="@drawable/ic_bulb"
+        android:title="@string/controller"/>
+    <item
+        android:id="@+id/alarm_dest"
+        android:icon="@drawable/ic_alarm"
+        android:title="@string/alarm"/>
+    <item
+        android:id="@+id/rgb_show_dest"
+        android:icon="@drawable/ic_rgb_show"
+        android:title="@string/rgb_show"/>
+</menu>

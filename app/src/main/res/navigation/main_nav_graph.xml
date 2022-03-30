@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/main_dest">
+
+    <fragment
+        android:id="@+id/main_dest"
+        android:name="com.example.ledcontroller.view.MainFragment"
+        android:label="@string/controller"
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/alarm_dest"
+        android:name="com.example.ledcontroller.view.AlarmListFragment"
+        android:label="@string/alarm"
+        tools:layout="@layout/fragment_alarm_list" />
+    <fragment
+        android:id="@+id/rgb_show_dest"
+        android:name="com.example.ledcontroller.RgbShowFragment"
+        android:label="@string/rgb_show"
+        tools:layout="@layout/fragment_rgb_show" />
+</navigation>
