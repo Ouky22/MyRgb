@@ -6,20 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".view.MainFragment">
 
-
-
-    <View
-        android:id="@+id/divider_top"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/green_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <ImageView
         android:id="@+id/iv_rgb_circle"
         android:layout_width="match_parent"
@@ -58,6 +44,7 @@
 
     <ImageView
         android:id="@+id/iv_brightness_icon"
+        android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/seekBar_brightness"
