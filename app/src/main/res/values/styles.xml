@@ -16,4 +16,13 @@
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/green</item>
     </style>
+
+    <style name="Widget.LedControllerV2.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/green</item>
+        <item name="titleTextAppearance">@style/TextAppearance.LedControllerV2.Toolbar</item>
+    </style>
+
+    <style name="TextAppearance.LedControllerV2.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16dp</item>
+    </style>
 </resources>
