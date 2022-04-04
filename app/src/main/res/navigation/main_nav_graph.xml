@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_alarm_list" />
     <fragment
         android:id="@+id/rgb_show_dest"
-        android:name="com.example.ledcontroller.RgbShowFragment"
+        android:name="com.example.ledcontroller.view.RgbShowFragment"
         android:label="@string/rgb_show"
         tools:layout="@layout/fragment_rgb_show" />
 </navigation>
