@@ -1,10 +1,11 @@
-package com.example.ledcontroller
+package com.example.ledcontroller.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.ledcontroller.R
 
 class RgbShowFragment : Fragment() {
     override fun onCreateView(
