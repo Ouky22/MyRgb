@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         // set root destinations for which no up button should be displayed
         appBarConfiguration =
-            AppBarConfiguration(setOf(R.id.main_dest, R.id.alarm_dest, R.id.rgb_show_dest))
+            AppBarConfiguration(setOf(R.id.controller_dest, R.id.alarm_dest, R.id.rgb_show_dest))
         setSupportActionBar(binding.topAppBar)
         setupActionBarWithNavController(host.navController, appBarConfiguration)
     }

@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/main_dest">
+    app:startDestination="@id/controller_dest">
 
     <fragment
-        android:id="@+id/main_dest"
-        android:name="com.example.ledcontroller.view.MainFragment"
+        android:id="@+id/controller_dest"
+        android:name="com.example.ledcontroller.view.ControllerFragment"
         android:label="@string/controller"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_controller" />
     <fragment
         android:id="@+id/alarm_dest"
         android:name="com.example.ledcontroller.view.AlarmListFragment"
