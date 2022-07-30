@@ -1,5 +1,6 @@
 package com.example.ledcontroller.viewmodel
 
+import com.example.ledcontroller.model.RgbCircle
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -14,25 +15,23 @@ class ControllerViewModelTest {
 
     @Test
     fun testGetRgbColors() {
-        val rgbCircleCenterX = 10
-        val rgbCircleCenterY = 10
+        viewModel.rgbCircleCenterX = 10
+        viewModel.rgbCircleCenterY = 10
 
         // test color values at 0 degree
-        var colors = viewModel.getRgbColors(arrayOf(10, 5), rgbCircleCenterX, rgbCircleCenterY)
-        assertArrayEquals(colors, arrayOf(255, 0, 0))
+        var color = viewModel.getRgbColorAtTouchPosition(10, 5)
+        assertEquals(color, RgbCircle.RgbTriplet(255, 0, 0))
 
         // test color values at 90 degrees
-        colors = viewModel.getRgbColors(arrayOf(15, 10), rgbCircleCenterX, rgbCircleCenterY)
-        assertArrayEquals(colors, arrayOf(127, 255, 0))
+        color = viewModel.getRgbColorAtTouchPosition(15, 10)
+        assertEquals(color, RgbCircle.RgbTriplet(127, 255, 0))
 
         // test color values at 180 degrees
-        colors = viewModel.getRgbColors(arrayOf(10, 15), rgbCircleCenterX, rgbCircleCenterY)
-        assertArrayEquals(colors, arrayOf(0, 255, 255))
+        color = viewModel.getRgbColorAtTouchPosition(10, 15)
+        assertEquals(color, RgbCircle.RgbTriplet(0, 255, 255))
 
         // test color values at 270 degrees
-        colors = viewModel.getRgbColors(arrayOf(5, 10), rgbCircleCenterX, rgbCircleCenterY)
-        assertArrayEquals(colors, arrayOf(127, 0, 255))
-
+        color = viewModel.getRgbColorAtTouchPosition(5, 10)
+        assertEquals(color, RgbCircle.RgbTriplet(127, 0, 255))
     }
-
 }

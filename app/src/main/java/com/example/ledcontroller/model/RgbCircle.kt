@@ -1,5 +1,8 @@
 package com.example.ledcontroller.model
 
+import android.graphics.Color
+
+
 /**
  * Represents a rgb circle, which knows what rgb values it has at certain angles.
  * Each color has a area in the rgb circle, which has a certain size.
@@ -35,6 +38,14 @@ class RgbCircle {
      */
     enum class RgbColor {
         RED, GREEN, BLUE
+    }
+
+    fun computeColorAtAngle(angle: Int): RgbTriplet {
+        return RgbTriplet(
+            getColorValue(RgbColor.RED, angle),
+            getColorValue(RgbColor.GREEN, angle),
+            getColorValue(RgbColor.BLUE, angle)
+        )
     }
 
     /**
@@ -96,6 +107,14 @@ class RgbCircle {
             RgbColor.GREEN -> (greenAreaCenterAngle + greenOffset) % 360
             RgbColor.BLUE -> (blueAreaCenterAngle + blueOffset) % 360
         }
+    }
+
+    data class RgbTriplet(
+        val red: Int,
+        val green: Int,
+        val blue: Int,
+    ) {
+        fun toRgbInt() = Color.rgb(red, green, blue)
     }
 }
 

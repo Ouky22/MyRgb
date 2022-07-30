@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.DataBindingUtil
@@ -25,13 +25,13 @@ class ControllerFragment : Fragment() {
 
     private lateinit var binding: FragmentControllerBinding
 
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
-
 
         bulbDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_bulb)!!
         // wrap the drawable so that tinting call work on pre-v21 devices
@@ -45,31 +45,50 @@ class ControllerFragment : Fragment() {
 
 
         binding.root.setOnTouchListener { _, event ->
-            // get touch position
-            val x = event.x.toInt()
-            val y = event.y.toInt()
+            val touchPositionX = event.x.toInt()
+            val touchPositionY = event.y.toInt()
 
-            // if touch position is in the rectangle of the rgb circle image view, change color
-            if (y < binding.ivRgbCircle.bottom && y > binding.ivRgbCircle.top) {
-                changeRgbCircleColor(x, y)
+            // only change color if touch position is in the rectangle of the rgb circle image view
+            if (touchPositionY < binding.ivRgbCircle.bottom && touchPositionY > binding.ivRgbCircle.top) {
+                val rgbColor = viewModel.getRgbColorAtTouchPosition(touchPositionX, touchPositionY)
+                DrawableCompat.setTint(bulbDrawable, rgbColor.toRgbInt())
             }
-            true
+            return@setOnTouchListener true
+        }
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+            viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
+            viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
 
         return binding.root
     }
-
-    private fun changeRgbCircleColor(touchX: Int, touchY: Int) {
-        // get position of the center of the rgb circle
-        val rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
-        val rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
-
-        val rgbValues =
-            viewModel.getRgbColors(arrayOf(touchX, touchY), rgbCircleCenterX, rgbCircleCenterY)
-        // set color of bulb
-        DrawableCompat.setTint(
-            bulbDrawable,
-            Color.rgb(rgbValues[0], rgbValues[1], rgbValues[2])
-        )
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
