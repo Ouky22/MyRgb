@@ -32,6 +32,7 @@ android {
     buildFeatures {
         dataBinding true
     }
+    namespace 'com.example.ledcontroller'
 }
 
 dependencies {
