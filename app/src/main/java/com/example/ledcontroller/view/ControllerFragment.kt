@@ -20,29 +20,28 @@ import com.example.ledcontroller.viewmodel.ControllerViewModel
 
 class ControllerFragment : Fragment() {
     private val viewModel: ControllerViewModel by viewModels()
-
     private lateinit var bulbDrawable: Drawable
-
     private lateinit var binding: FragmentControllerBinding
 
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
+        return binding.root
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         bulbDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_bulb)!!
         // wrap the drawable so that tinting call work on pre-v21 devices
         bulbDrawable = bulbDrawable.let { DrawableCompat.wrap(it) }
-        // set tint mode
         DrawableCompat.setTintMode(bulbDrawable, PorterDuff.Mode.MULTIPLY)
-        // set tint color
         DrawableCompat.setTint(bulbDrawable, Color.BLUE)
-        // set drawable of bulb imageview to the bulbDrawable
         binding.ivBulb.setImageDrawable(bulbDrawable)
-
 
         binding.root.setOnTouchListener { _, event ->
             val touchPositionX = event.x.toInt()
@@ -60,8 +59,6 @@ class ControllerFragment : Fragment() {
             viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
             viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
-
-        return binding.root
     }
 }
 
