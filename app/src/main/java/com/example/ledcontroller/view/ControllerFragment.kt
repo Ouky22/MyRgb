@@ -24,6 +24,8 @@ class ControllerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         return binding.root
     }
 
@@ -46,10 +48,9 @@ class ControllerFragment : Fragment() {
             val touchPositionY = e.y.toInt()
 
             // only change color if touch position inside of the rgb circle image view
-            if (touchPositionY > binding.ivRgbCircle.top && touchPositionY < binding.ivRgbCircle.bottom) {
-                val rgbColor = viewModel.getRgbColorAtTouchPosition(touchPositionX, touchPositionY)
-                DrawableCompat.setTint(bulbDrawable, rgbColor.toRgbInt())
-            }
+            if (touchPositionY > binding.ivRgbCircle.top && touchPositionY < binding.ivRgbCircle.bottom)
+                viewModel.onRgbCircleTouch(touchPositionX, touchPositionY)
+
             return@setOnTouchListener true
         }
 

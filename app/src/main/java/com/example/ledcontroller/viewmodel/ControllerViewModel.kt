@@ -1,18 +1,25 @@
 package com.example.ledcontroller.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ledcontroller.model.RgbCircle
 import kotlin.math.acos
 import kotlin.math.sqrt
 
 class ControllerViewModel : ViewModel() {
+
     private val rgbCircle = RgbCircle()
+
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
 
-    fun getRgbColorAtTouchPosition(touchPositionX: Int, touchPositionY: Int): RgbCircle.RgbTriplet {
+    private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
+    val currentlySelectedColor = _currentlySelectedColor
+
+
+    fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
         val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
-        return rgbCircle.computeColorAtAngle(angle)
+        _currentlySelectedColor.value = rgbCircle.computeColorAtAngle(angle)
     }
 
     private fun computeAngleBetweenTouchAndRgbCircleCenter(x: Int, y: Int): Int {
