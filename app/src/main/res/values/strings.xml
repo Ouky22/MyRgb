@@ -4,6 +4,6 @@
     <string name="alarm">Alarm</string>
     <string name="sofa">Sofa</string>
     <string name="bed">Bett</string>
-    <string name="table">Tisch</string>
+    <string name="desk">Tisch</string>
     <string name="controller">Controller</string>
 </resources>
