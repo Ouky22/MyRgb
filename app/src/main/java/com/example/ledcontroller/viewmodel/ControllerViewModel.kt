@@ -1,5 +1,7 @@
 package com.example.ledcontroller.viewmodel
 
+import android.util.Log
+import android.widget.SeekBar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ledcontroller.model.RgbCircle
@@ -15,6 +17,9 @@ class ControllerViewModel : ViewModel() {
 
     private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
     val currentlySelectedColor = _currentlySelectedColor
+
+    private val _currentlySelectedBrightness = MutableLiveData<Int>()
+    val currentlySelectedBrightness = _currentlySelectedBrightness
 
     private val _isSofaLedStripOn = MutableLiveData(false)
     val isSofaLedStripOn = _isSofaLedStripOn
@@ -41,6 +46,11 @@ class ControllerViewModel : ViewModel() {
         _isDeskLedStripOn.value?.let { _isDeskLedStripOn.value = !it }
     }
 
+    fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
+        if (!fromUser)
+            return
+        _currentlySelectedBrightness.value = progress * 10
+    }
 
     private fun computeAngleBetweenTouchAndRgbCircleCenter(x: Int, y: Int): Int {
         // This method computes the angle (0-359) between a vertical vector (0,-1) starting in the rgb
