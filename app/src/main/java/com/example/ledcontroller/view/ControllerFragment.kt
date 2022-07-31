@@ -1,14 +1,9 @@
 package com.example.ledcontroller.view
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.DataBindingUtil
@@ -32,7 +27,6 @@ class ControllerFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,15 +34,19 @@ class ControllerFragment : Fragment() {
         // wrap the drawable so that tinting call work on pre-v21 devices
         bulbDrawable = bulbDrawable.let { DrawableCompat.wrap(it) }
         DrawableCompat.setTintMode(bulbDrawable, PorterDuff.Mode.MULTIPLY)
-        DrawableCompat.setTint(bulbDrawable, Color.BLUE)
         binding.ivBulb.setImageDrawable(bulbDrawable)
 
-        binding.root.setOnTouchListener { _, event ->
-            val touchPositionX = event.x.toInt()
-            val touchPositionY = event.y.toInt()
+        binding.root.setOnTouchListener { v, e ->
+            v.performClick()
 
-            // only change color if touch position is in the rectangle of the rgb circle image view
-            if (touchPositionY < binding.ivRgbCircle.bottom && touchPositionY > binding.ivRgbCircle.top) {
+            if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
+                return@setOnTouchListener true
+
+            val touchPositionX = e.x.toInt()
+            val touchPositionY = e.y.toInt()
+
+            // only change color if touch position inside of the rgb circle image view
+            if (touchPositionY > binding.ivRgbCircle.top && touchPositionY < binding.ivRgbCircle.bottom) {
                 val rgbColor = viewModel.getRgbColorAtTouchPosition(touchPositionX, touchPositionY)
                 DrawableCompat.setTint(bulbDrawable, rgbColor.toRgbInt())
             }
