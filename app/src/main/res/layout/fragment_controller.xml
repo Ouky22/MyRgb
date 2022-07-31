@@ -74,9 +74,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seekBar_brightness">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sofa"
-                style="@style/Widget.LedControllerV2.TextButton"
+                style="@style/Widget.LedControllerV2.StripButton"
                 status_border="@{viewModel.isSofaLedStripOn()}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -87,9 +87,9 @@
                 android:text="@string/sofa" />
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_bed"
-                style="@style/Widget.LedControllerV2.TextButton"
+                style="@style/Widget.LedControllerV2.StripButton"
                 status_border="@{viewModel.isBedLedStripOn()}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -100,9 +100,9 @@
                 android:text="@string/bed" />
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_desk"
-                style="@style/Widget.LedControllerV2.TextButton"
+                style="@style/Widget.LedControllerV2.StripButton"
                 status_border="@{viewModel.isDeskLedStripOn()}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
