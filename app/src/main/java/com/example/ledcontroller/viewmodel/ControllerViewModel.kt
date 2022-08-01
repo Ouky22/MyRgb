@@ -4,10 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ledcontroller.model.RgbCircle
-import com.example.ledcontroller.network.CurrentSettingsResponse
-import com.example.ledcontroller.network.RgbRequest
-import com.example.ledcontroller.network.RgbRequestServiceDesk
-import com.example.ledcontroller.network.RgbRequestServiceSofaBed
+import com.example.ledcontroller.network.*
 import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -45,11 +42,22 @@ class ControllerViewModel : ViewModel() {
         val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
         val color = rgbCircle.computeColorAtAngle(angle)
         _currentlySelectedColor.value = color
-        sendRgbRequest(RgbRequest(color.red, color.green, color.blue))
+
+        viewModelScope.launch {
+            try {
+                rgbRequestRepository.setColor(color)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: HttpException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun onButtonSofaClick() {
-        _isSofaLedStripOn.value?.let { _isSofaLedStripOn.value = !it }
+        _isSofaLedStripOn.value?.let { isOn ->
+            _isSofaLedStripOn.value = !isOn
+        }
     }
 
     fun onButtonBedClick() {
@@ -64,18 +72,6 @@ class ControllerViewModel : ViewModel() {
         if (!fromUser)
             return
         _currentlySelectedBrightness.value = progress * 10
-    }
-
-    private fun sendRgbRequest(rgbRequest: RgbRequest) {
-        viewModelScope.launch {
-            try {
-                rgbRequestRepository.sendRgbRequest(rgbRequest)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
     }
 
 
@@ -122,7 +118,7 @@ class ControllerViewModel : ViewModel() {
 
         currentSettings.strips.forEach { strip ->
             when (strip.name) {
-                "table" -> _isSofaLedStripOn.value = strip.isOn == 1
+                "desk" -> _isDeskLedStripOn.value = strip.isOn == 1
                 "bed" -> _isBedLedStripOn.value = strip.isOn == 1
                 "sofa" -> _isSofaLedStripOn.value = strip.isOn == 1
             }

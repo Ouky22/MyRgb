@@ -1,11 +1,13 @@
 package com.example.ledcontroller.repository
 
+import com.example.ledcontroller.model.RgbCircle
 import com.example.ledcontroller.network.*
 
 class RgbRequestRepository {
-    suspend fun sendRgbRequest(request: RgbRequest) {
-        RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(request)
-        RgbRequestServiceDesk.retrofitService.sendRgbRequest(request)
+    suspend fun setColor(color: RgbCircle.RgbTriplet) {
+        val rgbRequest = RgbRequest(color.red, color.green, color.blue)
+        RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+        RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
     }
 
     suspend fun getCurrentSettings(): CurrentSettingsResponse {
