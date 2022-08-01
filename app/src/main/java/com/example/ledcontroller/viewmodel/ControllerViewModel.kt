@@ -44,28 +44,41 @@ class ControllerViewModel : ViewModel() {
         _currentlySelectedColor.value = color
 
         viewModelScope.launch {
-            try {
-                rgbRequestRepository.setColor(color)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: HttpException) {
-                e.printStackTrace()
-            }
+            rgbRequestRepository.setColor(color)
         }
     }
 
     fun onButtonSofaClick() {
         _isSofaLedStripOn.value?.let { isOn ->
             _isSofaLedStripOn.value = !isOn
+
+            viewModelScope.launch {
+                if (isOn) rgbRequestRepository.turnSofaLedStripOff()
+                else rgbRequestRepository.turnSofaLedStripOn()
+            }
         }
     }
 
     fun onButtonBedClick() {
-        _isBedLedStripOn.value?.let { _isBedLedStripOn.value = !it }
+        _isBedLedStripOn.value?.let { isOn ->
+            _isBedLedStripOn.value = !isOn
+
+            viewModelScope.launch {
+                if (isOn) rgbRequestRepository.turnBedLedStripOff()
+                else rgbRequestRepository.turnBedLedStripOn()
+            }
+        }
     }
 
     fun onButtonDeskClick() {
-        _isDeskLedStripOn.value?.let { _isDeskLedStripOn.value = !it }
+        _isDeskLedStripOn.value?.let { isOn ->
+            _isDeskLedStripOn.value = !isOn
+
+            viewModelScope.launch {
+                if (isOn) rgbRequestRepository.turnDeskLedStripOff()
+                else rgbRequestRepository.turnDeskLedStripOn()
+            }
+        }
     }
 
     fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
