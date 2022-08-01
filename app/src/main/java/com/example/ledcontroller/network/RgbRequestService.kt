@@ -6,9 +6,11 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
-private const val esp32DeskBaseUrl = "http://192.168.1.249"
-private const val esp32SofaBedBaseUrl = "http://192.168.1.250"
+private const val esp32DeskBaseUrl = "http://192.168.1.249/"
+private const val esp32SofaBedBaseUrl = "http://192.168.1.250/"
 
 private val moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())
@@ -35,6 +37,17 @@ object RgbRequestServiceSofaBed {
 }
 
 interface RgbRequestService {
-    @GET("/command/?value=$settingsCommandIdentifier.0.0.")
+    @GET("command/?value=$settingsCommandIdentifier.0.0.")
     suspend fun getCurrentSettings(): Response<CurrentSettingsResponse>
+
+    @POST("command/")
+    suspend fun sendRgbRequest(@Query("value") request: RgbRequest)
+}
+
+data class RgbRequest(
+    val value1: Int,
+    val value2: Int,
+    val value3: Int
+) {
+    override fun toString() = "$value1.$value2.$value3."
 }

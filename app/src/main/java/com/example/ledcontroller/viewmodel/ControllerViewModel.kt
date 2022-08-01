@@ -4,8 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ledcontroller.model.RgbCircle
+import com.example.ledcontroller.network.CurrentSettingsResponse
+import com.example.ledcontroller.network.RgbRequest
 import com.example.ledcontroller.network.RgbRequestServiceDesk
 import com.example.ledcontroller.network.RgbRequestServiceSofaBed
+import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -15,6 +18,8 @@ import kotlin.math.sqrt
 class ControllerViewModel : ViewModel() {
 
     private val rgbCircle = RgbCircle()
+
+    private val rgbRequestRepository = RgbRequestRepository()
 
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
@@ -38,7 +43,9 @@ class ControllerViewModel : ViewModel() {
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
         val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
-        _currentlySelectedColor.value = rgbCircle.computeColorAtAngle(angle)
+        val color = rgbCircle.computeColorAtAngle(angle)
+        _currentlySelectedColor.value = color
+        sendRgbRequest(RgbRequest(color.red, color.green, color.blue))
     }
 
     fun onButtonSofaClick() {
@@ -58,6 +65,19 @@ class ControllerViewModel : ViewModel() {
             return
         _currentlySelectedBrightness.value = progress * 10
     }
+
+    private fun sendRgbRequest(rgbRequest: RgbRequest) {
+        viewModelScope.launch {
+            try {
+                rgbRequestRepository.sendRgbRequest(rgbRequest)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 
     private fun computeAngleBetweenTouchAndRgbCircleCenter(x: Int, y: Int): Int {
         // This method computes the angle (0-359) between a vertical vector (0,-1) starting in the rgb
@@ -82,8 +102,8 @@ class ControllerViewModel : ViewModel() {
     }
 
     private suspend fun loadCurrentSettings() {
-        val responseDesk = try {
-            RgbRequestServiceDesk.retrofitService.getCurrentSettings()
+        val currentSettings = try {
+            rgbRequestRepository.getCurrentSettings()
         } catch (e: IOException) {
             e.printStackTrace()
             return
@@ -92,35 +112,20 @@ class ControllerViewModel : ViewModel() {
             return
         }
 
-        if (!responseDesk.isSuccessful || responseDesk.body() == null)
-            return
+        _currentlySelectedColor.value = RgbCircle.RgbTriplet(
+            currentSettings.redValue,
+            currentSettings.greenValue,
+            currentSettings.blueValue
+        )
 
-        val redValue = responseDesk.body()?.redValue ?: 0
-        val greenValue = responseDesk.body()?.greenValue ?: 0
-        val blueValue = responseDesk.body()?.blueValue ?: 0
-        _currentlySelectedColor.value = RgbCircle.RgbTriplet(redValue, greenValue, blueValue)
+        _currentlySelectedBrightness.value = currentSettings.brightness
 
-        _currentlySelectedBrightness.value = responseDesk.body()?.brightness ?: 0
-        _isDeskLedStripOn.value = responseDesk.body()?.strips?.get(0)?.isOn == 1
-
-        val responseSofaBed = try {
-            RgbRequestServiceSofaBed.retrofitService.getCurrentSettings()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return
-        } catch (e: HttpException) {
-            e.printStackTrace()
-            return
-        }
-
-        if (!responseSofaBed.isSuccessful || responseSofaBed.body() == null)
-            return
-
-        responseSofaBed.body()?.strips?.forEach { strip ->
-            if (strip.name == "table")
-                _isSofaLedStripOn.value = strip.isOn == 1
-            else if (strip.name == "bed")
-                _isBedLedStripOn.value = strip.isOn == 1
+        currentSettings.strips.forEach { strip ->
+            when (strip.name) {
+                "table" -> _isSofaLedStripOn.value = strip.isOn == 1
+                "bed" -> _isBedLedStripOn.value = strip.isOn == 1
+                "sofa" -> _isSofaLedStripOn.value = strip.isOn == 1
+            }
         }
     }
 }
