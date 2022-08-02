@@ -3,6 +3,7 @@ package com.example.ledcontroller.view
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
@@ -40,6 +41,8 @@ class ControllerFragment : Fragment() {
 
         binding.root.setOnTouchListener { v, e ->
             v.performClick()
+
+            Log.d("test", "${e}")
 
             if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
                 return@setOnTouchListener true

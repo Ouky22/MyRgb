@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ledcontroller.model.RgbCircle
-import com.example.ledcontroller.network.*
 import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -45,6 +44,22 @@ class ControllerViewModel : ViewModel() {
 
         viewModelScope.launch {
             rgbRequestRepository.setColor(color)
+        }
+    }
+
+    fun onRgbBulbButtonClick() {
+        viewModelScope.launch {
+            if (allStripsAreOff()) {
+                _isSofaLedStripOn.value = true
+                _isBedLedStripOn.value = true
+                _isDeskLedStripOn.value = true
+                rgbRequestRepository.turnAllLedStripsOn()
+            } else {
+                _isSofaLedStripOn.value = false
+                _isBedLedStripOn.value = false
+                _isDeskLedStripOn.value = false
+                rgbRequestRepository.turnAllLedStripsOff()
+            }
         }
     }
 
@@ -137,6 +152,9 @@ class ControllerViewModel : ViewModel() {
             }
         }
     }
+
+    private fun allStripsAreOff() =
+        !(_isBedLedStripOn.value ?: false || _isSofaLedStripOn.value ?: false || _isDeskLedStripOn.value ?: false)
 }
 
 

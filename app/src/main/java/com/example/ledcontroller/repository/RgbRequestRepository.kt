@@ -26,6 +26,35 @@ class RgbRequestRepository {
         }
     }
 
+    suspend fun turnAllLedStripsOff() {
+        turnAllLedStrips(false)
+    }
+
+    suspend fun turnAllLedStripsOn() {
+        turnAllLedStrips(true)
+    }
+
+    private suspend fun turnAllLedStrips(on: Boolean) {
+        val rgbRequest =
+            if (on) RgbRequest(onCommandIdentifier)
+            else RgbRequest(offCommandIdentifier)
+
+        try {
+            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+        try {
+            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+    }
+
     suspend fun turnSofaLedStripOff() {
         turnLedStrip(false, StripName.SOFA)
     }
