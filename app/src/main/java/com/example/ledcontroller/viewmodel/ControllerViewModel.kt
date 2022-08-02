@@ -8,6 +8,7 @@ import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.*
 import kotlin.math.acos
 import kotlin.math.sqrt
 
@@ -16,6 +17,10 @@ class ControllerViewModel : ViewModel() {
     private val rgbCircle = RgbCircle()
 
     private val rgbRequestRepository = RgbRequestRepository()
+
+    private val rgbSetColorRequestTimer = Timer();
+    private val rgbSetColorRequestTimerInterval = 200L
+    private var readyForNextSetColorRgbRequest = true
 
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
@@ -33,8 +38,21 @@ class ControllerViewModel : ViewModel() {
     private val _isDeskLedStripOn = MutableLiveData(false)
     val isDeskLedStripOn = _isDeskLedStripOn
 
+
     init {
         viewModelScope.launch { loadCurrentSettings() }
+
+        rgbSetColorRequestTimer.schedule(object : TimerTask() {
+            override fun run() {
+                if (!readyForNextSetColorRgbRequest)
+                    readyForNextSetColorRgbRequest = true
+            }
+        }, 0, rgbSetColorRequestTimerInterval)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        rgbSetColorRequestTimer.cancel()
     }
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
@@ -42,8 +60,11 @@ class ControllerViewModel : ViewModel() {
         val newColor = rgbCircle.computeColorAtAngle(angle)
         _currentlySelectedColor.value = newColor
 
-        viewModelScope.launch {
-            rgbRequestRepository.setColor(newColor)
+        if (readyForNextSetColorRgbRequest) {
+            viewModelScope.launch {
+                rgbRequestRepository.setColor(newColor)
+            }
+            readyForNextSetColorRgbRequest = false
         }
     }
 
