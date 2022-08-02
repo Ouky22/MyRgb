@@ -18,7 +18,7 @@ class ControllerViewModel : ViewModel() {
 
     private val rgbRequestRepository = RgbRequestRepository()
 
-    private val rgbSetColorRequestTimer = Timer();
+    private val rgbSetColorRequestTimer = Timer()
     private val rgbSetColorRequestTimerInterval = 200L
     private var readyForNextSetColorRgbRequest = true
 

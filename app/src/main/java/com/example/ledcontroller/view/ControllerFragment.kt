@@ -1,12 +1,10 @@
 package com.example.ledcontroller.view
 
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
