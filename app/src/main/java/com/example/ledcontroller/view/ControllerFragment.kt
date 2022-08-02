@@ -15,10 +15,10 @@ import com.example.ledcontroller.databinding.FragmentControllerBinding
 import com.example.ledcontroller.viewmodel.ControllerViewModel
 
 class ControllerFragment : Fragment() {
-    private val viewModel: ControllerViewModel by viewModels()
-    private lateinit var bulbDrawable: Drawable
-    private lateinit var binding: FragmentControllerBinding
 
+    private val viewModel: ControllerViewModel by viewModels()
+
+    private lateinit var binding: FragmentControllerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,16 +33,8 @@ class ControllerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bulbDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_bulb)!!
-        // wrap the drawable so that tinting call work on pre-v21 devices
-        bulbDrawable = bulbDrawable.let { DrawableCompat.wrap(it) }
-        DrawableCompat.setTintMode(bulbDrawable, PorterDuff.Mode.MULTIPLY)
-        binding.ivBulb.setImageDrawable(bulbDrawable)
-
         binding.root.setOnTouchListener { v, e ->
             v.performClick()
-
-            Log.d("test", "${e}")
 
             if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
                 return@setOnTouchListener true
