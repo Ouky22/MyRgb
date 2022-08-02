@@ -49,6 +49,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginBottom="160dp"
             android:background="@color/invisible"
+            android:importantForAccessibility="no"
             android:onClick="@{() -> viewModel.onRgbBulbButtonClick()}"
             app:layout_constraintBottom_toBottomOf="@id/iv_rgb_circle"
             app:layout_constraintEnd_toEndOf="@id/iv_rgb_circle"
@@ -59,11 +60,12 @@
             android:id="@+id/iv_brightness_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:importantForAccessibility="no"
             app:layout_constraintBottom_toBottomOf="@id/seekBar_brightness"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/seekBar_brightness"
+            app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/ic_brightness" />
 
         <SeekBar
