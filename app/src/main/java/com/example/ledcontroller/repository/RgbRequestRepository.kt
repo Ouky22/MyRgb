@@ -6,10 +6,52 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class RgbRequestRepository {
-    enum class StripName(val stripNumber: Int) { SOFA(1), BED(2), DESK(1) }
+
+    enum class StripName(val stripNumber: Int) {
+        SOFA(1),
+        BED(2),
+        DESK(1)
+    }
+
+    suspend fun getCurrentSettings(): CurrentSettingsResponse {
+        val responseDesk = RgbRequestServiceDesk.retrofitService.getCurrentSettings().body()
+        val responseSofaBed = RgbRequestServiceSofaBed.retrofitService.getCurrentSettings().body()
+
+        val strips = mutableListOf<Strip>()
+        responseDesk?.strips?.let { strips.addAll(it) }
+        responseSofaBed?.strips?.let { strips.addAll(it) }
+
+        return CurrentSettingsResponse(
+            0,
+            responseDesk?.redValue ?: responseSofaBed?.redValue ?: 0,
+            responseDesk?.greenValue ?: responseSofaBed?.greenValue ?: 0,
+            responseDesk?.blueValue ?: responseSofaBed?.blueValue ?: 0,
+            responseDesk?.brightness ?: responseSofaBed?.brightness ?: 0,
+            strips,
+            responseDesk?.isRgbShowActive ?: responseSofaBed?.isRgbShowActive ?: 0
+        )
+    }
 
     suspend fun setColor(color: RgbCircle.RgbTriplet) {
         val rgbRequest = RgbRequest(color.red, color.green, color.blue)
+        try {
+            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+        try {
+            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun setBrightness(brightness: Int) {
+        val rgbRequest = RgbRequest(brightnessCommandIdentifier, brightness)
         try {
             RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
         } catch (e: IOException) {
@@ -32,27 +74,6 @@ class RgbRequestRepository {
 
     suspend fun turnAllLedStripsOn() {
         turnAllLedStrips(true)
-    }
-
-    private suspend fun turnAllLedStrips(on: Boolean) {
-        val rgbRequest =
-            if (on) RgbRequest(onCommandIdentifier)
-            else RgbRequest(offCommandIdentifier)
-
-        try {
-            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-        try {
-            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
     }
 
     suspend fun turnSofaLedStripOff() {
@@ -96,22 +117,24 @@ class RgbRequestRepository {
         }
     }
 
-    suspend fun getCurrentSettings(): CurrentSettingsResponse {
-        val responseDesk = RgbRequestServiceDesk.retrofitService.getCurrentSettings().body()
-        val responseSofaBed = RgbRequestServiceSofaBed.retrofitService.getCurrentSettings().body()
+    private suspend fun turnAllLedStrips(on: Boolean) {
+        val rgbRequest =
+            if (on) RgbRequest(onCommandIdentifier)
+            else RgbRequest(offCommandIdentifier)
 
-        val strips = mutableListOf<Strip>()
-        responseDesk?.strips?.let { strips.addAll(it) }
-        responseSofaBed?.strips?.let { strips.addAll(it) }
-
-        return CurrentSettingsResponse(
-            0,
-            responseDesk?.redValue ?: responseSofaBed?.redValue ?: 0,
-            responseDesk?.greenValue ?: responseSofaBed?.greenValue ?: 0,
-            responseDesk?.blueValue ?: responseSofaBed?.blueValue ?: 0,
-            responseDesk?.brightness ?: responseSofaBed?.brightness ?: 0,
-            strips,
-            responseDesk?.isRgbShowActive ?: responseSofaBed?.isRgbShowActive ?: 0
-        )
+        try {
+            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+        try {
+            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
     }
 }

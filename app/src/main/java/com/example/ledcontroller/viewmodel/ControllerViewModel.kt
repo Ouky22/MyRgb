@@ -39,11 +39,11 @@ class ControllerViewModel : ViewModel() {
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
         val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
-        val color = rgbCircle.computeColorAtAngle(angle)
-        _currentlySelectedColor.value = color
+        val newColor = rgbCircle.computeColorAtAngle(angle)
+        _currentlySelectedColor.value = newColor
 
         viewModelScope.launch {
-            rgbRequestRepository.setColor(color)
+            rgbRequestRepository.setColor(newColor)
         }
     }
 
@@ -99,7 +99,13 @@ class ControllerViewModel : ViewModel() {
     fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
         if (!fromUser)
             return
-        _currentlySelectedBrightness.value = progress * 10
+
+        val newBrightness = (progress + 1) * 10
+        _currentlySelectedBrightness.value = newBrightness
+
+        viewModelScope.launch {
+            rgbRequestRepository.setBrightness(newBrightness)
+        }
     }
 
 

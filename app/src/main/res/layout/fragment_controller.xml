@@ -71,7 +71,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:max="25"
+            android:max="22"
             android:onProgressChanged="@{(s,p,f) -> viewModel.onBrightnessSeekBarProgressChanged(p, f)}"
             android:progress="@{viewModel.currentlySelectedBrightness / 10}"
             android:progressDrawable="@drawable/custom_seekbar"
