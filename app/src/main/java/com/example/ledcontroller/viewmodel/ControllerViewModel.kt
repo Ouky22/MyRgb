@@ -153,15 +153,7 @@ class ControllerViewModel : ViewModel() {
     }
 
     private suspend fun loadCurrentSettings() {
-        val currentSettings = try {
-            rgbRequestRepository.getCurrentSettings()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return
-        } catch (e: HttpException) {
-            e.printStackTrace()
-            return
-        }
+        val currentSettings = rgbRequestRepository.getCurrentSettings()
 
         _currentlySelectedColor.value = RgbCircle.RgbTriplet(
             currentSettings.redValue,

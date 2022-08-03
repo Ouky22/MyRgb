@@ -14,8 +14,25 @@ class RgbRequestRepository {
     }
 
     suspend fun getCurrentSettings(): CurrentSettingsResponse {
-        val responseDesk = RgbRequestServiceDesk.retrofitService.getCurrentSettings().body()
-        val responseSofaBed = RgbRequestServiceSofaBed.retrofitService.getCurrentSettings().body()
+        val responseDesk: CurrentSettingsResponse? = try {
+            RgbRequestServiceDesk.retrofitService.getCurrentSettings().body()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            null
+        }
+
+        val responseSofaBed: CurrentSettingsResponse? = try {
+            RgbRequestServiceSofaBed.retrofitService.getCurrentSettings().body()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            null
+        }
 
         val strips = mutableListOf<Strip>()
         responseDesk?.strips?.let { strips.addAll(it) }
