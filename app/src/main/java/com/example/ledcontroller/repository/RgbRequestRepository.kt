@@ -65,6 +65,53 @@ class RgbRequestRepository {
         sendRgbRequestToBedSofa(rgbRequest)
     }
 
+    suspend fun setColor(color: RgbCircle.RgbTriplet) {
+        val rgbRequest = RgbRequest(color.red, color.green, color.blue)
+
+        sendRgbRequestToDesk(rgbRequest)
+        sendRgbRequestToBedSofa(rgbRequest)
+    }
+
+    suspend fun setBrightness(brightness: Int) {
+        val rgbRequest = RgbRequest(brightnessCommandIdentifier, brightness)
+        sendRgbRequestToDesk(rgbRequest)
+        sendRgbRequestToBedSofa(rgbRequest)
+    }
+
+    suspend fun turnAllLedStripsOff() {
+        sendRgbRequestToDesk(RgbRequest(offCommandIdentifier))
+        sendRgbRequestToBedSofa(RgbRequest(offCommandIdentifier))
+    }
+
+    suspend fun turnAllLedStripsOn() {
+        sendRgbRequestToDesk(RgbRequest(onCommandIdentifier))
+        sendRgbRequestToBedSofa(RgbRequest(onCommandIdentifier))
+    }
+
+    suspend fun turnSofaLedStripOff() {
+        sendRgbRequestToBedSofa(RgbRequest(offCommandIdentifier, StripName.SOFA.stripNumber))
+    }
+
+    suspend fun turnSofaLedStripOn() {
+        sendRgbRequestToBedSofa(RgbRequest(onCommandIdentifier, StripName.SOFA.stripNumber))
+    }
+
+    suspend fun turnBedLedStripOff() {
+        sendRgbRequestToBedSofa(RgbRequest(offCommandIdentifier, StripName.BED.stripNumber))
+    }
+
+    suspend fun turnBedLedStripOn() {
+        sendRgbRequestToBedSofa(RgbRequest(onCommandIdentifier, StripName.BED.stripNumber))
+    }
+
+    suspend fun turnDeskLedStripOff() {
+        sendRgbRequestToDesk(RgbRequest(offCommandIdentifier, StripName.DESK.stripNumber))
+    }
+
+    suspend fun turnDeskLedStripOn() {
+        sendRgbRequestToDesk(RgbRequest(onCommandIdentifier, StripName.DESK.stripNumber))
+    }
+
     private suspend fun sendRgbRequestToDesk(rgbRequest: RgbRequest) {
         try {
             RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
@@ -76,113 +123,6 @@ class RgbRequestRepository {
     }
 
     private suspend fun sendRgbRequestToBedSofa(rgbRequest: RgbRequest) {
-        try {
-            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-    }
-
-
-    suspend fun setColor(color: RgbCircle.RgbTriplet) {
-        val rgbRequest = RgbRequest(color.red, color.green, color.blue)
-        try {
-            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-        try {
-            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-    }
-
-    suspend fun setBrightness(brightness: Int) {
-        val rgbRequest = RgbRequest(brightnessCommandIdentifier, brightness)
-        try {
-            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-        try {
-            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-    }
-
-    suspend fun turnAllLedStripsOff() {
-        turnAllLedStrips(false)
-    }
-
-    suspend fun turnAllLedStripsOn() {
-        turnAllLedStrips(true)
-    }
-
-    suspend fun turnSofaLedStripOff() {
-        turnLedStrip(false, StripName.SOFA)
-    }
-
-    suspend fun turnSofaLedStripOn() {
-        turnLedStrip(true, StripName.SOFA)
-    }
-
-    suspend fun turnBedLedStripOff() {
-        turnLedStrip(false, StripName.BED)
-    }
-
-    suspend fun turnBedLedStripOn() {
-        turnLedStrip(true, StripName.BED)
-    }
-
-    suspend fun turnDeskLedStripOff() {
-        turnLedStrip(false, StripName.DESK)
-    }
-
-    suspend fun turnDeskLedStripOn() {
-        turnLedStrip(true, StripName.DESK)
-    }
-
-    private suspend fun turnLedStrip(on: Boolean, stripName: StripName) {
-        val rgbRequest =
-            if (on) RgbRequest(onCommandIdentifier, stripName.stripNumber)
-            else RgbRequest(offCommandIdentifier, stripName.stripNumber)
-
-        try {
-            if (stripName == StripName.SOFA || stripName == StripName.BED)
-                RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
-            else
-                RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
-    }
-
-    private suspend fun turnAllLedStrips(on: Boolean) {
-        val rgbRequest =
-            if (on) RgbRequest(onCommandIdentifier)
-            else RgbRequest(offCommandIdentifier)
-
-        try {
-            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-        }
         try {
             RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
         } catch (e: IOException) {
