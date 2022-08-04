@@ -48,6 +48,9 @@ class RgbShowViewModel : ViewModel() {
     private suspend fun loadCurrentSettings() {
         val currentSettings = rgbRequestRepository.getCurrentSettings()
         _rgbShowActive.value = currentSettings.isRgbShowActive == 1
+
+        // TODO load current rgb show speed as soon it is queryable
+        _currentRgbShowSpeed.value = MAX_RGB_SHOW_SPEED / 2
     }
 }
 
