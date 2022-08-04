@@ -2,7 +2,10 @@ package com.example.ledcontroller.view
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.R
+import com.example.ledcontroller.adapter.AlarmAdapter
+import com.example.ledcontroller.model.Alarm
 
 @BindingAdapter("status_border")
 fun statusBorder(button: com.google.android.material.button.MaterialButton, isActivated: Boolean) {
@@ -18,4 +21,9 @@ fun startStopIcon(imageView: ImageView, started: Boolean) {
         imageView.setImageResource(R.drawable.ic_stop)
     else
         imageView.setImageResource(R.drawable.ic_start_rgb_show)
+}
+
+@BindingAdapter("alarm_list_data")
+fun alarmListData(recyclerView: RecyclerView, alarms: List<Alarm>?) {
+    (recyclerView.adapter as AlarmAdapter).submitList(alarms)
 }
