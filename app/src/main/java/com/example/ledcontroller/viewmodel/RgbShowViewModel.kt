@@ -1,5 +1,6 @@
 package com.example.ledcontroller.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +11,11 @@ class RgbShowViewModel : ViewModel() {
     private val rgbRequestRepository = RgbRequestRepository()
 
     private val _rgbShowActive = MutableLiveData<Boolean>()
-    val rgbShowActive = _rgbShowActive
+    val rgbShowActive: LiveData<Boolean> = _rgbShowActive
 
     private val _currentRgbShowSpeed = MutableLiveData<Int>()
-    val currentRgbShowSpeed = _currentRgbShowSpeed
+    val currentRgbShowSpeed: LiveData<Int> = _currentRgbShowSpeed
+
     val MAX_RGB_SHOW_SPEED = 10
 
 

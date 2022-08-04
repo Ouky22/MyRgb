@@ -1,5 +1,6 @@
 package com.example.ledcontroller.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,17 +25,17 @@ class ControllerViewModel : ViewModel() {
     var rgbCircleCenterY = 0
 
     private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
-    val currentlySelectedColor = _currentlySelectedColor
+    val currentlySelectedColor: LiveData<RgbCircle.RgbTriplet> = _currentlySelectedColor
 
     private val _currentlySelectedBrightness = MutableLiveData<Int>()
-    val currentlySelectedBrightness = _currentlySelectedBrightness
+    val currentlySelectedBrightness: LiveData<Int> = _currentlySelectedBrightness
 
     private val _isSofaLedStripOn = MutableLiveData(false)
-    val isSofaLedStripOn = _isSofaLedStripOn
+    val isSofaLedStripOn: LiveData<Boolean> = _isSofaLedStripOn
     private val _isBedLedStripOn = MutableLiveData(false)
-    val isBedLedStripOn = _isBedLedStripOn
+    val isBedLedStripOn: LiveData<Boolean> = _isBedLedStripOn
     private val _isDeskLedStripOn = MutableLiveData(false)
-    val isDeskLedStripOn = _isDeskLedStripOn
+    val isDeskLedStripOn: LiveData<Boolean> = _isDeskLedStripOn
 
 
     init {
