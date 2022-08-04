@@ -49,6 +49,43 @@ class RgbRequestRepository {
         )
     }
 
+    suspend fun startRgbShow(speed: Int) {
+        val rgbRequest = RgbRequest(rgbShowCommandIdentifier, speed)
+        sendRgbRequestToDesk(rgbRequest)
+        sendRgbRequestToBedSofa(rgbRequest)
+    }
+
+    suspend fun stopRgbShow() {
+        // TODO no command provided to stop the rgb show directly, instead a color has to be send
+    }
+
+    suspend fun setRgbShowSpeed(speed: Int) {
+        val rgbRequest = RgbRequest(rgbShowCommandIdentifier, speed)
+        sendRgbRequestToDesk(rgbRequest)
+        sendRgbRequestToBedSofa(rgbRequest)
+    }
+
+    private suspend fun sendRgbRequestToDesk(rgbRequest: RgbRequest) {
+        try {
+            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+    }
+
+    private suspend fun sendRgbRequestToBedSofa(rgbRequest: RgbRequest) {
+        try {
+            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        }
+    }
+
+
     suspend fun setColor(color: RgbCircle.RgbTriplet) {
         val rgbRequest = RgbRequest(color.red, color.green, color.blue)
         try {

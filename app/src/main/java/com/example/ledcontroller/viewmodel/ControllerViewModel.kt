@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.ledcontroller.model.RgbCircle
 import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 import java.util.*
 import kotlin.math.acos
 import kotlin.math.sqrt
