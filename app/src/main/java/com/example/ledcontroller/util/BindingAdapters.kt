@@ -5,7 +5,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.R
 import com.example.ledcontroller.adapter.AlarmAdapter
-import com.example.ledcontroller.model.Alarm
+import com.example.ledcontroller.persistence.Alarm
 
 @BindingAdapter("status_border")
 fun statusBorder(button: com.google.android.material.button.MaterialButton, isActivated: Boolean) {

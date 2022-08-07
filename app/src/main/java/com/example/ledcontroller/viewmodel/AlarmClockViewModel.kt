@@ -3,7 +3,7 @@ package com.example.ledcontroller.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.ledcontroller.model.Alarm
+import com.example.ledcontroller.persistence.Alarm
 import java.sql.Date
 import java.sql.Time
 
@@ -14,13 +14,13 @@ class AlarmClockViewModel : ViewModel() {
 
     init {
         _alarms.value = listOf(
-            Alarm(1, Date(2021), Time(10), false),
-            Alarm(1, Date(202231), Time(14), false),
-            Alarm(1, Date(202331), Time(14), true),
-            Alarm(1, Date(2020), Time(10), false),
-            Alarm(1, Date(202324), Time(122340), true),
-            Alarm(1, Date(2022341), Time(12340), true),
-            Alarm(1, Date(2021234), Time(10), false),
+            Alarm(1, 2021L, 10, false),
+            Alarm(1, 202231, 14, false),
+            Alarm(1, 20233, 14, true),
+            Alarm(1, 2020, 10, false),
+            Alarm(1, 202324, 122340, true),
+            Alarm(1, 2022341, 12340, true),
+            Alarm(1, 2021234, 10, false),
         )
     }
 }

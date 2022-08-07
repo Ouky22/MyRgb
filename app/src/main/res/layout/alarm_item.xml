@@ -5,7 +5,7 @@
 
         <variable
             name="alarm"
-            type="com.example.ledcontroller.model.Alarm" />
+            type="com.example.ledcontroller.persistence.Alarm" />
     </data>
 
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="32dp"
                 android:layout_marginStart="16dp"
-                android:text="@{alarm.time.toString()}"
+                android:text="@{Long.toString(alarm.time)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{alarm.date.toString()}"
+                android:text="@{Long.toString(alarm.date)}"
                 android:textColor="@color/grey_light"
                 app:layout_constraintBottom_toBottomOf="@id/switch_alarm"
                 app:layout_constraintEnd_toStartOf="@id/switch_alarm"

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.databinding.AlarmItemBinding
-import com.example.ledcontroller.model.Alarm
+import com.example.ledcontroller.persistence.Alarm
 
 class AlarmAdapter : ListAdapter<Alarm, AlarmAdapter.AlarmViewHolder>(DiffCallback) {
 
