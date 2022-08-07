@@ -9,7 +9,8 @@ import java.sql.Time
 
 class AlarmClockViewModel : ViewModel() {
     private val _alarms = MutableLiveData<List<Alarm>>()
-    val alarms: LiveData<List<Alarm>> = _alarms
+    val alarms: LiveData<List<Alarm>>
+        get() = _alarms
 
     init {
         _alarms.value = listOf(

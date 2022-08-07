@@ -12,6 +12,28 @@ import kotlin.math.acos
 import kotlin.math.sqrt
 
 class ControllerViewModel : ViewModel() {
+    var rgbCircleCenterX = 0
+    var rgbCircleCenterY = 0
+
+    private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
+    val currentlySelectedColor: LiveData<RgbCircle.RgbTriplet>
+        get() = _currentlySelectedColor
+
+    private val _currentlySelectedBrightness = MutableLiveData<Int>()
+    val currentlySelectedBrightness: LiveData<Int>
+        get() = _currentlySelectedBrightness
+
+    private val _isSofaLedStripOn = MutableLiveData(false)
+    val isSofaLedStripOn: LiveData<Boolean>
+        get() = _isSofaLedStripOn
+
+    private val _isBedLedStripOn = MutableLiveData(false)
+    val isBedLedStripOn: LiveData<Boolean>
+        get() = _isBedLedStripOn
+
+    private val _isDeskLedStripOn = MutableLiveData(false)
+    val isDeskLedStripOn: LiveData<Boolean>
+        get() = _isDeskLedStripOn
 
     private val rgbCircle = RgbCircle()
 
@@ -20,22 +42,6 @@ class ControllerViewModel : ViewModel() {
     private val rgbSetColorRequestTimer = Timer()
     private val rgbSetColorRequestTimerInterval = 200L
     private var readyForNextSetColorRgbRequest = true
-
-    var rgbCircleCenterX = 0
-    var rgbCircleCenterY = 0
-
-    private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
-    val currentlySelectedColor: LiveData<RgbCircle.RgbTriplet> = _currentlySelectedColor
-
-    private val _currentlySelectedBrightness = MutableLiveData<Int>()
-    val currentlySelectedBrightness: LiveData<Int> = _currentlySelectedBrightness
-
-    private val _isSofaLedStripOn = MutableLiveData(false)
-    val isSofaLedStripOn: LiveData<Boolean> = _isSofaLedStripOn
-    private val _isBedLedStripOn = MutableLiveData(false)
-    val isBedLedStripOn: LiveData<Boolean> = _isBedLedStripOn
-    private val _isDeskLedStripOn = MutableLiveData(false)
-    val isDeskLedStripOn: LiveData<Boolean> = _isDeskLedStripOn
 
 
     init {

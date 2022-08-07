@@ -8,13 +8,15 @@ import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 
 class RgbShowViewModel : ViewModel() {
-    private val rgbRequestRepository = RgbRequestRepository()
-
     private val _rgbShowActive = MutableLiveData<Boolean>()
-    val rgbShowActive: LiveData<Boolean> = _rgbShowActive
+    val rgbShowActive: LiveData<Boolean>
+        get() = _rgbShowActive
 
     private val _currentRgbShowSpeed = MutableLiveData<Int>()
-    val currentRgbShowSpeed: LiveData<Int> = _currentRgbShowSpeed
+    val currentRgbShowSpeed: LiveData<Int>
+        get() = _currentRgbShowSpeed
+
+    private val rgbRequestRepository = RgbRequestRepository()
 
     val MAX_RGB_SHOW_SPEED = 10
 
