@@ -14,13 +14,13 @@ class AlarmClockViewModel : ViewModel() {
 
     init {
         _alarms.value = listOf(
-            Alarm(1, 2021L, 10, false),
-            Alarm(1, 202231, 14, false),
-            Alarm(1, 20233, 14, true),
-            Alarm(1, 2020, 10, false),
-            Alarm(1, 202324, 122340, true),
-            Alarm(1, 2022341, 12340, true),
-            Alarm(1, 2021234, 10, false),
+            Alarm(1, 221, false),
+            Alarm(1, 1300, false),
+            Alarm(1, 1233, true),
+            Alarm(1, 1020, false),
+            Alarm(1, 1324, true),
+            Alarm(1, 1341, true),
+            Alarm(1, 1214, false),
         )
     }
 }
