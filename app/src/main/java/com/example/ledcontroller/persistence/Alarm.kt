@@ -26,8 +26,8 @@ data class Alarm(
      * in regular order (2nd most significant bit -> Monday, ..., least significant bit -> Sunday).
      * The most significant bit has no meaning.
      */
-    @ColumnInfo(name = "alarmWeekDays")
-    private var alarmWeekDays: Byte = 0b00000000.toByte()
+    @ColumnInfo(name = "repetitiveAlarmWeekDays")
+    private var repetitiveAlarmWeekDays: Byte = 0b00000000.toByte()
 ) {
     val hours: Int
         get() = (triggerTime / 60).toInt()
@@ -54,17 +54,17 @@ data class Alarm(
         }
 
     val isOneTimeAlarm
-        get() = alarmWeekDays == 0b00000000.toByte() || alarmWeekDays == 0b10000000.toByte()
+        get() = repetitiveAlarmWeekDays == 0b00000000.toByte() || repetitiveAlarmWeekDays == 0b10000000.toByte()
 
 
-    fun isRepetitiveOn(day: Weekday) = (alarmWeekDays and day.bitMask) > 0
+    fun isRepetitiveOn(day: Weekday) = (repetitiveAlarmWeekDays and day.bitMask) > 0
 
     fun makeRepetitiveOn(day: Weekday) {
-        alarmWeekDays = alarmWeekDays or day.bitMask
+        repetitiveAlarmWeekDays = repetitiveAlarmWeekDays or day.bitMask
     }
 
     fun makeNotRepetitiveOn(day: Weekday) {
-        alarmWeekDays = alarmWeekDays and day.bitMask.inv()
+        repetitiveAlarmWeekDays = repetitiveAlarmWeekDays and day.bitMask.inv()
     }
 }
 
