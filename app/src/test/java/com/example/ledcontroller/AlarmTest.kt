@@ -5,13 +5,76 @@ import com.example.ledcontroller.persistence.Weekday
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
+import java.time.*
+
 
 class AlarmTest {
-    lateinit var alarm: Alarm
+    private lateinit var alarm: Alarm
 
     @Before
     fun initAlarm() {
         alarm = Alarm(0, 0, false)
+    }
+
+    private fun initForNextTriggerDateTimeTest(
+        triggerTimeMinutes: Int,
+        dateTimeStringForFixedClock: String
+    ) {
+        alarm = Alarm(0, triggerTimeMinutes, false)
+        // 2022.08.31 is a wednesday
+        alarm.setClockForTesting(
+            Clock.fixed(
+                Instant.parse(dateTimeStringForFixedClock),
+                ZoneId.of("UTC")
+            )
+        )
+    }
+
+    @Test
+    fun nextTriggerDateTimeOfOneTimeAlarmToday() {
+        initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:58:00Z")
+        assertEquals(LocalDateTime.of(2023, 12, 31, 23, 59), alarm.nextTriggerDateTime)
+    }
+
+    @Test
+    fun nextTriggerDateTimeOfOneTimeAlarmTomorrow() {
+        initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
+        assertEquals(LocalDateTime.of(2024, 1, 1, 23, 59), alarm.nextTriggerDateTime)
+    }
+
+    @Test
+    fun nextTriggerDateTimeOfRepetitiveAlarmToday() {
+        initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:58:00Z")
+        alarm.makeRepetitiveOn(Weekday.SATURDAY)
+        alarm.makeRepetitiveOn(Weekday.SUNDAY)
+        alarm.makeRepetitiveOn(Weekday.MONDAY)
+        assertEquals(LocalDateTime.of(2023, 12, 31, 23, 59), alarm.nextTriggerDateTime)
+    }
+
+    @Test
+    fun nextTriggerDateTimeOfRepetitiveAlarmTomorrow() {
+        initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
+        alarm.makeRepetitiveOn(Weekday.SATURDAY)
+        alarm.makeRepetitiveOn(Weekday.SUNDAY)
+        alarm.makeRepetitiveOn(Weekday.MONDAY)
+        assertEquals(LocalDateTime.of(2024, 1, 1, 23, 59), alarm.nextTriggerDateTime)
+    }
+
+    @Test
+    fun nextTriggerDateTimeOfRepetitiveAlarmInAWeek() {
+        initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
+        alarm.makeRepetitiveOn(Weekday.SUNDAY)
+        assertEquals(LocalDateTime.of(2024, 1, 7, 23, 59), alarm.nextTriggerDateTime)
+    }
+
+    @Test
+    fun getNextWeekdayAfterSunday() {
+        assertEquals(Weekday.MONDAY, Weekday.SUNDAY.nextWeekday)
+    }
+
+    @Test
+    fun getNextWeekdayAfterMonday() {
+        assertEquals(Weekday.TUESDAY, Weekday.MONDAY.nextWeekday)
     }
 
     @Test
