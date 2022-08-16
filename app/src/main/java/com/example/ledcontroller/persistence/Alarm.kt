@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
@@ -38,10 +39,13 @@ data class Alarm(
         get() = triggerTimeMinutesOfDay % 60
 
     val triggerTimeString: String
-        get() {
-            return LocalTime.of(triggerTimeHoursOfDay, triggerTimeMinutesOfHour)
-                .format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        }
+        get() = LocalTime.of(triggerTimeHoursOfDay, triggerTimeMinutesOfHour)
+            .format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+
+    val nextTriggerDateTimeString: String
+        get() = nextTriggerDateTime.format(
+            DateTimeFormatter.ofPattern("EEE dd LLL", Locale.getDefault())
+        )
 
     val nextTriggerDateTime: LocalDateTime
         get() {
@@ -74,12 +78,6 @@ data class Alarm(
 
                 return nextTriggerDateTime
             }
-        }
-
-    val nextTriggerDateString: String
-        get() {
-
-            return ""
         }
 
     val isOneTimeAlarm

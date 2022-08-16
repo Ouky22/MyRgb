@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="@{alarm.nextTriggerDateString}"
+                android:text="@{alarm.nextTriggerDateTimeString}"
                 android:textColor="@color/grey_light"
                 app:layout_constraintBottom_toBottomOf="@id/switch_alarm"
                 app:layout_constraintEnd_toStartOf="@id/switch_alarm"
