@@ -86,8 +86,8 @@ data class RgbAlarm(
     val isOneTimeAlarm
         get() = repetitiveAlarmWeekDays == 0b00000000.toByte() || repetitiveAlarmWeekDays == 0b10000000.toByte()
 
-    val rgbTriplet: RgbCircle.RgbTriplet
-        get() = RgbCircle.RgbTriplet(redValue, greenValue, blueValue)
+    val rgbTriplet: RgbTriplet
+        get() = RgbTriplet(redValue, greenValue, blueValue)
 
     fun isRepetitiveOn(day: Weekday) = (repetitiveAlarmWeekDays and day.bitMask) > 0
 

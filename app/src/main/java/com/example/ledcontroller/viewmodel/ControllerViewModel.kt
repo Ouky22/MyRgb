@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ledcontroller.model.RgbCircle
+import com.example.ledcontroller.model.RgbTriplet
 import com.example.ledcontroller.repository.RgbRequestRepository
 import kotlinx.coroutines.launch
 import java.util.*
@@ -15,8 +16,8 @@ class ControllerViewModel : ViewModel() {
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
 
-    private val _currentlySelectedColor = MutableLiveData<RgbCircle.RgbTriplet>()
-    val currentlySelectedColor: LiveData<RgbCircle.RgbTriplet>
+    private val _currentlySelectedColor = MutableLiveData<RgbTriplet>()
+    val currentlySelectedColor: LiveData<RgbTriplet>
         get() = _currentlySelectedColor
 
     private val _currentlySelectedBrightness = MutableLiveData<Int>()
@@ -160,7 +161,7 @@ class ControllerViewModel : ViewModel() {
     private suspend fun loadCurrentSettings() {
         val currentSettings = rgbRequestRepository.getCurrentSettings()
 
-        _currentlySelectedColor.value = RgbCircle.RgbTriplet(
+        _currentlySelectedColor.value = RgbTriplet(
             currentSettings.redValue,
             currentSettings.greenValue,
             currentSettings.blueValue

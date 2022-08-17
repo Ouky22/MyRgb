@@ -1,6 +1,6 @@
 package com.example.ledcontroller.repository
 
-import com.example.ledcontroller.model.RgbCircle
+import com.example.ledcontroller.model.RgbTriplet
 import com.example.ledcontroller.network.*
 import retrofit2.HttpException
 import java.io.IOException
@@ -65,7 +65,7 @@ class RgbRequestRepository {
         sendRgbRequestToBedSofa(rgbRequest)
     }
 
-    suspend fun setColor(color: RgbCircle.RgbTriplet) {
+    suspend fun setColor(color: RgbTriplet) {
         val rgbRequest = RgbRequest(color.red, color.green, color.blue)
 
         sendRgbRequestToDesk(rgbRequest)

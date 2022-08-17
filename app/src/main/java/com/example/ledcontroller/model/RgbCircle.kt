@@ -108,14 +108,6 @@ class RgbCircle {
             RgbColor.BLUE -> (blueAreaCenterAngle + blueOffset) % 360
         }
     }
-
-    data class RgbTriplet(
-        val red: Int,
-        val green: Int,
-        val blue: Int,
-    ) {
-        fun toRgbInt() = Color.rgb(red, green, blue)
-    }
 }
 
 
