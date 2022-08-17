@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.databinding.AlarmItemBinding
 import com.example.ledcontroller.model.RgbAlarm
 
-class AlarmAdapter : ListAdapter<RgbAlarm, AlarmAdapter.AlarmViewHolder>(DiffCallback) {
+class AlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
+    ListAdapter<RgbAlarm, AlarmListAdapter.AlarmViewHolder>(DiffCallback) {
 
     companion object DiffCallback : DiffUtil.ItemCallback<RgbAlarm>() {
         override fun areItemsTheSame(oldItem: RgbAlarm, newItem: RgbAlarm): Boolean {
@@ -25,6 +26,7 @@ class AlarmAdapter : ListAdapter<RgbAlarm, AlarmAdapter.AlarmViewHolder>(DiffCal
 
         fun bind(rgbAlarm: RgbAlarm) {
             binding.alarm = rgbAlarm
+            itemView.setOnClickListener { itemClickListener(rgbAlarm) }
         }
     }
 

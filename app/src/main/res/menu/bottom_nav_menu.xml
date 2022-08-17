@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_bulb"
         android:title="@string/controller"/>
     <item
-        android:id="@+id/alarm_dest"
+        android:id="@+id/alarm_list_dest"
         android:icon="@drawable/ic_alarm"
         android:title="@string/alarm"/>
     <item

@@ -4,7 +4,7 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.R
-import com.example.ledcontroller.adapter.AlarmAdapter
+import com.example.ledcontroller.adapter.AlarmListAdapter
 import com.example.ledcontroller.model.RgbAlarm
 
 @BindingAdapter("status_border")
@@ -25,5 +25,5 @@ fun startStopIcon(imageView: ImageView, started: Boolean) {
 
 @BindingAdapter("alarm_list_data")
 fun alarmListData(recyclerView: RecyclerView, rgbAlarms: List<RgbAlarm>?) {
-    (recyclerView.adapter as AlarmAdapter).submitList(rgbAlarms)
+    (recyclerView.adapter as AlarmListAdapter).submitList(rgbAlarms)
 }

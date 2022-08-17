@@ -6,4 +6,12 @@
     <string name="bed">Bett</string>
     <string name="desk">Tisch</string>
     <string name="controller">Controller</string>
+
+    <string name="monday_start_letter">M</string>
+    <string name="tuesday_start_letter">T</string>
+    <string name="wednesday_start_letter">W</string>
+    <string name="thursday_start_letter">T</string>
+    <string name="friday_start_letter">F</string>
+    <string name="saturday_start_letter">S</string>
+    <string name="sunday_start_letter">S</string>
 </resources>
