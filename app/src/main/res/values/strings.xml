@@ -6,6 +6,7 @@
     <string name="bed">Bett</string>
     <string name="desk">Tisch</string>
     <string name="controller">Controller</string>
+    <string name="save">save</string>
 
     <string name="monday_start_letter">M</string>
     <string name="tuesday_start_letter">T</string>
