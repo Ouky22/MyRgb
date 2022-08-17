@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ledcontroller.databinding.AlarmItemBinding
-import com.example.ledcontroller.persistence.Alarm
+import com.example.ledcontroller.model.RgbAlarm
 
-class AlarmAdapter : ListAdapter<Alarm, AlarmAdapter.AlarmViewHolder>(DiffCallback) {
+class AlarmAdapter : ListAdapter<RgbAlarm, AlarmAdapter.AlarmViewHolder>(DiffCallback) {
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Alarm>() {
-        override fun areItemsTheSame(oldItem: Alarm, newItem: Alarm): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<RgbAlarm>() {
+        override fun areItemsTheSame(oldItem: RgbAlarm, newItem: RgbAlarm): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Alarm, newItem: Alarm): Boolean {
+        override fun areContentsTheSame(oldItem: RgbAlarm, newItem: RgbAlarm): Boolean {
             return oldItem == newItem
         }
     }
@@ -23,8 +23,8 @@ class AlarmAdapter : ListAdapter<Alarm, AlarmAdapter.AlarmViewHolder>(DiffCallba
     inner class AlarmViewHolder(private val binding: AlarmItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(alarm: Alarm) {
-            binding.alarm = alarm
+        fun bind(rgbAlarm: RgbAlarm) {
+            binding.alarm = rgbAlarm
         }
     }
 

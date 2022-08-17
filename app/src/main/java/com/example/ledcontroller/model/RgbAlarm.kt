@@ -1,4 +1,4 @@
-package com.example.ledcontroller.persistence
+package com.example.ledcontroller.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -15,8 +15,8 @@ import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
 
-@Entity(tableName = "alarm")
-data class Alarm(
+@Entity(tableName = "rgbAlarm")
+data class RgbAlarm(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "triggerTimeMinutesOfDay") var triggerTimeMinutesOfDay: Int,
     @ColumnInfo(name = "isActive") var activated: Boolean = false,

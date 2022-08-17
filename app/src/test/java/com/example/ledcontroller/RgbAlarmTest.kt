@@ -1,27 +1,26 @@
 package com.example.ledcontroller
 
-import com.example.ledcontroller.persistence.Alarm
-import com.example.ledcontroller.persistence.Weekday
+import com.example.ledcontroller.model.RgbAlarm
+import com.example.ledcontroller.model.Weekday
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import java.time.*
 
 
-class AlarmTest {
-    private lateinit var alarm: Alarm
+class RgbAlarmTest {
+    private lateinit var alarm: RgbAlarm
 
     @Before
     fun initAlarm() {
-        alarm = Alarm(0, 0, false)
+        alarm = RgbAlarm(0, 0, false)
     }
 
     private fun initForNextTriggerDateTimeTest(
         triggerTimeMinutes: Int,
         dateTimeStringForFixedClock: String
     ) {
-        alarm = Alarm(0, triggerTimeMinutes, false)
-        // 2022.08.31 is a wednesday
+        alarm = RgbAlarm(0, triggerTimeMinutes, false)
         alarm.setClockForTesting(
             Clock.fixed(
                 Instant.parse(dateTimeStringForFixedClock),
