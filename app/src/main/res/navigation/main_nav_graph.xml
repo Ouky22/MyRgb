@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_controller" />
     <fragment
         android:id="@+id/alarm_dest"
-        android:name="com.example.ledcontroller.view.AlarmClockListFragment"
+        android:name="com.example.ledcontroller.view.RgbAlarmListFragment"
         android:label="@string/alarm"
-        tools:layout="@layout/fragment_alarm_list" />
+        tools:layout="@layout/fragment_rgb_alarm_list" />
     <fragment
         android:id="@+id/rgb_show_dest"
         android:name="com.example.ledcontroller.view.RgbShowFragment"

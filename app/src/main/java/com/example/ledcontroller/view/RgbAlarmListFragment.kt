@@ -9,20 +9,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.example.ledcontroller.R
 import com.example.ledcontroller.adapter.AlarmAdapter
-import com.example.ledcontroller.databinding.FragmentAlarmListBinding
-import com.example.ledcontroller.databinding.FragmentControllerBinding
-import com.example.ledcontroller.viewmodel.AlarmClockViewModel
+import com.example.ledcontroller.databinding.FragmentRgbAlarmListBinding
+import com.example.ledcontroller.viewmodel.RgbAlarmViewModel
 
-class AlarmClockListFragment : Fragment() {
+class RgbAlarmListFragment : Fragment() {
 
-    private val viewModel: AlarmClockViewModel by viewModels()
-    private lateinit var binding: FragmentAlarmListBinding
+    private val viewModel: RgbAlarmViewModel by viewModels()
+    private lateinit var binding: FragmentRgbAlarmListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_alarm_list, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_rgb_alarm_list, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         return binding.root

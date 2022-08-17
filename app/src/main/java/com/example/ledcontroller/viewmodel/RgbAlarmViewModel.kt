@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ledcontroller.model.RgbAlarm
 
-class AlarmClockViewModel : ViewModel() {
+class RgbAlarmViewModel : ViewModel() {
     private val _alarms = MutableLiveData<List<RgbAlarm>>()
     val alarms: LiveData<List<RgbAlarm>>
         get() = _alarms
