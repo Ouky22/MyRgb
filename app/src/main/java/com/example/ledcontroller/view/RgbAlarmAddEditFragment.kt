@@ -23,7 +23,12 @@ class RgbAlarmAddEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_rgb_alarm_add_edit, container, false)
+            DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_rgb_alarm_add_edit,
+                container,
+                false
+            )
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -34,6 +39,6 @@ class RgbAlarmAddEditFragment : Fragment() {
         val id = navigationArgs.alarmId
 
         // TODO get alarm from shared vieModel with given id
-        binding.rgbAlarm = RgbAlarm(0, 260, false)
+        binding.rgbAlarm = RgbAlarm(0, 260, false, 255, 255, 0)
     }
 }

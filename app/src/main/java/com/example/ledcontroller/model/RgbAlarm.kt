@@ -20,6 +20,9 @@ data class RgbAlarm(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "triggerTimeMinutesOfDay") var triggerTimeMinutesOfDay: Int,
     @ColumnInfo(name = "isActive") var activated: Boolean = false,
+    @ColumnInfo(name = "redValue") var redValue: Int,
+    @ColumnInfo(name = "greenValue") var greenValue: Int,
+    @ColumnInfo(name = "blueValue") var blueValue: Int,
 
     /**
      * The 7 least significant bits of this byte indicate whether the alarm will be triggered on
@@ -83,6 +86,8 @@ data class RgbAlarm(
     val isOneTimeAlarm
         get() = repetitiveAlarmWeekDays == 0b00000000.toByte() || repetitiveAlarmWeekDays == 0b10000000.toByte()
 
+    val rgbTriplet: RgbCircle.RgbTriplet
+        get() = RgbCircle.RgbTriplet(redValue, greenValue, blueValue)
 
     fun isRepetitiveOn(day: Weekday) = (repetitiveAlarmWeekDays and day.bitMask) > 0
 
