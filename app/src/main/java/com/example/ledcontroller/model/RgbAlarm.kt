@@ -33,8 +33,7 @@ data class RgbAlarm(
      */
     @ColumnInfo(name = "repetitive_alarm_weekdays") var repetitiveAlarmWeekdays: Byte = 0b00000000.toByte()
 ) {
-    @Ignore
-    private var clock = Clock.systemDefaultZone()
+    @Ignore private var clock = Clock.systemDefaultZone()
 
     val triggerTimeHoursOfDay: Int
         get() = triggerTimeMinutesOfDay / 60

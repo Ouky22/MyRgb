@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.ledcontroller.R
 import com.example.ledcontroller.adapter.AlarmListAdapter
@@ -15,7 +16,14 @@ import com.example.ledcontroller.viewmodel.RgbAlarmViewModel
 
 class RgbAlarmListFragment : Fragment() {
 
-    private val viewModel: RgbAlarmViewModel by viewModels()
+    private val viewModel: RgbAlarmViewModel by lazy {
+        val activity =
+            requireNotNull(this.activity) { "ViewModel available after onActivityCreated()" }
+        ViewModelProvider(
+            this, RgbAlarmViewModel.Factory(activity.application)
+        )[RgbAlarmViewModel::class.java]
+    }
+
     private lateinit var binding: FragmentRgbAlarmListBinding
 
     override fun onCreateView(

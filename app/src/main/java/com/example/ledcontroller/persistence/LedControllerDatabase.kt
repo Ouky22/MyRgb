@@ -9,7 +9,7 @@ import com.example.ledcontroller.model.RgbAlarm
 @Database(entities = [RgbAlarm::class], version = 1, exportSchema = false)
 abstract class LedControllerDatabase : RoomDatabase() {
 
-    abstract fun rgbAlarmDao(): RgbAlarmDao
+    abstract val rgbAlarmDao: RgbAlarmDao
 
     companion object {
         @Volatile
