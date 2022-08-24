@@ -28,19 +28,19 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun nextTriggerDateTimeOfOneTimeAlarmToday() {
+    fun `next trigger date-time of one time alarm is today`() {
         initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:58:00Z")
         assertEquals(LocalDateTime.of(2023, 12, 31, 23, 59), alarm.nextTriggerDateTime)
     }
 
     @Test
-    fun nextTriggerDateTimeOfOneTimeAlarmTomorrow() {
+    fun `next trigger date-time of one time alarm is tomorrow`() {
         initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
         assertEquals(LocalDateTime.of(2024, 1, 1, 23, 59), alarm.nextTriggerDateTime)
     }
 
     @Test
-    fun nextTriggerDateTimeOfRepetitiveAlarmToday() {
+    fun `next trigger date-time of repetitive alarm is today`() {
         initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:58:00Z")
         alarm.makeRepetitiveOn(Weekday.SATURDAY)
         alarm.makeRepetitiveOn(Weekday.SUNDAY)
@@ -49,7 +49,7 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun nextTriggerDateTimeOfRepetitiveAlarmTomorrow() {
+    fun `next trigger date-time of repetitive alarm is tomorrow`() {
         initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
         alarm.makeRepetitiveOn(Weekday.SATURDAY)
         alarm.makeRepetitiveOn(Weekday.SUNDAY)
@@ -58,7 +58,7 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun nextTriggerDateTimeOfRepetitiveAlarmInAWeek() {
+    fun `next trigger date-time of repetitive alarm is in a week`() {
         initForNextTriggerDateTimeTest(23 * 60 + 59, "2023-12-31T23:59:00Z")
         alarm.makeRepetitiveOn(Weekday.SUNDAY)
         assertEquals(LocalDateTime.of(2024, 1, 7, 23, 59), alarm.nextTriggerDateTime)
@@ -75,48 +75,48 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun checkAlarmRepeatsOnMondays() {
+    fun `when alarm is set to be repetitive on monday it should be repetitive on mondays`() {
         alarm.makeRepetitiveOn(Weekday.MONDAY)
         assertTrue(alarm.isRepetitiveOn(Weekday.MONDAY))
     }
 
     @Test
-    fun checkAlarmRepeatsOnSundays() {
+    fun `when alarm is set to be repetitive on sunday it should be repetitive on sundays`() {
         alarm.makeRepetitiveOn(Weekday.SUNDAY)
         assertTrue(alarm.isRepetitiveOn(Weekday.SUNDAY))
     }
 
     @Test
-    fun checkAlarmNotRepeatsOnMondays() {
+    fun `when alarm is NOT set to be repetitive on monday it should NOT be repetitive on mondays`() {
         assertFalse(alarm.isRepetitiveOn(Weekday.MONDAY))
     }
 
     @Test
-    fun checkAlarmNotRepeatsOnSundays() {
+    fun `when alarm is NOT set to be repetitive on sunday it should NOT be repetitive on sundays`() {
         assertFalse(alarm.isRepetitiveOn(Weekday.SUNDAY))
     }
 
     @Test
-    fun makeNotRepetitiveOnMondays() {
+    fun `when alarm is no longer repetitive on mondays it should not be repetitive on mondays`() {
         alarm.makeRepetitiveOn(Weekday.MONDAY)
         alarm.makeNotRepetitiveOn(Weekday.MONDAY)
         assertFalse(alarm.isRepetitiveOn(Weekday.MONDAY))
     }
 
     @Test
-    fun makeNotRepetitiveOnSundays() {
+    fun `when alarm is no longer repetitive on sundays it should not be repetitive on sundays`() {
         alarm.makeRepetitiveOn(Weekday.SUNDAY)
         alarm.makeNotRepetitiveOn(Weekday.SUNDAY)
         assertFalse(alarm.isRepetitiveOn(Weekday.SUNDAY))
     }
 
     @Test
-    fun oneTimeAlarmAfterInitialization() {
+    fun `when alarm is initialized then it is a one time alarm`() {
         assertTrue(alarm.isOneTimeAlarm)
     }
 
     @Test
-    fun notRepetitiveAfterInitialization() {
+    fun `when alarm is initialized then it is not repetitive on any day`() {
         assertFalse(alarm.isRepetitiveOn(Weekday.MONDAY))
         assertFalse(alarm.isRepetitiveOn(Weekday.TUESDAY))
         assertFalse(alarm.isRepetitiveOn(Weekday.WEDNESDAY))
@@ -127,7 +127,7 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun oneTimeAlarmAfterMakingAllDaysNonRepetitive() {
+    fun `when the alarm was repetitive it is now a one time alarm`() {
         alarm.makeRepetitiveOn(Weekday.MONDAY)
         alarm.makeNotRepetitiveOn(Weekday.MONDAY)
         alarm.makeNotRepetitiveOn(Weekday.SUNDAY)
@@ -135,7 +135,7 @@ class RgbAlarmTest {
     }
 
     @Test
-    fun notOneTimeAlarmAfterMakingDayRepetitive() {
+    fun `when one time alarm was made repetitive it is no longer a one time alarm`() {
         alarm.makeRepetitiveOn(Weekday.MONDAY)
         assertFalse(alarm.isOneTimeAlarm)
     }
