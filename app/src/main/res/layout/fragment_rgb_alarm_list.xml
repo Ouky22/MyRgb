@@ -8,13 +8,13 @@
 
         <variable
             name="viewModel"
-            type="com.example.ledcontroller.viewmodel.RgbAlarmViewModel" />
+            type="com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.RgbAlarmListFragment">
+        tools:context=".feature.rgbalarmclock.RgbAlarmListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_alarms"

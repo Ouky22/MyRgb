@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.example.ledcontroller.viewmodel.ControllerViewModel" />
+            type="com.myrgb.ledcontroller.feature.rgbcontroller.ControllerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.ControllerFragment">
+        tools:context=".feature.rgbcontroller.ControllerFragment">
 
         <ImageView
             android:id="@+id/iv_rgb_circle"

@@ -8,13 +8,13 @@
 
         <variable
             name="viewModel"
-            type="com.example.ledcontroller.viewmodel.RgbShowViewModel" />
+            type="com.myrgb.ledcontroller.feature.rgbshow.RgbShowViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.RgbShowFragment">
+        tools:context=".feature.rgbshow.RgbShowFragment">
 
         <ImageView
             android:id="@+id/iv_start_stop_rgb_show"

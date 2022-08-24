@@ -8,7 +8,7 @@
 
         <variable
             name="rgbAlarm"
-            type="com.example.ledcontroller.model.RgbAlarm" />
+            type="com.myrgb.ledcontroller.domain.RgbAlarm" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
