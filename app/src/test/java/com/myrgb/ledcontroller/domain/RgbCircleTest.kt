@@ -1,36 +1,86 @@
 package com.myrgb.ledcontroller.domain
 
 import junit.framework.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class RgbCircleTest {
+    private lateinit var rgbCircle: RgbCircle
+
+    @Before
+    fun rgbCircle() {
+        rgbCircle = RgbCircle()
+    }
+
     @Test
-    fun testGetColorValue() {
-        val rgbCircle = RgbCircle()
+    fun `when angle is 0 degree color should be red`() {
+        assertEquals(RgbTriplet(255, 0, 0), rgbCircle.calculateColorAtAngle(0))
+    }
 
-        // test red colors
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.RED, 0))
-        assertEquals(127, rgbCircle.getColorValue(RgbCircle.RgbColor.RED, 90))
-        assertEquals(0, rgbCircle.getColorValue(RgbCircle.RgbColor.RED, 240))
+    @Test
+    fun `when angle is 120 degrees color should be green`() {
+        assertEquals(RgbTriplet(0, 255, 0), rgbCircle.calculateColorAtAngle(120))
+    }
 
-        // test green colors
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.GREEN, 120))
-        assertEquals(127, rgbCircle.getColorValue(RgbCircle.RgbColor.GREEN, 30))
-        assertEquals(0, rgbCircle.getColorValue(RgbCircle.RgbColor.GREEN, 240))
+    @Test
+    fun `when angle is 180 degrees color should be (0,255,255)`() {
+        assertEquals(RgbTriplet(0, 255, 255), rgbCircle.calculateColorAtAngle(180))
+    }
 
-        // test blue colors
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.BLUE, 240))
-        assertEquals(127, rgbCircle.getColorValue(RgbCircle.RgbColor.BLUE, 330))
-        assertEquals(0, rgbCircle.getColorValue(RgbCircle.RgbColor.BLUE, 0))
+    @Test
+    fun `when angle is 240 degrees color should be blue`() {
+        assertEquals(RgbTriplet(0, 0, 255), rgbCircle.calculateColorAtAngle(240))
+    }
 
-        // test angles >= 360
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.RED, 360))
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.GREEN, 2 * 360 + 60))
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.BLUE, 360 + 180))
+    @Test
+    fun `when angle is 360 degrees color should be red`() {
+        assertEquals(RgbTriplet(255, 0, 0), rgbCircle.calculateColorAtAngle(360))
+    }
 
-        // test negative angles
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.RED, -360))
-        assertEquals(255, rgbCircle.getColorValue(RgbCircle.RgbColor.GREEN, -180 - 360))
-        assertEquals(127, rgbCircle.getColorValue(RgbCircle.RgbColor.BLUE, -30))
+    @Test
+    fun `when angle is -480 degrees color should be green`() {
+        assertEquals(RgbTriplet(0, 0, 255), rgbCircle.calculateColorAtAngle(-480))
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

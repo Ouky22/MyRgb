@@ -36,9 +36,9 @@ class RgbCircle {
      */
     fun calculateColorAtAngle(angle: Int): RgbTriplet {
         return RgbTriplet(
-            getColorValue(RgbColor.RED, angle),
-            getColorValue(RgbColor.GREEN, angle),
-            getColorValue(RgbColor.BLUE, angle)
+            calculateValueOfColorAt(RgbColor.RED, angle),
+            calculateValueOfColorAt(RgbColor.GREEN, angle),
+            calculateValueOfColorAt(RgbColor.BLUE, angle)
         )
     }
 
@@ -47,7 +47,7 @@ class RgbCircle {
      * @param a which angle in the rgb circle (between 0-359 degrees, angles outside this range get adjusted)
      * @return returns the value of the specified rgb color (0-255) at the given angle
      */
-    fun getColorValue(rgbColor: RgbColor, a: Int): Int {
+    private fun calculateValueOfColorAt(rgbColor: RgbColor, a: Int): Int {
         // shift the given angle accordingly to the specified color and simplify it, so that
         // it is between 0 and 359
         val angle = (a + rgbColor.offset).mod(360)
