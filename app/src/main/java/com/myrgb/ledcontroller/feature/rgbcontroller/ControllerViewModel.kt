@@ -62,7 +62,7 @@ class ControllerViewModel : ViewModel() {
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
         val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
-        val newColor = rgbCircle.computeColorAtAngle(angle)
+        val newColor = rgbCircle.calculateColorAtAngle(angle)
         _currentlySelectedColor.value = newColor
 
         if (readyForNextSetColorRgbRequest) {

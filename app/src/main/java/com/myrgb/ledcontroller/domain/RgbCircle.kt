@@ -23,22 +23,18 @@ class RgbCircle {
     private val blueAreaCenterAngle = 240
 
     /**
-     * The following attributes contain the offsets of the color areas.
+     * Contains the main colors and their offsets.
      * The value of the offset determines by how many degrees a color area needs to be shifted clockwise,
      * so that it starts at 0 degree, which is necessary to compute the color value at a given angle.
      */
-    private val redOffset = 120
-    private val greenOffset = 0
-    private val blueOffset = 240
-
-    /**
-     * Contains the available colors red, green and blue.
-     */
-    enum class RgbColor {
-        RED, GREEN, BLUE
+    enum class RgbColor(val offset: Int) {
+        RED(120), GREEN(0), BLUE(240)
     }
 
-    fun computeColorAtAngle(angle: Int): RgbTriplet {
+    /**
+     * @param angle if angle is not between 0 and 359 degrees (inclusive) then it will get adjusted
+     */
+    fun calculateColorAtAngle(angle: Int): RgbTriplet {
         return RgbTriplet(
             getColorValue(RgbColor.RED, angle),
             getColorValue(RgbColor.GREEN, angle),
@@ -54,7 +50,7 @@ class RgbCircle {
     fun getColorValue(rgbColor: RgbColor, a: Int): Int {
         // shift the given angle accordingly to the specified color and simplify it, so that
         // it is between 0 and 359
-        val angle = (a + getOffset(rgbColor)).mod(360)
+        val angle = (a + rgbColor.offset).mod(360)
 
         // note that each color area is for now on shifted so it starts at 0 degree)
 
@@ -85,25 +81,14 @@ class RgbCircle {
     }
 
     /**
-     * @return the offset of the specified color
-     */
-    private fun getOffset(rgbColor: RgbColor): Int {
-        return when (rgbColor) {
-            RgbColor.RED -> redOffset
-            RgbColor.GREEN -> greenOffset
-            RgbColor.BLUE -> blueOffset
-        }
-    }
-
-    /**
      * @return the angle (0-359) of the center of specified rgb color area with the
      * corresponding offset (clockwise)
      */
     private fun getColorAreaCenterAngle(rgbColor: RgbColor): Int {
         return when (rgbColor) {
-            RgbColor.RED -> (redAreaCenterAngle + redOffset) % 360
-            RgbColor.GREEN -> (greenAreaCenterAngle + greenOffset) % 360
-            RgbColor.BLUE -> (blueAreaCenterAngle + blueOffset) % 360
+            RgbColor.RED -> (redAreaCenterAngle + RgbColor.RED.offset) % 360
+            RgbColor.GREEN -> (greenAreaCenterAngle + RgbColor.GREEN.offset) % 360
+            RgbColor.BLUE -> (blueAreaCenterAngle + RgbColor.BLUE.offset) % 360
         }
     }
 }
