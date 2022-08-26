@@ -1,15 +1,12 @@
 package com.myrgb.ledcontroller.feature.rgbalarmclock
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.RgbAlarm
 
-class RgbAlarmViewModel(application: Application) : AndroidViewModel(application) {
+class RgbAlarmViewModel(private val alarmRepository: RgbAlarmRepository) : ViewModel() {
     private val _alarms = MutableLiveData<List<RgbAlarm>>()
     val alarms: LiveData<List<RgbAlarm>>
         get() = _alarms
-
-    //private val alarmRepository = RgbAlarmRepository(application) // TODO throws Exception
 
     init {
         _alarms.value = listOf(
@@ -23,13 +20,9 @@ class RgbAlarmViewModel(application: Application) : AndroidViewModel(application
         )
     }
 
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(RgbAlarmViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return RgbAlarmViewModel(app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val rgbAlarmRepository: RgbAlarmRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            RgbAlarmViewModel(rgbAlarmRepository) as T
     }
 }

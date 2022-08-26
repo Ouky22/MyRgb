@@ -1,9 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import kotlinx.coroutines.launch
@@ -11,7 +8,7 @@ import java.util.*
 import kotlin.math.acos
 import kotlin.math.sqrt
 
-class ControllerViewModel : ViewModel() {
+class ControllerViewModel(private val controllerRepository: ControllerRepository) : ViewModel() {
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
 
@@ -36,8 +33,6 @@ class ControllerViewModel : ViewModel() {
         get() = _isDeskLedStripOn
 
     private val rgbCircle = RgbCircle()
-
-    private val controllerRepository = ControllerRepository()
 
     private val rgbSetColorRequestTimer = Timer()
     private val rgbSetColorRequestTimerInterval = 200L
@@ -179,6 +174,12 @@ class ControllerViewModel : ViewModel() {
 
     private fun allStripsAreOff() =
         !(_isBedLedStripOn.value ?: false || _isSofaLedStripOn.value ?: false || _isDeskLedStripOn.value ?: false)
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val repository: ControllerRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            (ControllerViewModel(repository)) as T
+    }
 }
 
 

@@ -6,20 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
+import com.myrgb.ledcontroller.di.RgbAlarmContainer
 
 class RgbAlarmListFragment : Fragment() {
 
-    private val viewModel: RgbAlarmViewModel by lazy {
-        val activity =
-            requireNotNull(this.activity) { "ViewModel available after onActivityCreated()" }
-        ViewModelProvider(
-            this, RgbAlarmViewModel.Factory(activity.application)
-        )[RgbAlarmViewModel::class.java]
-    }
+    private lateinit var viewModel: RgbAlarmViewModel
 
     private lateinit var binding: FragmentRgbAlarmListBinding
 
@@ -30,17 +27,32 @@ class RgbAlarmListFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_rgb_alarm_list, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val appContainer = (requireActivity().application as App).appContainer
+        if (appContainer.rgbAlarmContainer == null)
+            appContainer.rgbAlarmContainer = RgbAlarmContainer(appContainer.rgbAlarmRepository)
+        appContainer.rgbAlarmContainer?.let {
+            val vm: RgbAlarmViewModel by viewModels {
+                it.rgbAlarmViewModelFactory
+            }
+            viewModel = vm
+            binding.viewModel = viewModel
+        }
+
         binding.recyclerViewAlarms.adapter = RgbAlarmListAdapter { rgbAlarm ->
             val action = RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.id)
             findNavController().navigate(action)
         }
         binding.recyclerViewAlarms.setHasFixedSize(true)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (requireActivity().application as App).appContainer.rgbAlarmContainer = null
     }
 }

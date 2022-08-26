@@ -1,13 +1,10 @@
 package com.myrgb.ledcontroller.feature.rgbshow
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerRepository
 import kotlinx.coroutines.launch
 
-class RgbShowViewModel : ViewModel() {
+class RgbShowViewModel(private val controllerRepository: ControllerRepository) : ViewModel() {
     private val _rgbShowActive = MutableLiveData<Boolean>()
     val rgbShowActive: LiveData<Boolean>
         get() = _rgbShowActive
@@ -15,8 +12,6 @@ class RgbShowViewModel : ViewModel() {
     private val _currentRgbShowSpeed = MutableLiveData<Int>()
     val currentRgbShowSpeed: LiveData<Int>
         get() = _currentRgbShowSpeed
-
-    private val controllerRepository = ControllerRepository()
 
     val MAX_RGB_SHOW_SPEED = 10
 
@@ -55,6 +50,12 @@ class RgbShowViewModel : ViewModel() {
 
         // TODO load current rgb show speed as soon it is queryable
         _currentRgbShowSpeed.value = MAX_RGB_SHOW_SPEED / 2
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val controllerRepository: ControllerRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            RgbShowViewModel(controllerRepository) as T
     }
 }
 

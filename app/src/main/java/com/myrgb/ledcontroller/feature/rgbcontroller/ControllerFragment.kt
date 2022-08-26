@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
+import com.myrgb.ledcontroller.di.ControllerContainer
 
 class ControllerFragment : Fragment() {
 
-    private val viewModel: ControllerViewModel by viewModels()
+    private lateinit var viewModel: ControllerViewModel
 
     private lateinit var binding: FragmentControllerBinding
 
@@ -23,12 +25,23 @@ class ControllerFragment : Fragment() {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val app = requireActivity().application as App
+        if (app.appContainer.controllerContainer == null)
+            app.appContainer.controllerContainer =
+                ControllerContainer(app.appContainer.controllerRepository)
+        app.appContainer.controllerContainer?.let {
+            val vm: ControllerViewModel by viewModels {
+                it.controllerViewModelFactory
+            }
+            viewModel = vm
+            binding.viewModel = viewModel
+        }
 
         binding.root.setOnTouchListener { v, e ->
             v.performClick()
@@ -50,6 +63,11 @@ class ControllerFragment : Fragment() {
             viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
             viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (requireActivity().application as App).appContainer.controllerContainer = null
     }
 }
 

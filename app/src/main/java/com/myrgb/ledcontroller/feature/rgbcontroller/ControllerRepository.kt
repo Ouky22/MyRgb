@@ -5,7 +5,10 @@ import com.myrgb.ledcontroller.network.*
 import retrofit2.HttpException
 import java.io.IOException
 
-class ControllerRepository {
+class ControllerRepository(
+    private val rgbRequestServiceDesk: RgbRequestService,
+    private val rgbRequestServiceSofaBed: RgbRequestService
+) {
 
     enum class StripName(val stripNumber: Int) {
         SOFA(1),
@@ -15,7 +18,7 @@ class ControllerRepository {
 
     suspend fun getCurrentSettings(): CurrentSettingsResponse {
         val responseDesk: CurrentSettingsResponse? = try {
-            RgbRequestServiceDesk.retrofitService.getCurrentSettings().body()
+            rgbRequestServiceDesk.getCurrentSettings().body()
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -25,7 +28,7 @@ class ControllerRepository {
         }
 
         val responseSofaBed: CurrentSettingsResponse? = try {
-            RgbRequestServiceSofaBed.retrofitService.getCurrentSettings().body()
+            rgbRequestServiceSofaBed.getCurrentSettings().body()
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -114,7 +117,7 @@ class ControllerRepository {
 
     private suspend fun sendRgbRequestToDesk(rgbRequest: RgbRequest) {
         try {
-            RgbRequestServiceDesk.retrofitService.sendRgbRequest(rgbRequest)
+            rgbRequestServiceDesk.sendRgbRequest(rgbRequest)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: HttpException) {
@@ -124,7 +127,7 @@ class ControllerRepository {
 
     private suspend fun sendRgbRequestToBedSofa(rgbRequest: RgbRequest) {
         try {
-            RgbRequestServiceSofaBed.retrofitService.sendRgbRequest(rgbRequest)
+            rgbRequestServiceSofaBed.sendRgbRequest(rgbRequest)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: HttpException) {

@@ -4,9 +4,7 @@ import android.app.Application
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.domain.RgbAlarm
 
-class RgbAlarmRepository(application: Application) {
-
-    private val alarmDao = (application as App).ledControllerDatabase.rgbAlarmDao
+class RgbAlarmRepository(private val alarmDao: RgbAlarmDao) {
 
     suspend fun getNextActivatedAlarm() {
         val activeAlarms = alarmDao.getAllActiveAlarms()
