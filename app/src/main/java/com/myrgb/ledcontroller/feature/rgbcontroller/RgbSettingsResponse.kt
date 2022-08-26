@@ -1,6 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
-data class CurrentSettingsResponse(
+data class RgbSettingsResponse(
     val id: Int,
     val redValue: Int,
     val greenValue: Int,

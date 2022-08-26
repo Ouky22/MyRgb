@@ -16,8 +16,8 @@ class ControllerRepository(
         DESK(1)
     }
 
-    suspend fun getCurrentSettings(): CurrentSettingsResponse {
-        val responseDesk: CurrentSettingsResponse? = try {
+    suspend fun getCurrentSettings(): RgbSettingsResponse {
+        val responseDesk: RgbSettingsResponse? = try {
             rgbRequestServiceDesk.getCurrentSettings().body()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -27,7 +27,7 @@ class ControllerRepository(
             null
         }
 
-        val responseSofaBed: CurrentSettingsResponse? = try {
+        val responseSofaBed: RgbSettingsResponse? = try {
             rgbRequestServiceSofaBed.getCurrentSettings().body()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -41,7 +41,7 @@ class ControllerRepository(
         responseDesk?.strips?.let { strips.addAll(it) }
         responseSofaBed?.strips?.let { strips.addAll(it) }
 
-        return CurrentSettingsResponse(
+        return RgbSettingsResponse(
             0,
             responseDesk?.redValue ?: responseSofaBed?.redValue ?: 0,
             responseDesk?.greenValue ?: responseSofaBed?.greenValue ?: 0,

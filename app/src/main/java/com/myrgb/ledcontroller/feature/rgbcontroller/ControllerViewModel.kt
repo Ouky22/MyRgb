@@ -153,17 +153,17 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
     }
 
     private suspend fun loadCurrentSettings() {
-        val currentSettings: CurrentSettingsResponse = controllerRepository.getCurrentSettings()
+        val rgbSettingsResponse: RgbSettingsResponse = controllerRepository.getCurrentSettings()
 
         _currentlySelectedColor.value = RgbTriplet(
-            currentSettings.redValue,
-            currentSettings.greenValue,
-            currentSettings.blueValue
+            rgbSettingsResponse.redValue,
+            rgbSettingsResponse.greenValue,
+            rgbSettingsResponse.blueValue
         )
 
-        _currentlySelectedBrightness.value = currentSettings.brightness
+        _currentlySelectedBrightness.value = rgbSettingsResponse.brightness
 
-        currentSettings.strips.forEach { strip ->
+        rgbSettingsResponse.strips.forEach { strip ->
             when (strip.name) {
                 "desk" -> _isDeskLedStripOn.value = strip.isOn == 1
                 "bed" -> _isBedLedStripOn.value = strip.isOn == 1

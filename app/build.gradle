@@ -45,9 +45,14 @@ dependencies {
     implementation "com.google.android.material:material:$materialVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // testing
     androidTestImplementation "androidx.test.ext:junit:$junitExtVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     testImplementation "junit:junit:$junit4Version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
@@ -59,9 +64,6 @@ dependencies {
 
     // Feature module Support
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-
-    // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
     // Jetpack Compose Integration
     implementation "androidx.navigation:navigation-compose:$nav_version"

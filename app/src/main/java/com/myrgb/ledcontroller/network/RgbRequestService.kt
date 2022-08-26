@@ -2,7 +2,7 @@ package com.myrgb.ledcontroller.network
 
 import com.myrgb.ledcontroller.domain.RgbRequest
 import com.myrgb.ledcontroller.domain.settingsCommandIdentifier
-import com.myrgb.ledcontroller.feature.rgbcontroller.CurrentSettingsResponse
+import com.myrgb.ledcontroller.feature.rgbcontroller.RgbSettingsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
@@ -15,7 +15,7 @@ import retrofit2.http.Query
 
 interface RgbRequestService {
     @GET("command/?value=$settingsCommandIdentifier.0.0.")
-    suspend fun getCurrentSettings(): Response<CurrentSettingsResponse>
+    suspend fun getCurrentSettings(): Response<RgbSettingsResponse>
 
     @POST("command/")
     suspend fun sendRgbRequest(@Query("value") request: RgbRequest)
