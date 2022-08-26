@@ -1,6 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
-import com.myrgb.network.FakeRgbRequestService
+import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
