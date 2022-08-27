@@ -34,7 +34,7 @@ class ControllerFragment : Fragment() {
         val app = requireActivity().application as App
         if (app.appContainer.controllerContainer == null)
             app.appContainer.controllerContainer =
-                ControllerContainer(app.appContainer.controllerRepository)
+                ControllerContainer(app.appContainer.defaultControllerRepository)
         app.appContainer.controllerContainer?.let {
             val vm: ControllerViewModel by viewModels {
                 it.controllerViewModelFactory
@@ -42,6 +42,8 @@ class ControllerFragment : Fragment() {
             viewModel = vm
             binding.viewModel = viewModel
         }
+
+        viewModel.loadCurrentSettings()
 
         binding.root.setOnTouchListener { v, e ->
             v.performClick()

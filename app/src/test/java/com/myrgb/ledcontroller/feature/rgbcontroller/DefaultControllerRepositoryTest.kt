@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
 
-class ControllerRepositoryTest {
+class DefaultControllerRepositoryTest {
 
     @ExperimentalCoroutinesApi
     @Test
@@ -24,14 +24,14 @@ class ControllerRepositoryTest {
         )
         val fakeRgbRequestService1 = FakeRgbRequestService(rgbSettingsResponse1)
         val fakeRgbRequestService2 = FakeRgbRequestService(rgbSettingsResponse2)
-        val controllerRepository =
-            ControllerRepository(fakeRgbRequestService1, fakeRgbRequestService2)
+        val defaultControllerRepository =
+            DefaultControllerRepository(fakeRgbRequestService1, fakeRgbRequestService2)
 
 
         val expectedCurrentRgbSettings = RgbSettingsResponse(
             0, 0, 0, 0, 0,
             listOf(strip1, strip2, strip3), 0
         )
-        assertEquals(expectedCurrentRgbSettings, controllerRepository.getCurrentSettings())
+        assertEquals(expectedCurrentRgbSettings, defaultControllerRepository.getCurrentSettings())
     }
 }

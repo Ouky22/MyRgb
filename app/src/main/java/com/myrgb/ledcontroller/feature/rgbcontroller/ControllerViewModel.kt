@@ -12,6 +12,9 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
 
+    val minBrightness = 10
+    val maxBrightness = 230
+
     private val _currentlySelectedColor = MutableLiveData<RgbTriplet>()
     val currentlySelectedColor: LiveData<RgbTriplet>
         get() = _currentlySelectedColor
@@ -40,8 +43,6 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
 
 
     init {
-        viewModelScope.launch { loadCurrentSettings() }
-
         rgbSetColorRequestTimer.schedule(object : TimerTask() {
             override fun run() {
                 if (!readyForNextSetColorRgbRequest)
@@ -117,11 +118,8 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
         }
     }
 
-    fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
-        if (!fromUser)
-            return
-
-        val newBrightness = (progress + 1) * 10
+    fun onBrightnessSeekBarProgressChanged(progress: Int) {
+        val newBrightness = (progress * 10).coerceAtLeast(minBrightness).coerceAtMost(maxBrightness)
         _currentlySelectedBrightness.value = newBrightness
 
         viewModelScope.launch {
@@ -152,22 +150,24 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
         return angle.toInt()
     }
 
-    private suspend fun loadCurrentSettings() {
-        val rgbSettingsResponse: RgbSettingsResponse = controllerRepository.getCurrentSettings()
+    fun loadCurrentSettings() {
+        viewModelScope.launch {
+            val rgbSettingsResponse: RgbSettingsResponse = controllerRepository.getCurrentSettings()
 
-        _currentlySelectedColor.value = RgbTriplet(
-            rgbSettingsResponse.redValue,
-            rgbSettingsResponse.greenValue,
-            rgbSettingsResponse.blueValue
-        )
+            _currentlySelectedColor.value = RgbTriplet(
+                rgbSettingsResponse.redValue,
+                rgbSettingsResponse.greenValue,
+                rgbSettingsResponse.blueValue
+            )
 
-        _currentlySelectedBrightness.value = rgbSettingsResponse.brightness
+            _currentlySelectedBrightness.value = rgbSettingsResponse.brightness
 
-        rgbSettingsResponse.strips.forEach { strip ->
-            when (strip.name) {
-                "desk" -> _isDeskLedStripOn.value = strip.isOn == 1
-                "bed" -> _isBedLedStripOn.value = strip.isOn == 1
-                "sofa" -> _isSofaLedStripOn.value = strip.isOn == 1
+            rgbSettingsResponse.strips.forEach { strip ->
+                when (strip.name) {
+                    "desk" -> _isDeskLedStripOn.value = strip.isOn == 1
+                    "bed" -> _isBedLedStripOn.value = strip.isOn == 1
+                    "sofa" -> _isSofaLedStripOn.value = strip.isOn == 1
+                }
             }
         }
     }
@@ -176,7 +176,7 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
         !(_isBedLedStripOn.value ?: false || _isSofaLedStripOn.value ?: false || _isDeskLedStripOn.value ?: false)
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val repository: ControllerRepository) : ViewModelProvider.Factory {
+    class Factory(private val repository: DefaultControllerRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             (ControllerViewModel(repository)) as T
     }

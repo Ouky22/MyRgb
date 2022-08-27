@@ -1,10 +1,9 @@
 package com.myrgb.ledcontroller.di
 
-import android.app.Application
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmDao
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmRepository
-import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerRepository
+import com.myrgb.ledcontroller.feature.rgbcontroller.DefaultControllerRepository
 import com.myrgb.ledcontroller.network.RgbRequestService
 
 
@@ -21,7 +20,7 @@ class AppContainer(app: App) {
     }
     private val rgbAlarmDao: RgbAlarmDao = app.ledControllerDatabase.rgbAlarmDao
 
-    val controllerRepository = ControllerRepository(rgbRequestServiceDesk, rgbRequestServiceBedSofa)
+    val defaultControllerRepository = DefaultControllerRepository(rgbRequestServiceDesk, rgbRequestServiceBedSofa)
     val rgbAlarmRepository = RgbAlarmRepository(rgbAlarmDao)
 
     var controllerContainer: ControllerContainer? = null

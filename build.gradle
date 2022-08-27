@@ -23,6 +23,7 @@ task clean(type: Delete) {
 ext {
     // Versions of app dependencies
     appCompatVersion = '1.4.0'
+    archCoreVersion = '2.1.0'
     coroutinesVersion = '1.6.4'
     espressoVersion = '3.4.0'
     room_version = '2.4.3'
