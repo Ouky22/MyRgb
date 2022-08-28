@@ -176,7 +176,7 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
         !(_isBedLedStripOn.value ?: false || _isSofaLedStripOn.value ?: false || _isDeskLedStripOn.value ?: false)
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val repository: DefaultControllerRepository) : ViewModelProvider.Factory {
+    class Factory(private val repository: ControllerRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             (ControllerViewModel(repository)) as T
     }
