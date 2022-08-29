@@ -8,12 +8,12 @@
     <fragment
         android:id="@+id/controller_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragment"
-        android:label="@string/controller"
+        android:label="@string/controller_dest_label"
         tools:layout="@layout/fragment_controller" />
     <fragment
         android:id="@+id/alarm_list_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment"
-        android:label="@string/alarm"
+        android:label="@string/alarm_list_dest_label"
         tools:layout="@layout/fragment_rgb_alarm_list">
         <action
             android:id="@+id/action_alarm_list_to_alarm_add_edit"
@@ -22,12 +22,12 @@
     <fragment
         android:id="@+id/rgb_show_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbshow.RgbShowFragment"
-        android:label="@string/rgb_show"
+        android:label="@string/rgb_show_dest_label"
         tools:layout="@layout/fragment_rgb_show" />
     <fragment
         android:id="@+id/alarm_add_edit_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbalarmclock.addedit.RgbAlarmAddEditFragment"
-        android:label="RgbAlarmAddEditFragment"
+        android:label="@string/alarm_add_edit_dest_label"
         tools:layout="@layout/fragment_rgb_alarm_add_edit">
         <argument
             android:name="alarm_id"

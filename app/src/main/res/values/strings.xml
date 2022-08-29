@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">LedController</string>
     <string name="rgb_show">RGB Show</string>
+    <string name="controller_dest_label">Led Controller</string>
+    <string name="alarm_list_dest_label">RGB Alarme</string>
+    <string name="alarm_add_edit_dest_label">Alarm Details</string>
+    <string name="rgb_show_dest_label">RGB Show</string>
     <string name="alarm">Alarm</string>
     <string name="sofa">Sofa</string>
     <string name="bed">Bett</string>
