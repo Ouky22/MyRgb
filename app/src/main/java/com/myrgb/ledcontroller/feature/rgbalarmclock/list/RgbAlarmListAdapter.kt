@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.rgbalarmclock
+package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

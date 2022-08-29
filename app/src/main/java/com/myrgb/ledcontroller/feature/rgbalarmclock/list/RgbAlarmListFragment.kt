@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.rgbalarmclock
+package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
 import com.myrgb.ledcontroller.di.RgbAlarmContainer
+import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmViewModel
 
 class RgbAlarmListFragment : Fragment() {
 
