@@ -7,7 +7,7 @@ class FakeControllerRepository(private val rgbRequestService: RgbRequestService)
     ControllerRepository {
 
     override suspend fun getCurrentSettings(): RgbSettingsResponse {
-        return rgbRequestService.getCurrentSettings().body() ?: RgbSettingsResponse(
+        return rgbRequestService.getCurrentSettings("none").body() ?: RgbSettingsResponse(
             0, 0, 0, 0, 0, listOf(), 0
         )
     }

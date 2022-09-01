@@ -6,8 +6,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class DefaultControllerRepository(
-    private val rgbRequestServiceDesk: RgbRequestService,
-    private val rgbRequestServiceSofaBed: RgbRequestService
+    private val rgbRequestServiceDesk: RgbRequestService
 ) : ControllerRepository {
 
     enum class StripName(val stripNumber: Int) {
@@ -18,7 +17,7 @@ class DefaultControllerRepository(
 
     override suspend fun getCurrentSettings(): RgbSettingsResponse {
         val responseDesk: RgbSettingsResponse? = try {
-            rgbRequestServiceDesk.getCurrentSettings().body()
+            rgbRequestServiceDesk.getCurrentSettings(esp32DeskIpAddress).body()
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -28,7 +27,7 @@ class DefaultControllerRepository(
         }
 
         val responseSofaBed: RgbSettingsResponse? = try {
-            rgbRequestServiceSofaBed.getCurrentSettings().body()
+            rgbRequestServiceDesk.getCurrentSettings(esp32SofaBedIpAddress).body()
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -117,7 +116,7 @@ class DefaultControllerRepository(
 
     private suspend fun sendRgbRequestToDesk(rgbRequest: RgbRequest) {
         try {
-            rgbRequestServiceDesk.sendRgbRequest(rgbRequest)
+            rgbRequestServiceDesk.sendRgbRequest(esp32DeskIpAddress, rgbRequest)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: HttpException) {
@@ -127,7 +126,7 @@ class DefaultControllerRepository(
 
     private suspend fun sendRgbRequestToBedSofa(rgbRequest: RgbRequest) {
         try {
-            rgbRequestServiceSofaBed.sendRgbRequest(rgbRequest)
+            rgbRequestServiceDesk.sendRgbRequest(esp32SofaBedIpAddress, rgbRequest)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: HttpException) {

@@ -13,25 +13,19 @@ class DefaultControllerRepositoryTest {
     fun testGetCurrentSettings() = runTest {
         val strip1 = Strip("strip1", 1)
         val strip2 = Strip("strip2", 1)
-        val strip3 = Strip("strip3", 0)
-        val rgbSettingsResponse1 = RgbSettingsResponse(
+        val rgbSettingsResponse = RgbSettingsResponse(
             0, 0, 0, 0, 0,
-            listOf(strip1), 0
+            listOf(strip1, strip2), 0
         )
-        val rgbSettingsResponse2 = RgbSettingsResponse(
-            0, 0, 0, 0, 0,
-            listOf(strip2, strip3), 0
-        )
-        val fakeRgbRequestService1 = FakeRgbRequestService(rgbSettingsResponse1)
-        val fakeRgbRequestService2 = FakeRgbRequestService(rgbSettingsResponse2)
+        val fakeRgbRequestService = FakeRgbRequestService(rgbSettingsResponse)
         val defaultControllerRepository =
-            DefaultControllerRepository(fakeRgbRequestService1, fakeRgbRequestService2)
+            DefaultControllerRepository(fakeRgbRequestService)
 
-
-        val expectedCurrentRgbSettings = RgbSettingsResponse(
+        val expectedSettingsResponse = RgbSettingsResponse(
             0, 0, 0, 0, 0,
-            listOf(strip1, strip2, strip3), 0
+            listOf(strip1, strip2, strip1, strip2), 0
         )
-        assertEquals(expectedCurrentRgbSettings, defaultControllerRepository.getCurrentSettings())
+
+        assertEquals(expectedSettingsResponse, defaultControllerRepository.getCurrentSettings())
     }
 }

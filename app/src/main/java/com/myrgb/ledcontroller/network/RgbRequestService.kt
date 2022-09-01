@@ -8,27 +8,31 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
+
+const val esp32DeskIpAddress = "192.168.1.249"
+const val esp32SofaBedIpAddress = "192.168.1.250"
 
 interface RgbRequestService {
-    @GET("command/?value=$settingsCommandIdentifier.0.0.")
-    suspend fun getCurrentSettings(): Response<RgbSettingsResponse>
 
-    @POST("command/")
-    suspend fun sendRgbRequest(@Query("value") request: RgbRequest)
+    @GET("http://{ipAddress}/command/?value=$settingsCommandIdentifier.0.0.")
+    suspend fun getCurrentSettings(@Path("ipAddress") ipAddress: String): Response<RgbSettingsResponse>
 
+    @POST("http://{ipAddress}/command/")
+    suspend fun sendRgbRequest(
+        @Path("ipAddress") ipAddress: String,
+        @Query("value") rgbRequest: RgbRequest
+    )
 
     companion object {
-        fun create(baseUrl: String): RgbRequestService {
+        fun create(): RgbRequestService {
             val moshi = Moshi.Builder()
                 .addLast(KotlinJsonAdapterFactory())
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl("http://localhost/") // localhost is used because retrofit forces baseUrl, but it will be overwritten
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
                 .create(RgbRequestService::class.java)

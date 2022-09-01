@@ -7,20 +7,14 @@ import com.myrgb.ledcontroller.feature.rgbcontroller.DefaultControllerRepository
 import com.myrgb.ledcontroller.network.RgbRequestService
 
 
-private const val esp32DeskBaseUrl = "http://192.168.1.249/"
-private const val esp32SofaBedBaseUrl = "http://192.168.1.250/"
-
 class AppContainer(app: App) {
 
     private val rgbRequestServiceDesk: RgbRequestService by lazy {
-        RgbRequestService.create(esp32DeskBaseUrl)
-    }
-    private val rgbRequestServiceBedSofa: RgbRequestService by lazy {
-        RgbRequestService.create(esp32SofaBedBaseUrl)
+        RgbRequestService.create()
     }
     private val rgbAlarmDao: RgbAlarmDao = app.ledControllerDatabase.rgbAlarmDao
 
-    val defaultControllerRepository = DefaultControllerRepository(rgbRequestServiceDesk, rgbRequestServiceBedSofa)
+    val defaultControllerRepository = DefaultControllerRepository(rgbRequestServiceDesk)
     val rgbAlarmRepository = RgbAlarmRepository(rgbAlarmDao)
 
     var controllerContainer: ControllerContainer? = null

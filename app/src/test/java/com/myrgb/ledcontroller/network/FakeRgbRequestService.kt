@@ -5,11 +5,10 @@ import com.myrgb.ledcontroller.feature.rgbcontroller.RgbSettingsResponse
 import com.myrgb.ledcontroller.feature.rgbcontroller.Strip
 import retrofit2.Response
 
-class FakeRgbRequestService(private val rgbSettingsResponse: RgbSettingsResponse) :
-    RgbRequestService {
+class FakeRgbRequestService(private val rgbSettingsResponse: RgbSettingsResponse) : RgbRequestService {
 
-    override suspend fun getCurrentSettings(): Response<RgbSettingsResponse> =
+    override suspend fun getCurrentSettings(ipAddress: String): Response<RgbSettingsResponse> =
         Response.success(rgbSettingsResponse)
 
-    override suspend fun sendRgbRequest(request: RgbRequest) {}
+    override suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {}
 }

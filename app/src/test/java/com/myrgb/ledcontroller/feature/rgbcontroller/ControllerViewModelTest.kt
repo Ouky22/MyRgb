@@ -145,7 +145,7 @@ class ControllerViewModelTest {
     @Test
     fun `when minimum brightness is selected then current brightness should be the min brightness`() =
         runTest(UnconfinedTestDispatcher()) {
-            viewModel.onBrightnessSeekBarProgressChanged(0)
+            viewModel.onBrightnessSeekBarProgressChanged(0, true)
 
             assertEquals(
                 viewModel.minBrightness,
@@ -156,7 +156,7 @@ class ControllerViewModelTest {
     @Test
     fun `when maximum brightness is selected then current brightness should be the max brightness`() =
         runTest(UnconfinedTestDispatcher()) {
-            viewModel.onBrightnessSeekBarProgressChanged(viewModel.maxBrightness / 10)
+            viewModel.onBrightnessSeekBarProgressChanged(viewModel.maxBrightness / 10, true)
 
             assertEquals(
                 viewModel.maxBrightness,

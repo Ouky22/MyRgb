@@ -11,8 +11,8 @@ class FakeRgbRequestService(
 ) :
     RgbRequestService {
 
-    override suspend fun getCurrentSettings(): Response<RgbSettingsResponse> =
+    override suspend fun getCurrentSettings(ipAddress: String): Response<RgbSettingsResponse> =
         Response.success(rgbSettingsResponse)
 
-    override suspend fun sendRgbRequest(request: RgbRequest) {}
+    override suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {}
 }
