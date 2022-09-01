@@ -118,7 +118,10 @@ class ControllerViewModel(private val controllerRepository: ControllerRepository
         }
     }
 
-    fun onBrightnessSeekBarProgressChanged(progress: Int) {
+    fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
+        if (!fromUser)
+            return
+
         val newBrightness = (progress * 10).coerceAtLeast(minBrightness).coerceAtMost(maxBrightness)
         _currentlySelectedBrightness.value = newBrightness
 
