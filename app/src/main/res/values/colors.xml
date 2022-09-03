@@ -12,5 +12,5 @@
     <color name="btn_color_off">#800000</color>
     <color name="btn_color_on">#346303</color>
 
-    <color name="invisible">#00FFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

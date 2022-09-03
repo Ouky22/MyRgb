@@ -4,6 +4,7 @@
     <string name="controller_dest_label">Led Controller</string>
     <string name="alarm_list_dest_label">RGB Alarme</string>
     <string name="alarm_add_edit_dest_label">Alarm Details</string>
+    <string name="ip_address_list_dest_label">IP Addresses</string>
     <string name="rgb_show_dest_label">RGB Show</string>
     <string name="action_edit_ip">Edit IPs</string>
     <string name="alarm">Alarm</string>
@@ -12,6 +13,7 @@
     <string name="desk">Tisch</string>
     <string name="controller">Controller</string>
     <string name="save">save</string>
+    <string name="rgb_controllers">RGB-Controllers:</string>
 
     <string name="monday_start_letter">M</string>
     <string name="tuesday_start_letter">T</string>

@@ -49,7 +49,7 @@
             android:layout_marginHorizontal="160dp"
             android:layout_marginTop="100dp"
             android:layout_marginBottom="160dp"
-            android:background="@color/invisible"
+            android:background="@color/transparent"
             android:importantForAccessibility="no"
             android:onClick="@{() -> viewModel.onRgbBulbButtonClick()}"
             app:layout_constraintBottom_toBottomOf="@id/iv_rgb_circle"

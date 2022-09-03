@@ -6,6 +6,7 @@ import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
@@ -76,12 +77,15 @@ class ControllerFragment : Fragment() {
 
     private fun setupMenu() {
         val menuHost = requireActivity()
-        menuHost.addMenuProvider(object: MenuProvider {
+        menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.ip_address_menu, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                findNavController().navigate(
+                    ControllerFragmentDirections.actionControllerDestToIpAddressListFragment()
+                )
                 return true
             }
         }, viewLifecycleOwner)

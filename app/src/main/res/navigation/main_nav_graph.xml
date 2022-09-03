@@ -9,7 +9,11 @@
         android:id="@+id/controller_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragment"
         android:label="@string/controller_dest_label"
-        tools:layout="@layout/fragment_controller" />
+        tools:layout="@layout/fragment_controller">
+        <action
+            android:id="@+id/action_controller_dest_to_ipAddressListFragment"
+            app:destination="@id/ip_address_list_dest" />
+    </fragment>
     <fragment
         android:id="@+id/alarm_list_dest"
         android:name="com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment"
@@ -34,4 +38,9 @@
             android:defaultValue="0"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/ip_address_list_dest"
+        android:name="com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress.IpAddressListFragment"
+        android:label="@string/ip_address_list_dest_label"
+        tools:layout="@layout/fragment_ip_address_list" />
 </navigation>
