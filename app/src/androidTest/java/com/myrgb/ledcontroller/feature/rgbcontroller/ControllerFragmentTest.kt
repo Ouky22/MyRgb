@@ -8,9 +8,10 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyLeftOf
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
@@ -21,6 +22,7 @@ import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.network.FakeRgbRequestRepository
 import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
+import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
 import com.myrgb.ledcontroller.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -34,14 +36,19 @@ import org.junit.runner.RunWith
 class ControllerFragmentTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
+    private lateinit var fakeIpAddressStorage: FakeIpAddressStorage
+    private lateinit var fakeRgbRequestService: FakeRgbRequestService
+    private val fakeIpAddress1 = "192.168.1.1"
+    private val fakeIpAddress2 = "192.168.1.2"
 
     @Before
     fun setupControllerRepository() {
-        val currentRgbSettings = RgbSettingsResponse(
-            RgbTriplet(0, 0, 0), 0, false, emptyList()
+        fakeIpAddressStorage = FakeIpAddressStorage()
+        fakeRgbRequestService = FakeRgbRequestService(hashMapOf())
+
+        (getApplicationContext() as App).appContainer.controllerContainer = ControllerContainer(
+            FakeRgbRequestRepository(fakeRgbRequestService), fakeIpAddressStorage
         )
-        (getApplicationContext() as App).appContainer.controllerContainer =
-            ControllerContainer(FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings)))
     }
 
     @Before
@@ -54,49 +61,78 @@ class ControllerFragmentTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    private fun setCurrentRgbSettings(currentRgbSettings: RgbSettingsResponse) {
-        (getApplicationContext() as App).appContainer.controllerContainer =
-            ControllerContainer(FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings)))
-    }
-
     @Test
-    fun ui_displays_scrollable_view_when_there_are_many_strip_buttons() {
+    fun ui_displays_all_strip_buttons_if_there_are_many_strips() {
+        val rgbStrip1 = RgbStrip(1, "strip1", false)
+        val rgbStrip2 = RgbStrip(2, "strip2", true)
+        val rgbStrip3 = RgbStrip(3, "strip3", false)
+        val rgbStrip4 = RgbStrip(4, "strip4", true)
+        val rgbStrip5 = RgbStrip(5, "strip5", true)
+        val rgbStrip6 = RgbStrip(6, "strip6", true)
+        val rgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false,
+            listOf(rgbStrip1, rgbStrip2, rgbStrip3, rgbStrip4, rgbStrip5, rgbStrip6)
+        )
+        fakeIpAddressStorage.addIpAddress(fakeIpAddress1)
+        fakeRgbRequestService.setIpAddressRgbSettingsMap(
+            hashMapOf(Pair(fakeIpAddress1, rgbSettings))
+        )
 
+        val fragmentScenario =
+            launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
+        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+
+        onView(withText(rgbStrip1.name)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.scroll_view_buttons)).perform(swipeLeft())
+        onView(withText(rgbStrip6.name)).check(matches(isCompletelyDisplayed()))
     }
 
     @Test
     fun ui_reflects_basic_rgb_settings() {
-        val rgbStrip1 = RgbStrip(1, "strip1", false) // TODO create fake viewModel in which you can set esp32IpAddresses
+        val rgbStrip1 = RgbStrip(1, "strip1", false)
         val rgbStrip2 = RgbStrip(2, "strip2", true)
-        val currentRgbSettings = RgbSettingsResponse(
+        val rgbStrip3 = RgbStrip(3, "strip3", false)
+        val rgbSettings1 = RgbSettingsResponse(
             RgbTriplet(0, 132, 255), 150, false,
             listOf(rgbStrip1, rgbStrip2)
         )
-        setCurrentRgbSettings(currentRgbSettings)
+        val rgbSettings2 = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false,
+            listOf(rgbStrip3)
+        )
+        fakeIpAddressStorage.addIpAddress(fakeIpAddress1)
+        fakeIpAddressStorage.addIpAddress(fakeIpAddress2)
+        fakeRgbRequestService.setIpAddressRgbSettingsMap(
+            hashMapOf(Pair(fakeIpAddress1, rgbSettings1), Pair(fakeIpAddress2, rgbSettings2))
+        )
 
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
         // check color of bulb imageView
-        onView(withId(R.id.iv_bulb)).check(matches(withTint(currentRgbSettings.color)))
+        onView(withId(R.id.iv_bulb)).check(matches(withTint(rgbSettings1.color)))
 
         // check progress of brightness seekBar
-        val expectedProgress = currentRgbSettings.brightness / 10
+        val expectedProgress = rgbSettings1.brightness / 10
         onView(withId(R.id.seekBar_brightness)).check(matches(withSeekbarProgress(expectedProgress)))
 
         // check stroke color of buttons
         onView(withText(rgbStrip1.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
         onView(withText(rgbStrip2.name)).check(matches(withStrokeColor(R.color.btn_color_on)))
+        onView(withText(rgbStrip3.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
     }
 
     @Test
     fun when_strip_is_enabled_then_its_corresponding_button_has_green_border(): Unit = runBlocking {
         val rgbStrip = RgbStrip(1, "strip1", false)
-        val currentRgbSettings = RgbSettingsResponse(
+        val rgbSettings = RgbSettingsResponse(
             RgbTriplet(0, 132, 255), 150, false, listOf(rgbStrip)
         )
-        setCurrentRgbSettings(currentRgbSettings)
+        fakeIpAddressStorage.addIpAddress(fakeIpAddress1)
+        fakeRgbRequestService.setIpAddressRgbSettingsMap(
+            hashMapOf(Pair(fakeIpAddress1, rgbSettings))
+        )
 
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
@@ -109,19 +145,29 @@ class ControllerFragmentTest {
 
     @Test
     fun when_strip_is_disabled_then_its_corresponding_button_has_red_border(): Unit = runBlocking {
-        val rgbStrip = RgbStrip(1, "strip1", true)
-        val currentRgbSettings = RgbSettingsResponse(
-            RgbTriplet(0, 132, 255), 150, false, listOf(rgbStrip)
+        val rgbStrip1 = RgbStrip(1, "strip1", true)
+        val rgbStrip2 = RgbStrip(2, "strip2", true)
+        val rgbStrip3 = RgbStrip(3, "strip3", false)
+        val rgbStrip4 = RgbStrip(4, "strip4", true)
+        val rgbStrip5 = RgbStrip(5, "strip5", true)
+        val rgbStrip6 = RgbStrip(6, "strip6", true)
+        val rgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false,
+            listOf(rgbStrip1, rgbStrip2, rgbStrip3, rgbStrip4, rgbStrip5, rgbStrip6)
         )
-        setCurrentRgbSettings(currentRgbSettings)
+        fakeIpAddressStorage.addIpAddress(fakeIpAddress1)
+        fakeRgbRequestService.setIpAddressRgbSettingsMap(
+            hashMapOf(Pair(fakeIpAddress1, rgbSettings))
+        )
 
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
-        onView(withText(rgbStrip.name)).perform(click())
+        onView(withId(R.id.scroll_view_buttons)).perform(swipeLeft())
+        onView(withText(rgbStrip6.name)).perform(click())
 
-        onView(withText(rgbStrip.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
+        onView(withText(rgbStrip6.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
     }
 
     @Test
