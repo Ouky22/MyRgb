@@ -5,6 +5,7 @@
     <string name="alarm_list_dest_label">RGB Alarme</string>
     <string name="alarm_add_edit_dest_label">Alarm Details</string>
     <string name="rgb_show_dest_label">RGB Show</string>
+    <string name="action_edit_ip">Edit IPs</string>
     <string name="alarm">Alarm</string>
     <string name="sofa">Sofa</string>
     <string name="bed">Bett</string>

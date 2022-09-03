@@ -2,6 +2,7 @@ package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -64,11 +65,26 @@ class ControllerFragment : Fragment() {
             viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
 
+        setupMenu()
+
         // TODO display loading spinner
         viewModel.settingsLoadingStatus.observe(viewLifecycleOwner) { status ->
             if (status == SettingsLoadingStatus.DONE)
                 createStripButtons()
         }
+    }
+
+    private fun setupMenu() {
+        val menuHost = requireActivity()
+        menuHost.addMenuProvider(object: MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.ip_address_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return true
+            }
+        }, viewLifecycleOwner)
     }
 
     private fun createStripButtons() {
