@@ -2,9 +2,10 @@ package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.myrgb.ledcontroller.MainDispatcherRule
+import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.getOrAwaitValue
-import com.myrgb.ledcontroller.network.FakeRgbRequestService
+import com.myrgb.ledcontroller.network.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -15,9 +16,7 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ControllerViewModelTest {
-    private lateinit var controllerRepository: ControllerRepository
     private lateinit var viewModel: ControllerViewModel
-    private lateinit var currentRgbSettings: RgbSettingsResponse
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -27,12 +26,18 @@ class ControllerViewModelTest {
 
     @Before
     fun setupViewModel() {
-        currentRgbSettings = RgbSettingsResponse(
-            0, 0, 0, 0, 0,
-            listOf(Strip("strip1", 0)), 0
+        val currentRgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 0, 0), 0, false, emptyList()
         )
-        controllerRepository = FakeControllerRepository(FakeRgbRequestService(currentRgbSettings))
-        viewModel = ControllerViewModel(controllerRepository)
+        val rgbRequestRepository =
+            FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
+        viewModel = ControllerViewModel(rgbRequestRepository)
+    }
+
+    private fun setCurrentRgbSettings(currentRgbSettings: RgbSettingsResponse) {
+        val rgbRequestRepository =
+            FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
+        viewModel = ControllerViewModel(rgbRequestRepository)
     }
 
     @Test
@@ -48,9 +53,7 @@ class ControllerViewModelTest {
 
     @Test
     fun `when touch is at 180 degrees then currently selected color should be (0,255,255)`() =
-        runTest(
-            UnconfinedTestDispatcher()
-        ) {
+        runTest(UnconfinedTestDispatcher()) {
             viewModel.rgbCircleCenterX = 0
             viewModel.rgbCircleCenterY = 0
             viewModel.onRgbCircleTouch(0, 1)
@@ -62,84 +65,49 @@ class ControllerViewModelTest {
     @Test
     fun `when all strips are off and click on rgb bulb then all strips are turned on`() =
         runTest(UnconfinedTestDispatcher()) {
+            val currentRgbSettings = RgbSettingsResponse(
+                RgbTriplet(0, 0, 0), 0, false,
+                listOf(RgbStrip(1, "s1", false), RgbStrip(2, "s2", false))
+            )
+            setCurrentRgbSettings(currentRgbSettings)
+
             viewModel.onRgbBulbButtonClick()
-            assertTrue(viewModel.isDeskLedStripOn.getOrAwaitValue())
-            assertTrue(viewModel.isBedLedStripOn.getOrAwaitValue())
-            assertTrue(viewModel.isSofaLedStripOn.getOrAwaitValue())
+
+            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+                assertTrue(strip.enabled)
+            }
         }
 
     @Test
     fun `when all strips are on and click on rgb bulb then all strips are turned off`() =
         runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonBedClick()
-            viewModel.onButtonSofaClick()
-            viewModel.onButtonBedClick()
+            val currentRgbSettings = RgbSettingsResponse(
+                RgbTriplet(0, 50, 0), 0, true,
+                listOf(RgbStrip(10, "s1", true), RgbStrip(20, "s2", true))
+            )
+            setCurrentRgbSettings(currentRgbSettings)
 
             viewModel.onRgbBulbButtonClick()
 
-            assertFalse(viewModel.isDeskLedStripOn.getOrAwaitValue())
-            assertFalse(viewModel.isBedLedStripOn.getOrAwaitValue())
-            assertFalse(viewModel.isSofaLedStripOn.getOrAwaitValue())
+            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+                assertFalse(strip.enabled)
+            }
         }
 
     @Test
     fun `when only one strip is on and click on rgb bulb then all strips are turned off`() =
         runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonSofaClick()
+            val currentRgbSettings = RgbSettingsResponse(
+                RgbTriplet(70, 10, 0), 0, false,
+                listOf(RgbStrip(9, "s1", true), RgbStrip(3, "s2", false))
+            )
+            setCurrentRgbSettings(currentRgbSettings)
 
             viewModel.onRgbBulbButtonClick()
 
-            assertFalse(viewModel.isDeskLedStripOn.getOrAwaitValue())
-            assertFalse(viewModel.isBedLedStripOn.getOrAwaitValue())
-            assertFalse(viewModel.isSofaLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when sofa strip is off and sofa button clicked then sofa strip is on`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonSofaClick()
-            assertTrue(viewModel.isSofaLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when sofa strip is on and sofa button clicked then sofa strip is off`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonSofaClick()
-
-            viewModel.onButtonSofaClick()
-            assertFalse(viewModel.isSofaLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when bed strip is off and bed button clicked then bed strip is on`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonBedClick()
-            assertTrue(viewModel.isBedLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when bed strip is on and bed button clicked then bed strip is off`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonBedClick()
-
-            viewModel.onButtonBedClick()
-            assertFalse(viewModel.isBedLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when desk strip is off and desk button clicked then desk strip is on`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonDeskClick()
-            assertTrue(viewModel.isDeskLedStripOn.getOrAwaitValue())
-        }
-
-    @Test
-    fun `when desk strip is on and desk button clicked then desk strip is off`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onButtonDeskClick()
-
-            viewModel.onButtonDeskClick()
-            assertFalse(viewModel.isDeskLedStripOn.getOrAwaitValue())
+            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+                assertFalse(strip.enabled)
+            }
         }
 
     @Test
@@ -166,18 +134,25 @@ class ControllerViewModelTest {
 
     @Test
     fun testLoadingCurrentSettings() = runTest(UnconfinedTestDispatcher()) {
+        val strip1 = RgbStrip(1, "s1", false)
+        val strip2 = RgbStrip(2, "s2", true)
+        val rgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 147, 255), 17, false,
+            listOf(strip1, strip2)
+        )
+        setCurrentRgbSettings(rgbSettings)
+
         viewModel.loadCurrentSettings()
 
-        val expectedCurrentRgbColor = RgbTriplet(
-            currentRgbSettings.redValue,
-            currentRgbSettings.greenValue,
-            currentRgbSettings.blueValue
+        assertEquals(rgbSettings.color, viewModel.currentlySelectedColor.getOrAwaitValue())
+        assertEquals(
+            rgbSettings.brightness, viewModel.currentlySelectedBrightness.getOrAwaitValue()
         )
-        assertEquals(expectedCurrentRgbColor, viewModel.currentlySelectedColor.getOrAwaitValue())
-        assertEquals(currentRgbSettings.brightness, viewModel.currentlySelectedBrightness.getOrAwaitValue())
-        assertFalse(viewModel.isSofaLedStripOn.getOrAwaitValue())
-        assertFalse(viewModel.isBedLedStripOn.getOrAwaitValue())
-        assertFalse(viewModel.isDeskLedStripOn.getOrAwaitValue())
+        val rgbStrips = viewModel.rgbStrips.getOrAwaitValue()
+        assertTrue(rgbStrips.contains(strip1))
+        assertTrue(rgbStrips.contains(strip2))
+        assertEquals(strip1.enabled, rgbStrips.firstOrNull { it.name == strip1.name }?.enabled)
+        assertEquals(strip2.enabled, rgbStrips.firstOrNull { it.name == strip2.name }?.enabled)
     }
 }
 

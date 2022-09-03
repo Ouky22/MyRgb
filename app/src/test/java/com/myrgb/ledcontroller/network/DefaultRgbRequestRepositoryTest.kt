@@ -1,34 +1,46 @@
 package com.myrgb.ledcontroller.network
 
-import com.myrgb.ledcontroller.domain.Esp32
-import com.myrgb.ledcontroller.feature.rgbcontroller.RgbSettingsResponse
-import com.myrgb.ledcontroller.feature.rgbcontroller.Strip
+import com.myrgb.ledcontroller.domain.RgbStrip
+import com.myrgb.ledcontroller.domain.RgbTriplet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class DefaultRgbRequestRepositoryTest {
-    @ExperimentalCoroutinesApi
+
     @Test
-    fun testGetCurrentSettings() = runTest {
-        val strip1 = Strip("strip1", 1)
-        val strip2 = Strip("strip2", 1)
-        val rgbSettingsResponse = RgbSettingsResponse(
-            0, 0, 0, 0, 0,
-            listOf(strip1, strip2), 0
+    fun `get a successful current settings response`() = runTest {
+        val strip1 = RgbStrip(1, "strip1", false)
+        val strip2 = RgbStrip(2, "strip2", true)
+        val rgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 255, 0), 100,
+            true, listOf(strip1, strip2)
         )
-        val fakeRgbRequestService = FakeRgbRequestService(rgbSettingsResponse)
+        val fakeRgbRequestService = FakeRgbRequestService(rgbSettings)
         val rgbRequestRepository = DefaultRgbRequestRepository(fakeRgbRequestService)
 
-        val expectedSettingsResponse = RgbSettingsResponse(
-            0, 0, 0, 0, 0,
-            listOf(strip1, strip2), 0
+        assertEquals(
+            rgbSettings,
+            rgbRequestRepository.loadCurrentRgbSettings("test")
         )
+    }
+
+    @Test
+    fun `get a unsuccessful current settings response`() = runTest {
+        val strip1 = RgbStrip(1, "strip1", false)
+        val rgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 255, 0), 100,
+            true, listOf(strip1)
+        )
+        val fakeRgbRequestService = FakeRgbRequestService(rgbSettings)
+        fakeRgbRequestService.loadingSettingsThrowsIoException = true
+        val rgbRequestRepository = DefaultRgbRequestRepository(fakeRgbRequestService)
 
         assertEquals(
-            expectedSettingsResponse,
-            rgbRequestRepository.loadCurrentRgbSettings(Esp32("test", emptyList()))
+            null,
+            rgbRequestRepository.loadCurrentRgbSettings("test")
         )
     }
 }

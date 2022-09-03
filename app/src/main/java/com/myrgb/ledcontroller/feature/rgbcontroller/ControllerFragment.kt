@@ -1,13 +1,11 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
@@ -34,7 +32,7 @@ class ControllerFragment : Fragment() {
         val app = requireActivity().application as App
         if (app.appContainer.controllerContainer == null)
             app.appContainer.controllerContainer =
-                ControllerContainer(app.appContainer.defaultControllerRepository)
+                ControllerContainer(app.appContainer.rgbRequestRepository)
         app.appContainer.controllerContainer?.let {
             val vm: ControllerViewModel by viewModels {
                 it.controllerViewModelFactory
@@ -42,8 +40,6 @@ class ControllerFragment : Fragment() {
             viewModel = vm
             binding.viewModel = viewModel
         }
-
-        viewModel.loadCurrentSettings()
 
         binding.root.setOnTouchListener { v, e ->
             v.performClick()
@@ -64,6 +60,30 @@ class ControllerFragment : Fragment() {
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
             viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
             viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
+        }
+
+        // TODO display loading spinner
+        viewModel.settingsLoadingStatus.observe(viewLifecycleOwner) { status ->
+            if (status == SettingsLoadingStatus.DONE)
+                createStripButtons()
+        }
+    }
+
+    private fun createStripButtons() {
+        viewModel.rgbStrips.value?.forEach { strip ->
+            val button = requireActivity().layoutInflater.inflate(
+                R.layout.strip_button, binding.linearLayoutButtons, false
+            ) as MaterialButton
+            button.text = strip.name
+
+            strip.setEnabledStatusChangedListener { enabled ->
+                if (enabled) button.setStrokeColorResource(R.color.btn_color_on)
+                else button.setStrokeColorResource(R.color.btn_color_off)
+            }
+
+            button.setOnClickListener { viewModel.toggleEnabledStatusOf(strip) }
+
+            binding.linearLayoutButtons.addView(button)
         }
     }
 

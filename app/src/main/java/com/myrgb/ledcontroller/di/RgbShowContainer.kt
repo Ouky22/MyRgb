@@ -1,8 +1,8 @@
 package com.myrgb.ledcontroller.di
 
-import com.myrgb.ledcontroller.feature.rgbcontroller.DefaultControllerRepository
 import com.myrgb.ledcontroller.feature.rgbshow.RgbShowViewModel
+import com.myrgb.ledcontroller.network.RgbRequestRepository
 
-class RgbShowContainer(defaultControllerRepository: DefaultControllerRepository) {
-    val rgbShowViewModelFactory = RgbShowViewModel.Factory(defaultControllerRepository)
+class RgbShowContainer(rgbRequestRepository: RgbRequestRepository) {
+    val rgbShowViewModelFactory = RgbShowViewModel.Factory(rgbRequestRepository)
 }

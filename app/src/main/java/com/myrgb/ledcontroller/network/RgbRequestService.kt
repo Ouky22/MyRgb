@@ -2,7 +2,6 @@ package com.myrgb.ledcontroller.network
 
 import com.myrgb.ledcontroller.domain.RgbRequest
 import com.myrgb.ledcontroller.domain.settingsCommandIdentifier
-import com.myrgb.ledcontroller.feature.rgbcontroller.RgbSettingsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response

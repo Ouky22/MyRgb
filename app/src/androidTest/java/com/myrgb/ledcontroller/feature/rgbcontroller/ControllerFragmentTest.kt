@@ -10,18 +10,20 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.di.ControllerContainer
 import com.myrgb.ledcontroller.domain.RgbCircle
+import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
+import com.myrgb.ledcontroller.network.FakeRgbRequestRepository
 import com.myrgb.ledcontroller.network.FakeRgbRequestService
+import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -35,8 +37,11 @@ class ControllerFragmentTest {
 
     @Before
     fun setupControllerRepository() {
+        val currentRgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 0, 0), 0, false, emptyList()
+        )
         (getApplicationContext() as App).appContainer.controllerContainer =
-            ControllerContainer(FakeControllerRepository(FakeRgbRequestService()))
+            ControllerContainer(FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings)))
     }
 
     @Before
@@ -49,59 +54,74 @@ class ControllerFragmentTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    @Test
-    fun when_loading_current_rgb_settings_then_UI_reflects_them(): Unit = runBlocking {
-        val currentRgbSettings = RgbSettingsResponse(
-            0, 0, 100, 255, 150,
-            listOf(Strip("desk", 0), Strip("sofa", 1), Strip("bed", 1)), 0
-        )
-        // set currentRgbSettings
+    private fun setCurrentRgbSettings(currentRgbSettings: RgbSettingsResponse) {
         (getApplicationContext() as App).appContainer.controllerContainer =
-            ControllerContainer(FakeControllerRepository(FakeRgbRequestService(currentRgbSettings)))
+            ControllerContainer(FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings)))
+    }
+
+    @Test
+    fun ui_displays_scrollable_view_when_there_are_many_strip_buttons() {
+
+    }
+
+    @Test
+    fun ui_reflects_basic_rgb_settings() {
+        val rgbStrip1 = RgbStrip(1, "strip1", false) // TODO create fake viewModel in which you can set esp32IpAddresses
+        val rgbStrip2 = RgbStrip(2, "strip2", true)
+        val currentRgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false,
+            listOf(rgbStrip1, rgbStrip2)
+        )
+        setCurrentRgbSettings(currentRgbSettings)
 
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
         // check color of bulb imageView
-        val expectedTint = RgbTriplet(
-            currentRgbSettings.redValue,
-            currentRgbSettings.greenValue,
-            currentRgbSettings.blueValue
-        )
-        onView(withId(R.id.iv_bulb)).check(matches(withTint(expectedTint)))
+        onView(withId(R.id.iv_bulb)).check(matches(withTint(currentRgbSettings.color)))
 
         // check progress of brightness seekBar
         val expectedProgress = currentRgbSettings.brightness / 10
         onView(withId(R.id.seekBar_brightness)).check(matches(withSeekbarProgress(expectedProgress)))
 
         // check stroke color of buttons
-        onView(withId(R.id.btn_desk)).check(matches(withStrokeColor(R.color.btn_color_off)))
-        onView(withId(R.id.btn_sofa)).check(matches(withStrokeColor(R.color.btn_color_on)))
-        onView(withId(R.id.btn_bed)).check(matches(withStrokeColor(R.color.btn_color_on)))
+        onView(withText(rgbStrip1.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
+        onView(withText(rgbStrip2.name)).check(matches(withStrokeColor(R.color.btn_color_on)))
     }
 
     @Test
     fun when_strip_is_enabled_then_its_corresponding_button_has_green_border(): Unit = runBlocking {
+        val rgbStrip = RgbStrip(1, "strip1", false)
+        val currentRgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false, listOf(rgbStrip)
+        )
+        setCurrentRgbSettings(currentRgbSettings)
+
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
-        onView(withId(R.id.btn_bed)).perform(click())
+        onView(withText(rgbStrip.name)).perform(click())
 
-        onView(withId(R.id.btn_bed)).check(matches(withStrokeColor(R.color.btn_color_on)))
+        onView(withText(rgbStrip.name)).check(matches(withStrokeColor(R.color.btn_color_on)))
     }
 
     @Test
     fun when_strip_is_disabled_then_its_corresponding_button_has_red_border(): Unit = runBlocking {
+        val rgbStrip = RgbStrip(1, "strip1", true)
+        val currentRgbSettings = RgbSettingsResponse(
+            RgbTriplet(0, 132, 255), 150, false, listOf(rgbStrip)
+        )
+        setCurrentRgbSettings(currentRgbSettings)
+
         val fragmentScenario =
             launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
-        onView(withId(R.id.btn_bed)).perform(click())
-        onView(withId(R.id.btn_bed)).perform(click())
+        onView(withText(rgbStrip.name)).perform(click())
 
-        onView(withId(R.id.btn_bed)).check(matches(withStrokeColor(R.color.btn_color_off)))
+        onView(withText(rgbStrip.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
     }
 
     @Test
