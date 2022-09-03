@@ -5,6 +5,7 @@ import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmDao
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmRepository
 import com.myrgb.ledcontroller.network.DefaultRgbRequestRepository
 import com.myrgb.ledcontroller.network.RgbRequestService
+import com.myrgb.ledcontroller.persistence.IpAddressStorage
 
 
 class AppContainer(app: App) {
@@ -13,6 +14,8 @@ class AppContainer(app: App) {
         RgbRequestService.create()
     }
     private val rgbAlarmDao: RgbAlarmDao = app.ledControllerDatabase.rgbAlarmDao
+
+    val ipAddressStorage = IpAddressStorage(app)
 
     val rgbRequestRepository = DefaultRgbRequestRepository(rgbRequestService)
 

@@ -9,10 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
-
-const val esp32DeskIpAddress = "192.168.1.249"
-const val esp32SofaBedIpAddress = "192.168.1.250"
-
 interface RgbRequestService {
 
     @GET("http://{ipAddress}/command/?value=$settingsCommandIdentifier.0.0.")

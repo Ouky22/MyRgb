@@ -31,8 +31,10 @@ class RgbShowFragment : Fragment() {
 
         val app = (requireActivity().application as App)
         if (app.appContainer.rgbShowContainer == null)
-            app.appContainer.rgbShowContainer =
-                RgbShowContainer(app.appContainer.rgbRequestRepository)
+            app.appContainer.rgbShowContainer = RgbShowContainer(
+                app.appContainer.rgbRequestRepository,
+                app.appContainer.ipAddressStorage
+            )
         app.appContainer.rgbShowContainer?.let {
             val vm: RgbShowViewModel by viewModels {
                 it.rgbShowViewModelFactory

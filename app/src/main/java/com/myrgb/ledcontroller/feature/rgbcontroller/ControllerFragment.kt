@@ -31,8 +31,10 @@ class ControllerFragment : Fragment() {
 
         val app = requireActivity().application as App
         if (app.appContainer.controllerContainer == null)
-            app.appContainer.controllerContainer =
-                ControllerContainer(app.appContainer.rgbRequestRepository)
+            app.appContainer.controllerContainer = ControllerContainer(
+                app.appContainer.rgbRequestRepository,
+                app.appContainer.ipAddressStorage
+            )
         app.appContainer.controllerContainer?.let {
             val vm: ControllerViewModel by viewModels {
                 it.controllerViewModelFactory

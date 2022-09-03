@@ -3,12 +3,13 @@ package com.myrgb.ledcontroller.feature.rgbshow
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.Esp32Microcontroller
 import com.myrgb.ledcontroller.network.RgbRequestRepository
-import com.myrgb.ledcontroller.network.RgbSettingsResponse
-import com.myrgb.ledcontroller.network.esp32DeskIpAddress
-import com.myrgb.ledcontroller.network.esp32SofaBedIpAddress
+import com.myrgb.ledcontroller.persistence.IpAddressStorage
 import kotlinx.coroutines.launch
 
-class RgbShowViewModel(private val rgbRequestRepository: RgbRequestRepository) : ViewModel() {
+class RgbShowViewModel(
+    private val rgbRequestRepository: RgbRequestRepository,
+    private val ipAddressStorage: IpAddressStorage
+) : ViewModel() {
     private val _rgbShowActive = MutableLiveData<Boolean>()
     val rgbShowActive: LiveData<Boolean>
         get() = _rgbShowActive
@@ -23,11 +24,6 @@ class RgbShowViewModel(private val rgbRequestRepository: RgbRequestRepository) :
 
 
     init {
-        // TODO don't hardcode ip addresses and instead load them from a storage
-        mutableListOf(esp32DeskIpAddress, esp32SofaBedIpAddress).forEach { ipAddress ->
-            esp32Microcontroller.add(Esp32Microcontroller(ipAddress, emptyList()))
-        }
-
         viewModelScope.launch { loadCurrentSettings() }
     }
 
@@ -65,6 +61,10 @@ class RgbShowViewModel(private val rgbRequestRepository: RgbRequestRepository) :
     }
 
     private suspend fun loadCurrentSettings() {
+        ipAddressStorage.getIpAddresses().forEach { ipAddress ->
+            esp32Microcontroller.add(Esp32Microcontroller(ipAddress, emptyList()))
+        }
+
         for (esp32 in esp32Microcontroller) {
             val response = rgbRequestRepository.loadCurrentRgbSettings(esp32.ipAddress)
             if (response != null) {
@@ -78,10 +78,13 @@ class RgbShowViewModel(private val rgbRequestRepository: RgbRequestRepository) :
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val rgbRequestRepository: RgbRequestRepository) :
+    class Factory(
+        private val rgbRequestRepository: RgbRequestRepository,
+        private val ipAddressStorage: IpAddressStorage
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RgbShowViewModel(rgbRequestRepository) as T
+            RgbShowViewModel(rgbRequestRepository, ipAddressStorage) as T
     }
 }
 
