@@ -1,6 +1,6 @@
 package com.myrgb.ledcontroller.domain
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 

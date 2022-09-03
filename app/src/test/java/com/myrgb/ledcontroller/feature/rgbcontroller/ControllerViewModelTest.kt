@@ -6,6 +6,7 @@ import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.getOrAwaitValue
 import com.myrgb.ledcontroller.network.*
+import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -17,6 +18,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class ControllerViewModelTest {
     private lateinit var viewModel: ControllerViewModel
+    private lateinit var fakeIpAddressStorage: FakeIpAddressStorage
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -31,13 +33,14 @@ class ControllerViewModelTest {
         )
         val rgbRequestRepository =
             FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
-        viewModel = ControllerViewModel(rgbRequestRepository)
+        fakeIpAddressStorage = FakeIpAddressStorage()
+        viewModel = ControllerViewModel(rgbRequestRepository, fakeIpAddressStorage)
     }
 
     private fun setCurrentRgbSettings(currentRgbSettings: RgbSettingsResponse) {
         val rgbRequestRepository =
             FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
-        viewModel = ControllerViewModel(rgbRequestRepository)
+        viewModel = ControllerViewModel(rgbRequestRepository, fakeIpAddressStorage)
     }
 
     @Test
@@ -142,6 +145,7 @@ class ControllerViewModelTest {
         )
         setCurrentRgbSettings(rgbSettings)
 
+        fakeIpAddressStorage.addIpAddress("192.168.1.1")
         viewModel.loadCurrentSettings()
 
         assertEquals(rgbSettings.color, viewModel.currentlySelectedColor.getOrAwaitValue())
