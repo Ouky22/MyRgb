@@ -19,4 +19,6 @@
     <string name="friday_start_letter">F</string>
     <string name="saturday_start_letter">S</string>
     <string name="sunday_start_letter">S</string>
+
+    <string name="ip_addresses_preferences_file_key">com.myrgb.ledcontroller.IP_ADDRESSES</string>
 </resources>
