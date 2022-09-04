@@ -39,11 +39,16 @@
                 app:layout_constraintTop_toTopOf="@id/iv_wifi"
                 tools:text="192.168.255.255" />
 
-            <ImageView
+            <!-- ImageButton has minWidth/-Height because otherwise it is not visible in instrumentation tests -->
+            <ImageButton
+                android:id="@+id/btn_delete_ip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
                 android:importantForAccessibility="no"
+                android:minWidth="5dp"
+                android:minHeight="5dp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_wifi"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/iv_wifi"

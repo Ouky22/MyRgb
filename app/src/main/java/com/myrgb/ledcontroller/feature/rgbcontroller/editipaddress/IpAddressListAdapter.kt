@@ -20,7 +20,7 @@ class IpAddressListAdapter(private val itemDeleteClickListener: (String) -> Unit
 
         fun bind(ipAddress: String) {
             binding.tvIpAddress.text = ipAddress
-            itemView.setOnClickListener { itemDeleteClickListener(ipAddress) }
+            binding.btnDeleteIp.setOnClickListener { itemDeleteClickListener(ipAddress) }
         }
     }
 

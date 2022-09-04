@@ -1,5 +1,8 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress
 
+import android.net.InetAddresses
+import android.os.Build
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,10 +16,19 @@ class IpAddressViewModel(private val ipAddressStorage: IpAddressStorage) : ViewM
 
     fun removeIpAddress(ipAddress: String) {
         ipAddressStorage.removeIpAddress(ipAddress)
+        _ipAddresses.value = ipAddressStorage.getIpAddresses().toList()
     }
 
     fun addIpAddress(ipAddress: String) {
         ipAddressStorage.addIpAddress(ipAddress)
+        _ipAddresses.value = ipAddressStorage.getIpAddresses().toList()
+    }
+
+    fun isValidIpAddress(text: String): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            InetAddresses.isNumericAddress(text)
+        else
+            Patterns.IP_ADDRESS.matcher(text).matches()
     }
 
     @Suppress("UNCHECKED_CAST")
