@@ -6,16 +6,24 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.myrgb.ledcontroller.databinding.ActivityMainBinding
+import com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment
+import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragment
+import com.myrgb.ledcontroller.feature.rgbshow.RgbShowFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -39,6 +47,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.ivNoWifi.visibility = View.VISIBLE
         binding.navHostFragment.visibility = View.GONE
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(
+            onFragmentLifeCycleCallbackHandleBottomNavBarVisibility, true
+        )
     }
 
     private fun initUi() {
@@ -48,7 +60,13 @@ class MainActivity : AppCompatActivity() {
 
         // set root destinations for which no up button should be displayed
         appBarConfiguration =
-            AppBarConfiguration(setOf(R.id.controller_dest, R.id.alarm_list_dest, R.id.rgb_show_dest))
+            AppBarConfiguration(
+                setOf(
+                    R.id.controller_dest,
+                    R.id.alarm_list_dest,
+                    R.id.rgb_show_dest
+                )
+            )
         setSupportActionBar(binding.topAppBar)
         setupActionBarWithNavController(host.navController, appBarConfiguration)
     }
@@ -81,4 +99,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val onFragmentLifeCycleCallbackHandleBottomNavBarVisibility =
+        object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(
+                fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?
+            ) {
+                when (f) {
+                    is ControllerFragment, is RgbAlarmListFragment, is RgbShowFragment -> {
+                        binding.bottomNavView.visibility = View.VISIBLE
+                    }
+                    is NavHostFragment -> return
+                    else -> binding.bottomNavView.visibility = View.GONE
+                }
+            }
+        }
 }
