@@ -108,11 +108,6 @@ class ControllerFragment : Fragment() {
             binding.linearLayoutButtons.addView(button)
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        (requireActivity().application as App).appContainer.controllerContainer = null
-    }
 }
 
 
