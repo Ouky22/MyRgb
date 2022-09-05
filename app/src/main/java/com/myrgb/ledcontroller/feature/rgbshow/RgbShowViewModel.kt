@@ -1,7 +1,7 @@
 package com.myrgb.ledcontroller.feature.rgbshow
 
 import androidx.lifecycle.*
-import com.myrgb.ledcontroller.domain.Esp32Microcontroller
+import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.persistence.IpAddressStorage
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ class RgbShowViewModel(
     val currentRgbShowSpeed: LiveData<Int>
         get() = _currentRgbShowSpeed
 
-    private val esp32Microcontroller = mutableListOf<Esp32Microcontroller>()
+    private val ledMicrocontroller = mutableListOf<LedMicrocontroller>()
 
     val MAX_RGB_SHOW_SPEED = 10
 
@@ -35,7 +35,7 @@ class RgbShowViewModel(
             } else {
                 viewModelScope.launch {
                     val defaultSpeed = MAX_RGB_SHOW_SPEED / 2
-                    esp32Microcontroller.forEach {
+                    ledMicrocontroller.forEach {
                         rgbRequestRepository.startRgbShow(
                             it,
                             currentRgbShowSpeed.value ?: defaultSpeed
@@ -53,7 +53,7 @@ class RgbShowViewModel(
             return
 
         viewModelScope.launch {
-            esp32Microcontroller.forEach {
+            ledMicrocontroller.forEach {
                 rgbRequestRepository.setRgbShowSpeed(it, progress)
             }
         }
@@ -62,10 +62,10 @@ class RgbShowViewModel(
 
     private suspend fun loadCurrentSettings() {
         ipAddressStorage.getIpAddresses().forEach { ipAddress ->
-            esp32Microcontroller.add(Esp32Microcontroller(ipAddress, emptyList()))
+            ledMicrocontroller.add(LedMicrocontroller(ipAddress, emptyList()))
         }
 
-        for (esp32 in esp32Microcontroller) {
+        for (esp32 in ledMicrocontroller) {
             val response = rgbRequestRepository.loadCurrentRgbSettings(esp32.ipAddress)
             if (response != null) {
                 _rgbShowActive.value = response.isRgbShowActive

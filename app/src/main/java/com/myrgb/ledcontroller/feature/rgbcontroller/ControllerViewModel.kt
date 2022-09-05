@@ -1,7 +1,7 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import androidx.lifecycle.*
-import com.myrgb.ledcontroller.domain.Esp32Microcontroller
+import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
@@ -29,7 +29,7 @@ class ControllerViewModel(
     val settingsLoadingStatus: LiveData<SettingsLoadingStatus>
         get() = _settingsLoadingStatus
 
-    private val esp32Microcontroller = mutableListOf<Esp32Microcontroller>()
+    private val ledMicrocontroller = mutableListOf<LedMicrocontroller>()
 
     private val _rgbStrips = MutableLiveData<MutableList<RgbStrip>>(mutableListOf())
     val rgbStrips: LiveData<MutableList<RgbStrip>>
@@ -75,7 +75,7 @@ class ControllerViewModel(
 
         if (readyForNextSetColorRgbRequest) {
             viewModelScope.launch {
-                esp32Microcontroller.forEach { rgbRequestRepository.setColor(it, newColor) }
+                ledMicrocontroller.forEach { rgbRequestRepository.setColor(it, newColor) }
             }
             readyForNextSetColorRgbRequest = false
         }
@@ -84,26 +84,26 @@ class ControllerViewModel(
     fun onRgbBulbButtonClick() {
         viewModelScope.launch {
             if (allStripsAreOff()) {
-                esp32Microcontroller.forEach { esp32 ->
-                    rgbRequestRepository.turnAllStripsOn(esp32)
-                    esp32.rgbStrips.forEach { strip -> strip.enabled = true }
+                ledMicrocontroller.forEach { microcontroller ->
+                    rgbRequestRepository.turnAllStripsOn(microcontroller)
+                    microcontroller.rgbStrips.forEach { strip -> strip.enabled = true }
                 }
             } else {
-                esp32Microcontroller.forEach { esp32 ->
-                    rgbRequestRepository.turnAllStripsOff(esp32)
-                    esp32.rgbStrips.forEach { strip -> strip.enabled = false }
+                ledMicrocontroller.forEach { microcontroller ->
+                    rgbRequestRepository.turnAllStripsOff(microcontroller)
+                    microcontroller.rgbStrips.forEach { strip -> strip.enabled = false }
                 }
             }
         }
     }
 
     fun toggleEnabledStatusOf(rgbStrip: RgbStrip) {
-        getEsp32MicrocontrollerOf(rgbStrip)?.let { esp32 ->
+        getLedMicrocontrollerOf(rgbStrip)?.let { microcontroller ->
             viewModelScope.launch {
                 if (rgbStrip.enabled)
-                    rgbRequestRepository.turnStripOff(esp32, rgbStrip)
+                    rgbRequestRepository.turnStripOff(microcontroller, rgbStrip)
                 else
-                    rgbRequestRepository.turnStripOn(esp32, rgbStrip)
+                    rgbRequestRepository.turnStripOn(microcontroller, rgbStrip)
 
                 rgbStrip.enabled = !rgbStrip.enabled
             }
@@ -118,8 +118,8 @@ class ControllerViewModel(
         _currentlySelectedBrightness.value = newBrightness
 
         viewModelScope.launch {
-            esp32Microcontroller.forEach { esp32 ->
-                rgbRequestRepository.setBrightness(esp32, newBrightness)
+            ledMicrocontroller.forEach { microcontroller ->
+                rgbRequestRepository.setBrightness(microcontroller, newBrightness)
             }
         }
     }
@@ -128,14 +128,14 @@ class ControllerViewModel(
         viewModelScope.launch {
             _settingsLoadingStatus.value = SettingsLoadingStatus.LOADING
             _rgbStrips.value?.clear()
-            esp32Microcontroller.clear()
+            ledMicrocontroller.clear()
 
             val rgbSettingsResponses = mutableListOf<RgbSettingsResponse>()
             for (ipAddress in ipAddressStorage.getIpAddresses()) {
                 val currentSettings = rgbRequestRepository.loadCurrentRgbSettings(ipAddress)
                 currentSettings?.let {
                     rgbSettingsResponses.add(it)
-                    esp32Microcontroller.add(Esp32Microcontroller(ipAddress, it.strips))
+                    ledMicrocontroller.add(LedMicrocontroller(ipAddress, it.strips))
                     _rgbStrips.value?.addAll(it.strips)
                 }
             }
@@ -149,9 +149,9 @@ class ControllerViewModel(
         }
     }
 
-    private fun getEsp32MicrocontrollerOf(strip: RgbStrip): Esp32Microcontroller? {
-        return esp32Microcontroller.firstOrNull { esp32 ->
-            esp32.rgbStrips.firstOrNull { s -> s === strip } != null
+    private fun getLedMicrocontrollerOf(strip: RgbStrip): LedMicrocontroller? {
+        return ledMicrocontroller.firstOrNull { microcontroller ->
+            microcontroller.rgbStrips.firstOrNull { s -> s === strip } != null
         }
     }
 
@@ -178,8 +178,8 @@ class ControllerViewModel(
     }
 
     private fun allStripsAreOff(): Boolean {
-        esp32Microcontroller.forEach { esp32 ->
-            esp32.rgbStrips.forEach { strip ->
+        ledMicrocontroller.forEach { microcontroller ->
+            microcontroller.rgbStrips.forEach { strip ->
                 if (strip.enabled)
                     return false
             }

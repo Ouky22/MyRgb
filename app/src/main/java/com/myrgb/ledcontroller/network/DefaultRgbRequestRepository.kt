@@ -19,36 +19,36 @@ class DefaultRgbRequestRepository(private val rgbRequestService: RgbRequestServi
         }
     }
 
-    override suspend fun turnStripOn(esp32Microcontroller: Esp32Microcontroller, rgbStrip: RgbStrip) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(onCommandIdentifier, rgbStrip.id))
+    override suspend fun turnStripOn(ledMicrocontroller: LedMicrocontroller, rgbStrip: RgbStrip) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(onCommandIdentifier, rgbStrip.id))
     }
 
-    override suspend fun turnAllStripsOn(esp32Microcontroller: Esp32Microcontroller) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(onCommandIdentifier))
+    override suspend fun turnAllStripsOn(ledMicrocontroller: LedMicrocontroller) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(onCommandIdentifier))
     }
 
-    override suspend fun turnStripOff(esp32Microcontroller: Esp32Microcontroller, rgbStrip: RgbStrip) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(offCommandIdentifier, rgbStrip.id))
+    override suspend fun turnStripOff(ledMicrocontroller: LedMicrocontroller, rgbStrip: RgbStrip) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(offCommandIdentifier, rgbStrip.id))
     }
 
-    override suspend fun turnAllStripsOff(esp32Microcontroller: Esp32Microcontroller) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(offCommandIdentifier))
+    override suspend fun turnAllStripsOff(ledMicrocontroller: LedMicrocontroller) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(offCommandIdentifier))
     }
 
-    override suspend fun setBrightness(esp32Microcontroller: Esp32Microcontroller, brightness: Int) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(brightnessCommandIdentifier, brightness))
+    override suspend fun setBrightness(ledMicrocontroller: LedMicrocontroller, brightness: Int) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(brightnessCommandIdentifier, brightness))
     }
 
-    override suspend fun setColor(esp32Microcontroller: Esp32Microcontroller, color: RgbTriplet) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(color.red, color.green, color.blue))
+    override suspend fun setColor(ledMicrocontroller: LedMicrocontroller, color: RgbTriplet) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(color.red, color.green, color.blue))
     }
 
-    override suspend fun startRgbShow(esp32Microcontroller: Esp32Microcontroller, speed: Int) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(rgbShowCommandIdentifier, speed))
+    override suspend fun startRgbShow(ledMicrocontroller: LedMicrocontroller, speed: Int) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(rgbShowCommandIdentifier, speed))
     }
 
-    override suspend fun setRgbShowSpeed(esp32Microcontroller: Esp32Microcontroller, speed: Int) {
-        sendRgbRequest(esp32Microcontroller.ipAddress, RgbRequest(rgbShowCommandIdentifier, speed))
+    override suspend fun setRgbShowSpeed(ledMicrocontroller: LedMicrocontroller, speed: Int) {
+        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(rgbShowCommandIdentifier, speed))
     }
 
     private suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {

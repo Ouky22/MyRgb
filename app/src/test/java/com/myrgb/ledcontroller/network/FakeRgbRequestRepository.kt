@@ -1,6 +1,6 @@
 package com.myrgb.ledcontroller.network
 
-import com.myrgb.ledcontroller.domain.Esp32Microcontroller
+import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 
@@ -15,30 +15,30 @@ class FakeRgbRequestRepository(
     }
 
     override suspend fun turnStripOn(
-        esp32Microcontroller: Esp32Microcontroller,
+        ledMicrocontroller: LedMicrocontroller,
         rgbStrip: RgbStrip
     ) {
     }
 
-    override suspend fun turnAllStripsOn(esp32Microcontroller: Esp32Microcontroller) {}
+    override suspend fun turnAllStripsOn(ledMicrocontroller: LedMicrocontroller) {}
 
     override suspend fun turnStripOff(
-        esp32Microcontroller: Esp32Microcontroller,
+        ledMicrocontroller: LedMicrocontroller,
         rgbStrip: RgbStrip
     ) {
     }
 
-    override suspend fun turnAllStripsOff(esp32Microcontroller: Esp32Microcontroller) {}
+    override suspend fun turnAllStripsOff(ledMicrocontroller: LedMicrocontroller) {}
 
     override suspend fun setBrightness(
-        esp32Microcontroller: Esp32Microcontroller,
+        ledMicrocontroller: LedMicrocontroller,
         brightness: Int
     ) {
     }
 
-    override suspend fun setColor(esp32Microcontroller: Esp32Microcontroller, color: RgbTriplet) {}
+    override suspend fun setColor(ledMicrocontroller: LedMicrocontroller, color: RgbTriplet) {}
 
-    override suspend fun startRgbShow(esp32Microcontroller: Esp32Microcontroller, speed: Int) {}
+    override suspend fun startRgbShow(ledMicrocontroller: LedMicrocontroller, speed: Int) {}
 
-    override suspend fun setRgbShowSpeed(esp32Microcontroller: Esp32Microcontroller, speed: Int) {}
+    override suspend fun setRgbShowSpeed(ledMicrocontroller: LedMicrocontroller, speed: Int) {}
 }
