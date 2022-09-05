@@ -1,5 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbCircle
@@ -49,6 +50,9 @@ class ControllerViewModel(
     private val rgbSetColorRequestTimerInterval = 200L
     private var readyForNextSetColorRgbRequest = true
 
+    private val onSharedPreferencesChangedListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> loadCurrentSettings() }
+
 
     init {
         rgbSetColorRequestTimer.schedule(object : TimerTask() {
@@ -58,14 +62,20 @@ class ControllerViewModel(
             }
         }, 0, rgbSetColorRequestTimerInterval)
 
-        viewModelScope.launch {
-            loadCurrentSettings()
-        }
+        loadCurrentSettings()
+
+        ipAddressStorage.registerOnSharedPreferencesChangedListener(
+            onSharedPreferencesChangedListener
+        )
     }
 
     override fun onCleared() {
         super.onCleared()
         rgbSetColorRequestTimer.cancel()
+
+        ipAddressStorage.unregisterOnSharedPreferencesChangedListener(
+            onSharedPreferencesChangedListener
+        )
     }
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {

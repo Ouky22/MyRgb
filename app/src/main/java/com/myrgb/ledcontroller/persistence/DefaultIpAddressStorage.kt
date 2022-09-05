@@ -1,6 +1,7 @@
 package com.myrgb.ledcontroller.persistence
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.myrgb.ledcontroller.R
 
 /**
@@ -36,11 +37,17 @@ class DefaultIpAddressStorage(context: Context) : IpAddressStorage {
                 putStringSet(ipAddressesKey, currentIpAddresses)
                 apply()
             }
-
     }
 
     override fun getIpAddresses() =
         // convert to read-only set because instance returned by getStringSet must not be modified (see docs)
         ipAddressSharedPreferences.getStringSet(ipAddressesKey, setOf())?.toSet() ?: setOf()
 
+    override fun registerOnSharedPreferencesChangedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        ipAddressSharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    override fun unregisterOnSharedPreferencesChangedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        ipAddressSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
+    }
 }
