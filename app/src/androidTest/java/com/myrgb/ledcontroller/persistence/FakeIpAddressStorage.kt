@@ -14,4 +14,8 @@ class FakeIpAddressStorage : IpAddressStorage {
     override fun getIpAddresses(): Set<String> {
         return ipAddresses.toSet()
     }
+
+    override fun setOnIpAddressesChangedCallback(callback: () -> Unit) {}
+
+    override fun removeOnIpAddressesChangedCallback() {}
 }

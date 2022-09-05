@@ -9,11 +9,13 @@ import com.myrgb.ledcontroller.R
  * the rgb controller.
  */
 class DefaultIpAddressStorage(context: Context) : IpAddressStorage {
-
     private val ipAddressSharedPreferences = context.getSharedPreferences(
         context.getString(R.string.ip_addresses_preferences_file_key),
         Context.MODE_PRIVATE
     )
+
+    private var onSharedPreferenceChangeListener:
+            SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     private val ipAddressesKey = "IP_ADDRESSES"
 
@@ -43,11 +45,18 @@ class DefaultIpAddressStorage(context: Context) : IpAddressStorage {
         // convert to read-only set because instance returned by getStringSet must not be modified (see docs)
         ipAddressSharedPreferences.getStringSet(ipAddressesKey, setOf())?.toSet() ?: setOf()
 
-    override fun registerOnSharedPreferencesChangedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
-        ipAddressSharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+    override fun setOnIpAddressesChangedCallback(callback: () -> Unit) {
+        onSharedPreferenceChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> callback.invoke() }
+
+        ipAddressSharedPreferences.registerOnSharedPreferenceChangeListener(
+            onSharedPreferenceChangeListener
+        )
     }
 
-    override fun unregisterOnSharedPreferencesChangedListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
-        ipAddressSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
+    override fun removeOnIpAddressesChangedCallback() {
+        ipAddressSharedPreferences.unregisterOnSharedPreferenceChangeListener(
+            onSharedPreferenceChangeListener
+        )
     }
 }

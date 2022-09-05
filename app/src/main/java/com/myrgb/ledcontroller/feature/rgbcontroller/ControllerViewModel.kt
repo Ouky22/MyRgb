@@ -50,9 +50,6 @@ class ControllerViewModel(
     private val rgbSetColorRequestTimerInterval = 200L
     private var readyForNextSetColorRgbRequest = true
 
-    private val onSharedPreferencesChangedListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> loadCurrentSettings() }
-
 
     init {
         rgbSetColorRequestTimer.schedule(object : TimerTask() {
@@ -64,18 +61,14 @@ class ControllerViewModel(
 
         loadCurrentSettings()
 
-        ipAddressStorage.registerOnSharedPreferencesChangedListener(
-            onSharedPreferencesChangedListener
-        )
+        ipAddressStorage.setOnIpAddressesChangedCallback { loadCurrentSettings() }
     }
 
     override fun onCleared() {
         super.onCleared()
         rgbSetColorRequestTimer.cancel()
 
-        ipAddressStorage.unregisterOnSharedPreferencesChangedListener(
-            onSharedPreferencesChangedListener
-        )
+        ipAddressStorage.removeOnIpAddressesChangedCallback()
     }
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
