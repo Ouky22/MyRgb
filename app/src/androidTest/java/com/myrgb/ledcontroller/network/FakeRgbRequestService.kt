@@ -3,10 +3,13 @@ package com.myrgb.ledcontroller.network
 import com.myrgb.ledcontroller.domain.RgbRequest
 import retrofit2.Response
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FakeRgbRequestService(
-    private var ipAddressRgbSettingsMap: HashMap<String, RgbSettingsResponse>
-) : RgbRequestService {
+@Singleton
+class FakeRgbRequestService @Inject constructor() : RgbRequestService {
+
+    private var ipAddressRgbSettingsMap: HashMap<String, RgbSettingsResponse> = hashMapOf()
 
     var loadingSettingsThrowsIoException: Boolean = false
 
@@ -22,3 +25,4 @@ class FakeRgbRequestService(
 
     override suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {}
 }
+

@@ -9,19 +9,9 @@ import com.myrgb.ledcontroller.persistence.DefaultIpAddressStorage
 
 
 class AppContainer(app: App) {
-
-    private val rgbRequestService: RgbRequestService by lazy {
-        RgbRequestService.create()
-    }
     private val rgbAlarmDao: RgbAlarmDao = app.ledControllerDatabase.rgbAlarmDao
-
-    val ipAddressStorage = DefaultIpAddressStorage(app)
-
-    val rgbRequestRepository = DefaultRgbRequestRepository(rgbRequestService)
 
     val rgbAlarmRepository = RgbAlarmRepository(rgbAlarmDao)
 
-    var controllerContainer: ControllerContainer? = null
-    var rgbShowContainer: RgbShowContainer? = null
     var rgbAlarmContainer: RgbAlarmContainer? = null
 }

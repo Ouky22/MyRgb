@@ -8,8 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.myrgb.ledcontroller.persistence.IpAddressStorage
+import javax.inject.Inject
 
-class IpAddressViewModel(private val ipAddressStorage: IpAddressStorage) : ViewModel() {
+class IpAddressViewModel @Inject constructor(private val ipAddressStorage: IpAddressStorage) : ViewModel() {
     private val _ipAddresses = MutableLiveData(ipAddressStorage.getIpAddresses().toList())
     val ipAddresses: LiveData<List<String>>
         get() = _ipAddresses

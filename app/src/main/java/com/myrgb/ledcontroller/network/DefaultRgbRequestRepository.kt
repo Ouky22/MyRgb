@@ -3,8 +3,11 @@ package com.myrgb.ledcontroller.network
 import com.myrgb.ledcontroller.domain.*
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DefaultRgbRequestRepository(private val rgbRequestService: RgbRequestService) :
+@Singleton
+class DefaultRgbRequestRepository @Inject constructor(private val rgbRequestService: RgbRequestService) :
     RgbRequestRepository {
 
     override suspend fun loadCurrentRgbSettings(ipAddress: String): RgbSettingsResponse? {
@@ -36,7 +39,10 @@ class DefaultRgbRequestRepository(private val rgbRequestService: RgbRequestServi
     }
 
     override suspend fun setBrightness(ledMicrocontroller: LedMicrocontroller, brightness: Int) {
-        sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(brightnessCommandIdentifier, brightness))
+        sendRgbRequest(
+            ledMicrocontroller.ipAddress,
+            RgbRequest(brightnessCommandIdentifier, brightness)
+        )
     }
 
     override suspend fun setColor(ledMicrocontroller: LedMicrocontroller, color: RgbTriplet) {

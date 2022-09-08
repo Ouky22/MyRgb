@@ -1,6 +1,7 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,16 +10,25 @@ import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentIpAddressListBinding
+import javax.inject.Inject
 
 class IpAddressListFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by viewModels<IpAddressViewModel> { viewModelFactory }
+
     private lateinit var binding: FragmentIpAddressListBinding
+
     private lateinit var listAdapter: IpAddressListAdapter
-    private lateinit var viewModel: IpAddressViewModel
+
     private var addIpDialog: AlertDialog? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,13 +42,7 @@ class IpAddressListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity().application as App).appContainer.controllerContainer?.let {
-            val vm: IpAddressViewModel by viewModels {
-                it.ipAddressViewModelFactory
-            }
-            viewModel = vm
-            binding.viewModel = viewModel
-        }
+        binding.viewModel = viewModel
 
         listAdapter = IpAddressListAdapter { ipAddress ->
             createAreYouSureToDeleteDialog(ipAddress)
@@ -46,6 +50,13 @@ class IpAddressListFragment : Fragment() {
         binding.rvIpAddresses.adapter = listAdapter
 
         binding.btnAddIp.setOnClickListener { createAddIpAddressDialog() }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (requireActivity().application as App).appComponent.ipAddressComponent().create()
+            .inject(this)
     }
 
     private fun createAddIpAddressDialog() {

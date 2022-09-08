@@ -1,21 +1,26 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
-import com.myrgb.ledcontroller.di.ControllerContainer
+import javax.inject.Inject
 
 class ControllerFragment : Fragment() {
 
-    private lateinit var viewModel: ControllerViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by viewModels<ControllerViewModel> { viewModelFactory }
 
     private lateinit var binding: FragmentControllerBinding
 
@@ -30,20 +35,7 @@ class ControllerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val app = requireActivity().application as App
-        if (app.appContainer.controllerContainer == null)
-            app.appContainer.controllerContainer = ControllerContainer(
-                app.appContainer.rgbRequestRepository,
-                app.appContainer.ipAddressStorage
-            )
-        app.appContainer.controllerContainer?.let {
-            val vm: ControllerViewModel by viewModels {
-                it.controllerViewModelFactory
-            }
-            viewModel = vm
-            binding.viewModel = viewModel
-        }
+        binding.viewModel = viewModel
 
         binding.root.setOnTouchListener { v, e ->
             v.performClick()
@@ -73,6 +65,13 @@ class ControllerFragment : Fragment() {
             if (status == SettingsLoadingStatus.DONE)
                 createStripButtons()
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (requireActivity().application as App).appComponent.controllerComponent().create()
+            .inject(this)
     }
 
     private fun setupMenu() {

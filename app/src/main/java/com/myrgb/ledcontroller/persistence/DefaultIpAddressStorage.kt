@@ -3,12 +3,15 @@ package com.myrgb.ledcontroller.persistence
 import android.content.Context
 import android.content.SharedPreferences
 import com.myrgb.ledcontroller.R
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * This class handles the access to the shared preferences which store the ip addresses of
  * the rgb controller.
  */
-class DefaultIpAddressStorage(context: Context) : IpAddressStorage {
+@Singleton
+class DefaultIpAddressStorage @Inject constructor(context: Context) : IpAddressStorage {
     private val ipAddressSharedPreferences = context.getSharedPreferences(
         context.getString(R.string.ip_addresses_preferences_file_key),
         Context.MODE_PRIVATE

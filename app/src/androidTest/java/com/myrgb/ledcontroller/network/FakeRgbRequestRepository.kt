@@ -3,8 +3,11 @@ package com.myrgb.ledcontroller.network
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FakeRgbRequestRepository(
+@Singleton
+class FakeRgbRequestRepository @Inject constructor(
     private val rgbRequestService: RgbRequestService
 ) : RgbRequestRepository {
 

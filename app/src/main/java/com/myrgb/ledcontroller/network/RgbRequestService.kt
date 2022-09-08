@@ -19,18 +19,4 @@ interface RgbRequestService {
         @Path("ipAddress") ipAddress: String,
         @Query("value") rgbRequest: RgbRequest
     )
-
-    companion object {
-        fun create(): RgbRequestService {
-            val moshi = Moshi.Builder()
-                .addLast(KotlinJsonAdapterFactory())
-                .build()
-
-            return Retrofit.Builder()
-                .baseUrl("http://localhost/") // localhost is used because retrofit forces baseUrl, but it will be overwritten
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-                .create(RgbRequestService::class.java)
-        }
-    }
 }

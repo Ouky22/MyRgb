@@ -5,8 +5,9 @@ import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.persistence.IpAddressStorage
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RgbShowViewModel(
+class RgbShowViewModel @Inject constructor(
     private val rgbRequestRepository: RgbRequestRepository,
     private val ipAddressStorage: IpAddressStorage
 ) : ViewModel() {

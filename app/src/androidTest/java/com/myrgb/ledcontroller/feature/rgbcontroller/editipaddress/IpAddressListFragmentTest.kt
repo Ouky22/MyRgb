@@ -10,33 +10,39 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.myrgb.ledcontroller.App
-import com.myrgb.ledcontroller.di.ControllerContainer
 import com.myrgb.ledcontroller.network.FakeRgbRequestRepository
 import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
 import com.myrgb.ledcontroller.util.DataBindingIdlingResource
 import com.myrgb.ledcontroller.R
+import com.myrgb.ledcontroller.TestApp
+import com.myrgb.ledcontroller.di.TestAppComponent
 import com.myrgb.ledcontroller.util.monitorFragment
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import javax.inject.Inject
 
 class IpAddressListFragmentTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
-    private lateinit var fakeIpAddressStorage: FakeIpAddressStorage
+
+    @Inject
+    lateinit var fakeIpAddressStorage: FakeIpAddressStorage
 
     @Before
-    fun setupFakeDependencies() {
-        fakeIpAddressStorage = FakeIpAddressStorage()
-        (getApplicationContext() as App).appContainer.controllerContainer = ControllerContainer(
-            FakeRgbRequestRepository(FakeRgbRequestService(hashMapOf())), fakeIpAddressStorage
-        )
+    fun setupDependencies() {
+        (getApplicationContext<TestApp>().appComponent as TestAppComponent).inject(this)
     }
 
     @Before
     fun registerIdlingResource() {
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun clearFakeIpAddressStorage() {
+        fakeIpAddressStorage.deleteAllIpAddresses()
     }
 
     @After
@@ -94,7 +100,7 @@ class IpAddressListFragmentTest {
     }
 
     @Test
-    fun when_ip_address_deleted_it_is_no_longer_displayed() {
+    fun when_ip_address_deleted_then_it_is_no_longer_displayed() {
         val ip = "192.168.1.1"
         fakeIpAddressStorage.addIpAddress(ip)
 

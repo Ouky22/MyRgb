@@ -9,17 +9,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.assertion.PositionAssertions.isCompletelyLeftOf
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
-import com.myrgb.ledcontroller.di.ControllerContainer
+import com.myrgb.ledcontroller.TestApp
+import com.myrgb.ledcontroller.di.TestAppComponent
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
-import com.myrgb.ledcontroller.network.FakeRgbRequestRepository
 import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
@@ -30,30 +28,36 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class ControllerFragmentTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
-    private lateinit var fakeIpAddressStorage: FakeIpAddressStorage
-    private lateinit var fakeRgbRequestService: FakeRgbRequestService
+
+    @Inject
+    lateinit var fakeIpAddressStorage: FakeIpAddressStorage
+
+    @Inject
+    lateinit var fakeRgbRequestService: FakeRgbRequestService
+
     private val fakeIpAddress1 = "192.168.1.1"
     private val fakeIpAddress2 = "192.168.1.2"
 
     @Before
-    fun setupControllerRepository() {
-        fakeIpAddressStorage = FakeIpAddressStorage()
-        fakeRgbRequestService = FakeRgbRequestService(hashMapOf())
-
-        (getApplicationContext() as App).appContainer.controllerContainer = ControllerContainer(
-            FakeRgbRequestRepository(fakeRgbRequestService), fakeIpAddressStorage
-        )
+    fun setupDependencies() {
+        (getApplicationContext<TestApp>().appComponent as TestAppComponent).inject(this)
     }
 
     @Before
     fun registerIdlingResource() {
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun clearAddressStorage() {
+        fakeIpAddressStorage.deleteAllIpAddresses()
     }
 
     @After

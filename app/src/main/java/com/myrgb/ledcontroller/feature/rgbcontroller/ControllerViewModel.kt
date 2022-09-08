@@ -1,6 +1,5 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
-import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbCircle
@@ -11,12 +10,13 @@ import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.persistence.IpAddressStorage
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.acos
 import kotlin.math.sqrt
 
 enum class SettingsLoadingStatus { LOADING, DONE }
 
-class ControllerViewModel(
+class ControllerViewModel @Inject constructor(
     private val rgbRequestRepository: RgbRequestRepository,
     private val ipAddressStorage: IpAddressStorage
 ) : ViewModel() {
