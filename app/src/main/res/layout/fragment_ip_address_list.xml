@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress.IpAddressViewModel" />
+            type="com.myrgb.ledcontroller.feature.editipaddress.IpAddressViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".feature.rgbcontroller.editipaddress.IpAddressListFragment">
+        tools:context=".feature.editipaddress.IpAddressListFragment">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_rgb_controllers"

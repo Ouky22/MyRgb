@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/ip_address_list_dest"
-        android:name="com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress.IpAddressListFragment"
+        android:name="com.myrgb.ledcontroller.feature.editipaddress.IpAddressListFragment"
         android:label="@string/ip_address_list_dest_label"
         tools:layout="@layout/fragment_ip_address_list" />
 </navigation>

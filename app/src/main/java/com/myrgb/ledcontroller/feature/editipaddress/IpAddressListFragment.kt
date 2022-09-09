@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress
+package com.myrgb.ledcontroller.feature.editipaddress
 
 import android.app.AlertDialog
 import android.content.Context

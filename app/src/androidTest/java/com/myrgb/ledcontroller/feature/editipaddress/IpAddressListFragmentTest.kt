@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress
+package com.myrgb.ledcontroller.feature.editipaddress
 
 import android.content.Context
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -9,9 +9,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.myrgb.ledcontroller.App
-import com.myrgb.ledcontroller.network.FakeRgbRequestRepository
-import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
 import com.myrgb.ledcontroller.util.DataBindingIdlingResource
 import com.myrgb.ledcontroller.R

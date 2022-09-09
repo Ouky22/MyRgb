@@ -1,7 +1,7 @@
 package com.myrgb.ledcontroller.di
 
 import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragmentTest
-import com.myrgb.ledcontroller.feature.rgbcontroller.editipaddress.IpAddressListFragmentTest
+import com.myrgb.ledcontroller.feature.editipaddress.IpAddressListFragmentTest
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
