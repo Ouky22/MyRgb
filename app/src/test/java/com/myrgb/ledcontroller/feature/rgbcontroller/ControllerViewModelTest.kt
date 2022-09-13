@@ -21,7 +21,7 @@ import org.junit.Test
 class ControllerViewModelTest {
     private lateinit var viewModel: ControllerViewModel
     private lateinit var fakeIpAddressSettingsRepository: FakeIpAddressSettingsRepository
-    private lateinit var fakeRgbRequestRepository: FakeRgbRequestRepository
+    private lateinit var fakeRgbRequestService: FakeRgbRequestService
 
     private val ipAddress1 = "192.168.1.1"
     private val ipAddress2 = "192.168.1.2"
@@ -35,9 +35,9 @@ class ControllerViewModelTest {
     @Before
     fun setupViewModel() {
         fakeIpAddressSettingsRepository = FakeIpAddressSettingsRepository()
-        fakeRgbRequestRepository = FakeRgbRequestRepository(hashMapOf())
+        fakeRgbRequestService = FakeRgbRequestService()
         viewModel = ControllerViewModel(
-            fakeRgbRequestRepository, fakeIpAddressSettingsRepository
+            RgbRequestRepository(fakeRgbRequestService), fakeIpAddressSettingsRepository
         )
     }
 
@@ -77,15 +77,13 @@ class ControllerViewModelTest {
                 RgbTriplet(0, 0, 0), 0, false,
                 listOf(RgbStrip(1, "s1", false), RgbStrip(2, "s2", false))
             )
-            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+            fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf(
                 ipAddress1 to currentRgbSettings
             )
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
             fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
-
             viewModel.onRgbBulbButtonClick()
-
 
             viewModel.rgbStrips.value.forEach { strip ->
                 assertTrue(strip.enabled)
@@ -99,7 +97,7 @@ class ControllerViewModelTest {
                 RgbTriplet(0, 50, 0), 0, true,
                 listOf(RgbStrip(10, "s1", true), RgbStrip(20, "s2", true))
             )
-            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+            fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf(
                 ipAddress1 to currentRgbSettings
             )
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
@@ -119,7 +117,7 @@ class ControllerViewModelTest {
                 RgbTriplet(70, 10, 0), 0, false,
                 listOf(RgbStrip(9, "s1", true), RgbStrip(3, "s2", false))
             )
-            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+            fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf(
                 ipAddress1 to currentRgbSettings
             )
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
@@ -167,7 +165,7 @@ class ControllerViewModelTest {
         val rgbSettings2 = RgbSettingsResponse(
             currentColor, currentBrightness, false, listOf(strip3)
         )
-        fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+        fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf(
             ipAddress1 to rgbSettings1,
             ipAddress2 to rgbSettings2
         )

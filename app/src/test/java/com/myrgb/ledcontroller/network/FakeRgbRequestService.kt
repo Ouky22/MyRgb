@@ -4,8 +4,8 @@ import com.myrgb.ledcontroller.domain.RgbRequest
 import retrofit2.Response
 import java.io.IOException
 
-class FakeRgbRequestService(private val rgbSettingsResponse: RgbSettingsResponse) :
-    RgbRequestService {
+class FakeRgbRequestService : RgbRequestService {
+    var ipAddressesRgbSettingsMap: HashMap<String, RgbSettingsResponse> = hashMapOf()
 
     var loadingSettingsThrowsIoException: Boolean = false
 
@@ -13,7 +13,7 @@ class FakeRgbRequestService(private val rgbSettingsResponse: RgbSettingsResponse
         if (loadingSettingsThrowsIoException)
             throw IOException()
         else
-            Response.success(rgbSettingsResponse)
+            Response.success(ipAddressesRgbSettingsMap[ipAddress])
 
     override suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {}
 }

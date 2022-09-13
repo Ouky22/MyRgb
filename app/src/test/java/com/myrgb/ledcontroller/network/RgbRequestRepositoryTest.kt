@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class DefaultRgbRequestRepositoryTest {
+class RgbRequestRepositoryTest {
 
     @Test
     fun `get a successful current settings response`() = runTest {
@@ -18,12 +18,14 @@ class DefaultRgbRequestRepositoryTest {
             RgbTriplet(0, 255, 0), 100,
             true, listOf(strip1, strip2)
         )
-        val fakeRgbRequestService = FakeRgbRequestService(rgbSettings)
-        val rgbRequestRepository = DefaultRgbRequestRepository(fakeRgbRequestService)
+        val ipAddress ="192.168.1.1"
+        val fakeRgbRequestService = FakeRgbRequestService()
+        fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf(ipAddress to rgbSettings)
+        val rgbRequestRepository = RgbRequestRepository(fakeRgbRequestService)
 
         assertEquals(
             rgbSettings,
-            rgbRequestRepository.loadCurrentRgbSettings("test")
+            rgbRequestRepository.loadCurrentRgbSettings(ipAddress)
         )
     }
 
@@ -34,9 +36,10 @@ class DefaultRgbRequestRepositoryTest {
             RgbTriplet(0, 255, 0), 100,
             true, listOf(strip1)
         )
-        val fakeRgbRequestService = FakeRgbRequestService(rgbSettings)
+        val fakeRgbRequestService = FakeRgbRequestService()
+        fakeRgbRequestService.ipAddressesRgbSettingsMap = hashMapOf("192.168.1.1" to rgbSettings)
         fakeRgbRequestService.loadingSettingsThrowsIoException = true
-        val rgbRequestRepository = DefaultRgbRequestRepository(fakeRgbRequestService)
+        val rgbRequestRepository = RgbRequestRepository(fakeRgbRequestService)
 
         assertEquals(
             null,
