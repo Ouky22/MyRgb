@@ -86,30 +86,32 @@ class ControllerViewModel @Inject constructor(
     }
 
     fun onRgbBulbButtonClick() {
-        viewModelScope.launch {
-            if (allStripsAreOff()) {
-                ledMicrocontroller.forEach { microcontroller ->
-                    rgbRequestRepository.turnAllStripsOn(microcontroller)
-                    microcontroller.rgbStrips.forEach { strip -> strip.enabled = true }
+        if (allStripsAreOff()) {
+            setEnabledStatusOfAllStripsToTrue()
+            viewModelScope.launch {
+                ledMicrocontroller.forEach { controller ->
+                    rgbRequestRepository.turnAllStripsOn(controller)
                 }
-            } else {
-                ledMicrocontroller.forEach { microcontroller ->
-                    rgbRequestRepository.turnAllStripsOff(microcontroller)
-                    microcontroller.rgbStrips.forEach { strip -> strip.enabled = false }
+            }
+        } else {
+            setEnabledStatusOfAllStripsToFalse()
+            viewModelScope.launch {
+                ledMicrocontroller.forEach { controller ->
+                    rgbRequestRepository.turnAllStripsOff(controller)
                 }
             }
         }
     }
 
     fun toggleEnabledStatusOf(rgbStrip: RgbStrip) {
+        rgbStrip.enabled = !rgbStrip.enabled
+
         getLedMicrocontrollerOf(rgbStrip)?.let { microcontroller ->
             viewModelScope.launch {
                 if (rgbStrip.enabled)
-                    rgbRequestRepository.turnStripOff(microcontroller, rgbStrip)
-                else
                     rgbRequestRepository.turnStripOn(microcontroller, rgbStrip)
-
-                rgbStrip.enabled = !rgbStrip.enabled
+                else
+                    rgbRequestRepository.turnStripOff(microcontroller, rgbStrip)
             }
         }
     }
@@ -160,6 +162,18 @@ class ControllerViewModel @Inject constructor(
     private fun getLedMicrocontrollerOf(strip: RgbStrip): LedMicrocontroller? {
         return ledMicrocontroller.firstOrNull { microcontroller ->
             microcontroller.rgbStrips.firstOrNull { s -> s === strip } != null
+        }
+    }
+
+    private fun setEnabledStatusOfAllStripsToFalse() {
+        ledMicrocontroller.forEach { controller ->
+            controller.rgbStrips.forEach { it.enabled = false }
+        }
+    }
+
+    private fun setEnabledStatusOfAllStripsToTrue() {
+        ledMicrocontroller.forEach { controller ->
+            controller.rgbStrips.forEach { it.enabled = true }
         }
     }
 
