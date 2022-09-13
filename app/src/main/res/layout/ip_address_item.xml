@@ -19,39 +19,55 @@
                 android:id="@+id/iv_wifi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="20dp"
                 android:importantForAccessibility="no"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                app:layout_constraintBottom_toBottomOf="@id/linear_layout_ip_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/linear_layout_ip_name"
                 app:srcCompat="@drawable/ic_wifi" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_ip_address"
-                style="@style/Widget.LedControllerV2.TextView"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linear_layout_ip_name"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_wifi"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_delete_ip"
                 app:layout_constraintStart_toEndOf="@id/iv_wifi"
-                app:layout_constraintTop_toTopOf="@id/iv_wifi"
-                tools:text="192.168.255.255" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <!-- ImageButton has minWidth/-Height because otherwise it is not visible in instrumentation tests -->
-            <ImageButton
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_ip_address_name"
+                    style="@style/Widget.LedControllerV2.TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    tools:text="IP address name" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_ip_address"
+                    style="@style/Widget.LedControllerV2.TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    tools:text="192.168.255.255" />
+            </LinearLayout>
+
+            <ImageView
                 android:id="@+id/btn_delete_ip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:background="@color/transparent"
                 android:importantForAccessibility="no"
-                android:minWidth="5dp"
-                android:minHeight="5dp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_wifi"
+                android:minWidth="30dp"
+                android:minHeight="30dp"
+                app:layout_constraintBottom_toBottomOf="@id/linear_layout_ip_name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_wifi"
+                app:layout_constraintTop_toTopOf="@id/linear_layout_ip_name"
                 app:srcCompat="@drawable/ic_delete" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

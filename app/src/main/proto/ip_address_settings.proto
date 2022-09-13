@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "com.myrgb.ledcontroller";
+option java_multiple_files = true;
+
+message IpAddressSettings {
+  repeated IpAddressNamePair ip_address_name_pairs = 1;
+}
+
+message IpAddressNamePair {
+  string name = 1;
+  string ip_address = 2;
+}

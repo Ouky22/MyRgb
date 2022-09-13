@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_layout_ip"
+        android:id="@+id/text_input_layout_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -25,6 +25,24 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintStart_toStartOf="@id/tv_add_controller"
         app:layout_constraintTop_toBottomOf="@id/tv_add_controller">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_ip_address_name"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout_ip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintStart_toStartOf="@id/text_input_layout_name"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_ip"

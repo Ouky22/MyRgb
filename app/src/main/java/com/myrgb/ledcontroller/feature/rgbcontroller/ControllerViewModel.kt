@@ -1,13 +1,16 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import androidx.lifecycle.*
+import com.myrgb.ledcontroller.IpAddressSettings
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
-import com.myrgb.ledcontroller.persistence.IpAddressStorage
+import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -18,7 +21,7 @@ enum class SettingsLoadingStatus { LOADING, DONE }
 
 class ControllerViewModel @Inject constructor(
     private val rgbRequestRepository: RgbRequestRepository,
-    private val ipAddressStorage: IpAddressStorage
+    private val ipAddressSettingsRepository: IpAddressSettingsRepository
 ) : ViewModel() {
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
@@ -32,8 +35,8 @@ class ControllerViewModel @Inject constructor(
 
     private val ledMicrocontroller = mutableListOf<LedMicrocontroller>()
 
-    private val _rgbStrips = MutableLiveData<MutableList<RgbStrip>>(mutableListOf())
-    val rgbStrips: LiveData<MutableList<RgbStrip>>
+    private val _rgbStrips: MutableStateFlow<List<RgbStrip>> = MutableStateFlow(mutableListOf())
+    val rgbStrips: StateFlow<List<RgbStrip>>
         get() = _rgbStrips
 
     private val _currentlySelectedColor = MutableLiveData<RgbTriplet>()
@@ -59,16 +62,14 @@ class ControllerViewModel @Inject constructor(
             }
         }, 0, rgbSetColorRequestTimerInterval)
 
-        loadCurrentSettings()
-
-        ipAddressStorage.setOnIpAddressesChangedCallback { loadCurrentSettings() }
+        viewModelScope.launch {
+            ipAddressSettingsRepository.ipAddressSettings.collect { loadCurrentSettings(it) }
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         rgbSetColorRequestTimer.cancel()
-
-        ipAddressStorage.removeOnIpAddressesChangedCallback()
     }
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
@@ -127,21 +128,25 @@ class ControllerViewModel @Inject constructor(
         }
     }
 
-    fun loadCurrentSettings() {
+    private fun loadCurrentSettings(ipAddressSettings: IpAddressSettings) {
         viewModelScope.launch {
             _settingsLoadingStatus.value = SettingsLoadingStatus.LOADING
-            _rgbStrips.value?.clear()
-            ledMicrocontroller.clear()
 
             val rgbSettingsResponses = mutableListOf<RgbSettingsResponse>()
-            for (ipAddress in ipAddressStorage.getIpAddresses()) {
-                val currentSettings = rgbRequestRepository.loadCurrentRgbSettings(ipAddress)
+            ledMicrocontroller.clear()
+
+            for (ipAddressNamePair in ipAddressSettings.ipAddressNamePairsList) {
+                val currentSettings =
+                    rgbRequestRepository.loadCurrentRgbSettings(ipAddressNamePair.ipAddress)
                 currentSettings?.let {
                     rgbSettingsResponses.add(it)
-                    ledMicrocontroller.add(LedMicrocontroller(ipAddress, it.strips))
-                    _rgbStrips.value?.addAll(it.strips)
+                    ledMicrocontroller.add(
+                        LedMicrocontroller(ipAddressNamePair.ipAddress, it.strips)
+                    )
                 }
             }
+
+            _rgbStrips.value = ledMicrocontroller.flatMap { it.rgbStrips }
 
             _currentlySelectedColor.value =
                 rgbSettingsResponses.firstOrNull()?.color ?: RgbTriplet(0, 0, 0)
@@ -193,10 +198,10 @@ class ControllerViewModel @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     class Factory(
         private val repository: RgbRequestRepository,
-        private val ipAddressStorage: IpAddressStorage
+        private val ipAddressSettingsRepository: IpAddressSettingsRepository
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            (ControllerViewModel(repository, ipAddressStorage)) as T
+            (ControllerViewModel(repository, ipAddressSettingsRepository)) as T
     }
 }
 

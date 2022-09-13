@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller
+package com.myrgb.ledcontroller.testutil
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

@@ -3,13 +3,13 @@ package com.myrgb.ledcontroller.feature.rgbshow
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.network.RgbRequestRepository
-import com.myrgb.ledcontroller.persistence.IpAddressStorage
+import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RgbShowViewModel @Inject constructor(
     private val rgbRequestRepository: RgbRequestRepository,
-    private val ipAddressStorage: IpAddressStorage
+    private val ipAddressSettingsRepository: IpAddressSettingsRepository
 ) : ViewModel() {
     private val _rgbShowActive = MutableLiveData<Boolean>()
     val rgbShowActive: LiveData<Boolean>
@@ -62,8 +62,10 @@ class RgbShowViewModel @Inject constructor(
     }
 
     private suspend fun loadCurrentSettings() {
-        ipAddressStorage.getIpAddresses().forEach { ipAddress ->
-            ledMicrocontroller.add(LedMicrocontroller(ipAddress, emptyList()))
+        ipAddressSettingsRepository.ipAddressSettings.collect{ ipAddressSettings ->
+            ipAddressSettings.ipAddressNamePairsList.forEach {
+                ledMicrocontroller.add(LedMicrocontroller(it.ipAddress, emptyList()))
+            }
         }
 
         for (esp32 in ledMicrocontroller) {
@@ -74,18 +76,18 @@ class RgbShowViewModel @Inject constructor(
             }
         }
 
-        // TODO load current rgb show speed as soon it is queryable
+        // TODO load current rgb show speed as soon as it is queryable
         _currentRgbShowSpeed.value = MAX_RGB_SHOW_SPEED / 2
     }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(
         private val rgbRequestRepository: RgbRequestRepository,
-        private val ipAddressStorage: IpAddressStorage
+        private val ipAddressSettingsRepository: IpAddressSettingsRepository
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RgbShowViewModel(rgbRequestRepository, ipAddressStorage) as T
+            RgbShowViewModel(rgbRequestRepository, ipAddressSettingsRepository) as T
     }
 }
 

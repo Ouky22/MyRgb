@@ -13,6 +13,8 @@ import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
+import com.myrgb.ledcontroller.domain.RgbStrip
+import com.myrgb.ledcontroller.util.collectLatestLifecycleFlow
 import javax.inject.Inject
 
 class ControllerFragment : Fragment() {
@@ -60,11 +62,15 @@ class ControllerFragment : Fragment() {
 
         setupMenu()
 
-        // TODO display loading spinner
         viewModel.settingsLoadingStatus.observe(viewLifecycleOwner) { status ->
-            if (status == SettingsLoadingStatus.DONE)
-                createStripButtons()
+            when (status) {
+                SettingsLoadingStatus.DONE -> {} // TODO hide loading spinner
+                SettingsLoadingStatus.LOADING -> {} //  TODO display loading spinner
+                else -> {}
+            }
         }
+
+        collectLatestLifecycleFlow(viewModel.rgbStrips) { createStripButtons(it) }
     }
 
     override fun onAttach(context: Context) {
@@ -90,8 +96,10 @@ class ControllerFragment : Fragment() {
         }, viewLifecycleOwner)
     }
 
-    private fun createStripButtons() {
-        viewModel.rgbStrips.value?.forEach { strip ->
+    private fun createStripButtons(rgbStrips: List<RgbStrip>) {
+        binding.linearLayoutButtons.removeAllViews()
+
+        rgbStrips.forEach { strip ->
             val button = requireActivity().layoutInflater.inflate(
                 R.layout.strip_button, binding.linearLayoutButtons, false
             ) as MaterialButton

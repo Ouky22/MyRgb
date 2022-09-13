@@ -9,19 +9,15 @@ import javax.inject.Singleton
 @Singleton
 class FakeRgbRequestService @Inject constructor() : RgbRequestService {
 
-    private var ipAddressRgbSettingsMap: HashMap<String, RgbSettingsResponse> = hashMapOf()
+    var ipAddressesRgbSettingsMap: HashMap<String, RgbSettingsResponse> = hashMapOf()
 
     var loadingSettingsThrowsIoException: Boolean = false
-
-    fun setIpAddressRgbSettingsMap(map: HashMap<String, RgbSettingsResponse>) {
-        ipAddressRgbSettingsMap = map
-    }
 
     override suspend fun getCurrentSettings(ipAddress: String): Response<RgbSettingsResponse> =
         if (loadingSettingsThrowsIoException)
             throw IOException()
         else
-            Response.success(ipAddressRgbSettingsMap[ipAddress])
+            Response.success(ipAddressesRgbSettingsMap[ipAddress])
 
     override suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {}
 }

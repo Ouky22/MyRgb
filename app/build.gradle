@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
@@ -43,12 +44,17 @@ android {
 }
 
 dependencies {
+    // because of problems with creating proto instances of IpAddressSettings in instrumented tests
+    configurations.configureEach {
+        exclude group: "com.google.protobuf", module: "protobuf-lite"
+    }
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 
     // testing
     androidTestImplementation "androidx.test.ext:junit:$junitExtVersion"
@@ -102,4 +108,27 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     androidTestImplementation "com.google.dagger:dagger:$daggerVersion"
+
+    // proto datastore
+    implementation "androidx.datastore:datastore:$dataStoreVersion"
+    implementation  "com.google.protobuf:protobuf-javalite:$protobufVersion"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }

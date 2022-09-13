@@ -5,13 +5,11 @@ import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 
 class FakeRgbRequestRepository(
-    private val rgbRequestService: RgbRequestService
+    var ipAddressRgbSettingsMap: HashMap<String, RgbSettingsResponse> = hashMapOf()
 ) : RgbRequestRepository {
 
     override suspend fun loadCurrentRgbSettings(ipAddress: String): RgbSettingsResponse {
-        return rgbRequestService.getCurrentSettings(ipAddress).body() ?: RgbSettingsResponse(
-            RgbTriplet(0, 0, 0), 0, false, emptyList()
-        )
+        return ipAddressRgbSettingsMap[ipAddress]!!
     }
 
     override suspend fun turnStripOn(

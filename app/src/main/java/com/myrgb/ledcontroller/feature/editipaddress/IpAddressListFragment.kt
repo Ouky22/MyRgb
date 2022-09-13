@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
+import com.myrgb.ledcontroller.IpAddressNamePair
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentIpAddressListBinding
 import javax.inject.Inject
@@ -44,8 +45,8 @@ class IpAddressListFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        listAdapter = IpAddressListAdapter { ipAddress ->
-            createAreYouSureToDeleteDialog(ipAddress)
+        listAdapter = IpAddressListAdapter { ipAddressNamePair ->
+            createAreYouSureToDeleteDialog(ipAddressNamePair)
         }
         binding.rvIpAddresses.adapter = listAdapter
 
@@ -60,22 +61,14 @@ class IpAddressListFragment : Fragment() {
     }
 
     private fun createAddIpAddressDialog() {
-        val builder = AlertDialog.Builder(
-            requireActivity(), R.style.Widget_LedControllerV2_DialogTheme
-        )
-        builder.setView(layoutInflater.inflate(R.layout.add_ip_address_dialog, null))
-        addIpDialog = builder.create()
+        addIpDialog =
+            AlertDialog.Builder(requireActivity(), R.style.Widget_LedControllerV2_DialogTheme)
+                .setView(layoutInflater.inflate(R.layout.add_ip_address_dialog, null))
+                .create()
         addIpDialog!!.show()
 
         addIpDialog!!.findViewById<MaterialButton>(R.id.btn_add_ip_dialog).setOnClickListener {
-            addIpDialog?.findViewById<EditText>(R.id.edit_text_ip)?.let { editText ->
-                val validIpAddress = viewModel.isValidIpAddress(editText.text.toString())
-                if (validIpAddress) {
-                    viewModel.addIpAddress(editText.text.toString())
-                    addIpDialog?.dismiss()
-                } else
-                    editText.error = getString(R.string.invalid_ip)
-            }
+            handleAddIpDialogTextInput()
         }
 
         addIpDialog!!.findViewById<MaterialButton>(R.id.btn_cancel).setOnClickListener {
@@ -83,12 +76,41 @@ class IpAddressListFragment : Fragment() {
         }
     }
 
-    private fun createAreYouSureToDeleteDialog(ipAddress: String) {
-        val builder = AlertDialog.Builder(
-            requireActivity(), R.style.Widget_LedControllerV2_DialogTheme
-        )
-        builder.setTitle(getString(R.string.sure_to_delete_ip_address, ipAddress))
-            .setPositiveButton(R.string.delete) { _, _ -> viewModel.removeIpAddress(ipAddress) }
+    private fun handleAddIpDialogTextInput() {
+        val ipAddressEditText = addIpDialog?.findViewById<EditText>(R.id.edit_text_ip)
+            ?: return
+        val nameEditText = addIpDialog?.findViewById<EditText>(R.id.edit_text_name)
+            ?: return
+
+        val ipAddressText = ipAddressEditText.text.toString()
+        val ipAddressNameText = nameEditText.text.toString()
+
+        val ipValidationResult = viewModel.validateIpAddressTextInput(ipAddressText)
+        val nameValidationResult =
+            viewModel.validateIpAddressNameTextInput(ipAddressNameText)
+
+        if (ipValidationResult is Success && nameValidationResult is Success) {
+            viewModel.addIpAddressNamePair(ipAddressText, ipAddressNameText)
+            addIpDialog?.dismiss()
+        } else {
+            if (ipValidationResult is Failure)
+                ipAddressEditText.error = getString(ipValidationResult.messageResourceId)
+            if (nameValidationResult is Failure)
+                nameEditText.error = getString(nameValidationResult.messageResourceId)
+        }
+    }
+
+    private fun createAreYouSureToDeleteDialog(ipAddressNamePair: IpAddressNamePair) {
+        AlertDialog.Builder(requireActivity(), R.style.Widget_LedControllerV2_DialogTheme)
+            .setMessage(
+                getString(
+                    R.string.sure_to_delete_ip_address,
+                    "\"${ipAddressNamePair.name}\" (${ipAddressNamePair.ipAddress})"
+                )
+            )
+            .setPositiveButton(R.string.delete) { _, _ ->
+                viewModel.removeIpAddressNamePair(ipAddressNamePair)
+            }
             .setNegativeButton(android.R.string.cancel) { _, _ -> }
             .create()
             .show()

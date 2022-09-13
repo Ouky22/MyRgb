@@ -1,12 +1,14 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.myrgb.ledcontroller.MainDispatcherRule
+import com.myrgb.ledcontroller.IpAddressNamePair
+import com.myrgb.ledcontroller.IpAddressSettings
+import com.myrgb.ledcontroller.testutil.MainDispatcherRule
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
-import com.myrgb.ledcontroller.getOrAwaitValue
+import com.myrgb.ledcontroller.testutil.getOrAwaitValue
 import com.myrgb.ledcontroller.network.*
-import com.myrgb.ledcontroller.persistence.FakeIpAddressStorage
+import com.myrgb.ledcontroller.persistence.FakeIpAddressSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -18,7 +20,11 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class ControllerViewModelTest {
     private lateinit var viewModel: ControllerViewModel
-    private lateinit var fakeIpAddressStorage: FakeIpAddressStorage
+    private lateinit var fakeIpAddressSettingsRepository: FakeIpAddressSettingsRepository
+    private lateinit var fakeRgbRequestRepository: FakeRgbRequestRepository
+
+    private val ipAddress1 = "192.168.1.1"
+    private val ipAddress2 = "192.168.1.2"
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -28,19 +34,18 @@ class ControllerViewModelTest {
 
     @Before
     fun setupViewModel() {
-        val currentRgbSettings = RgbSettingsResponse(
-            RgbTriplet(0, 0, 0), 0, false, emptyList()
+        fakeIpAddressSettingsRepository = FakeIpAddressSettingsRepository()
+        fakeRgbRequestRepository = FakeRgbRequestRepository(hashMapOf())
+        viewModel = ControllerViewModel(
+            fakeRgbRequestRepository, fakeIpAddressSettingsRepository
         )
-        val rgbRequestRepository =
-            FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
-        fakeIpAddressStorage = FakeIpAddressStorage()
-        viewModel = ControllerViewModel(rgbRequestRepository, fakeIpAddressStorage)
     }
 
-    private fun setCurrentRgbSettings(currentRgbSettings: RgbSettingsResponse) {
-        val rgbRequestRepository =
-            FakeRgbRequestRepository(FakeRgbRequestService(currentRgbSettings))
-        viewModel = ControllerViewModel(rgbRequestRepository, fakeIpAddressStorage)
+    private fun createIpAddressSettings(ipAddresses: List<String>): IpAddressSettings {
+        val ipAddressNamePairs = ipAddresses.map {
+            IpAddressNamePair.newBuilder().setIpAddress(it).setName("test").build()
+        }
+        return IpAddressSettings.newBuilder().addAllIpAddressNamePairs(ipAddressNamePairs).build()
     }
 
     @Test
@@ -72,11 +77,17 @@ class ControllerViewModelTest {
                 RgbTriplet(0, 0, 0), 0, false,
                 listOf(RgbStrip(1, "s1", false), RgbStrip(2, "s2", false))
             )
-            setCurrentRgbSettings(currentRgbSettings)
+            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+                ipAddress1 to currentRgbSettings
+            )
+            val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
+            fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
+
 
             viewModel.onRgbBulbButtonClick()
 
-            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+
+            viewModel.rgbStrips.value.forEach { strip ->
                 assertTrue(strip.enabled)
             }
         }
@@ -88,11 +99,15 @@ class ControllerViewModelTest {
                 RgbTriplet(0, 50, 0), 0, true,
                 listOf(RgbStrip(10, "s1", true), RgbStrip(20, "s2", true))
             )
-            setCurrentRgbSettings(currentRgbSettings)
+            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+                ipAddress1 to currentRgbSettings
+            )
+            val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
+            fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
             viewModel.onRgbBulbButtonClick()
 
-            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+            viewModel.rgbStrips.value.forEach { strip ->
                 assertFalse(strip.enabled)
             }
         }
@@ -104,11 +119,15 @@ class ControllerViewModelTest {
                 RgbTriplet(70, 10, 0), 0, false,
                 listOf(RgbStrip(9, "s1", true), RgbStrip(3, "s2", false))
             )
-            setCurrentRgbSettings(currentRgbSettings)
+            fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+                ipAddress1 to currentRgbSettings
+            )
+            val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
+            fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
             viewModel.onRgbBulbButtonClick()
 
-            viewModel.rgbStrips.getOrAwaitValue().forEach { strip ->
+            viewModel.rgbStrips.value.forEach { strip ->
                 assertFalse(strip.enabled)
             }
         }
@@ -139,24 +158,32 @@ class ControllerViewModelTest {
     fun testLoadingCurrentSettings() = runTest(UnconfinedTestDispatcher()) {
         val strip1 = RgbStrip(1, "s1", false)
         val strip2 = RgbStrip(2, "s2", true)
-        val rgbSettings = RgbSettingsResponse(
-            RgbTriplet(0, 147, 255), 17, false,
-            listOf(strip1, strip2)
+        val strip3 = RgbStrip(3, "s3", true)
+        val currentColor = RgbTriplet(0, 147, 255)
+        val currentBrightness = 50
+        val rgbSettings1 = RgbSettingsResponse(
+            currentColor, currentBrightness, false, listOf(strip1, strip2)
         )
-        setCurrentRgbSettings(rgbSettings)
-
-        fakeIpAddressStorage.addIpAddress("192.168.1.1")
-        viewModel.loadCurrentSettings()
-
-        assertEquals(rgbSettings.color, viewModel.currentlySelectedColor.getOrAwaitValue())
-        assertEquals(
-            rgbSettings.brightness, viewModel.currentlySelectedBrightness.getOrAwaitValue()
+        val rgbSettings2 = RgbSettingsResponse(
+            currentColor, currentBrightness, false, listOf(strip3)
         )
-        val rgbStrips = viewModel.rgbStrips.getOrAwaitValue()
+        fakeRgbRequestRepository.ipAddressRgbSettingsMap = hashMapOf(
+            ipAddress1 to rgbSettings1,
+            ipAddress2 to rgbSettings2
+        )
+        val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1, ipAddress2))
+        fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
+
+        assertEquals(currentColor, viewModel.currentlySelectedColor.getOrAwaitValue())
+        assertEquals(currentBrightness, viewModel.currentlySelectedBrightness.getOrAwaitValue())
+        val rgbStrips = viewModel.rgbStrips.value
+        assertEquals(3, rgbStrips.size)
         assertTrue(rgbStrips.contains(strip1))
         assertTrue(rgbStrips.contains(strip2))
+        assertTrue(rgbStrips.contains(strip3))
         assertEquals(strip1.enabled, rgbStrips.firstOrNull { it.name == strip1.name }?.enabled)
         assertEquals(strip2.enabled, rgbStrips.firstOrNull { it.name == strip2.name }?.enabled)
+        assertEquals(strip3.enabled, rgbStrips.firstOrNull { it.name == strip3.name }?.enabled)
     }
 }
 
