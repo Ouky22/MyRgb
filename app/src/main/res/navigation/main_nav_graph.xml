@@ -40,7 +40,20 @@
     </fragment>
     <fragment
         android:id="@+id/ip_address_list_dest"
-        android:name="com.myrgb.ledcontroller.feature.editipaddress.IpAddressListFragment"
+        android:name="com.myrgb.ledcontroller.feature.ipsettings.IpAddressListFragment"
         android:label="@string/ip_address_list_dest_label"
-        tools:layout="@layout/fragment_ip_address_list" />
+        tools:layout="@layout/fragment_ip_address_list">
+        <action
+            android:id="@+id/action_ip_address_list_dest_to_addIpAddressDialog"
+            app:destination="@id/ip_address_add_edit_dialog_dest" />
+    </fragment>
+    <dialog
+        android:id="@+id/ip_address_add_edit_dialog_dest"
+        android:name="com.myrgb.ledcontroller.feature.ipsettings.addedit.IpAddressAddEditDialogFragment"
+        tools:layout="@layout/dialog_ip_address_add_edit">
+        <argument
+            android:name="ip_address"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
 </navigation>

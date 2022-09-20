@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.persistence
+package com.myrgb.ledcontroller.persistence.ipAddress
 
 import com.myrgb.ledcontroller.IpAddressNamePair
 import com.myrgb.ledcontroller.IpAddressSettings
@@ -11,13 +11,17 @@ class FakeIpAddressSettingsRepository : IpAddressSettingsRepository {
 
     private val flow = MutableSharedFlow<IpAddressSettings>()
 
+    override val ipAddressSettings: Flow<IpAddressSettings>
+        get() = flow
+
     suspend fun emit(settings: IpAddressSettings) {
         currentIpAddressSettings = settings
         flow.emit(settings)
     }
 
-    override val ipAddressSettings: Flow<IpAddressSettings>
-        get() = flow
+    override suspend fun getIpAddressNamePairByIpAddress(ipAddress: String): IpAddressNamePair? =
+        currentIpAddressSettings.ipAddressNamePairsList.firstOrNull { it.ipAddress == ipAddress }
+
 
     override suspend fun addIpAddressNamePair(ipAddressNamePair: IpAddressNamePair) {
         currentIpAddressSettings =
@@ -31,9 +35,20 @@ class FakeIpAddressSettingsRepository : IpAddressSettingsRepository {
         )
     }
 
-    override suspend fun removeIpAddressNamePair(ipAddressNamePair: IpAddressNamePair) {
+    override suspend fun updateIpAddressNamePair(
+        oldIpAddress: String, newIpAddress: String, newIpName: String
+    ) {
+        removeIpAddressNamePair(oldIpAddress)
+        addIpAddressNamePair(newIpAddress, newIpName)
+    }
+
+    override suspend fun existsIpAddressNamePairWithIpAddress(ipAddress: String): Boolean {
+        return currentIpAddressSettings.ipAddressNamePairsList.any { it.ipAddress == ipAddress }
+    }
+
+    override suspend fun removeIpAddressNamePair(ipAddress: String) {
         val ipAddressNamePairIndex = currentIpAddressSettings.ipAddressNamePairsList.indexOfFirst {
-            it == ipAddressNamePair
+            it.ipAddress == ipAddress
         }
         currentIpAddressSettings = currentIpAddressSettings.toBuilder()
             .removeIpAddressNamePairs(ipAddressNamePairIndex)

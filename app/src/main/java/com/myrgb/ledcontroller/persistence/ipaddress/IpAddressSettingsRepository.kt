@@ -6,7 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface IpAddressSettingsRepository {
     val ipAddressSettings: Flow<IpAddressSettings>
+    suspend fun getIpAddressNamePairByIpAddress(ipAddress: String): IpAddressNamePair?
     suspend fun addIpAddressNamePair(ipAddressNamePair: IpAddressNamePair)
     suspend fun addIpAddressNamePair(ipAddress: String, ipName: String)
-    suspend fun removeIpAddressNamePair(ipAddressNamePair: IpAddressNamePair)
+    suspend fun updateIpAddressNamePair(
+        oldIpAddress: String, newIpAddress: String, newIpName: String
+    )
+    suspend fun removeIpAddressNamePair(ipAddress: String)
+    suspend fun existsIpAddressNamePairWithIpAddress(ipAddress: String): Boolean
 }

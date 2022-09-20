@@ -1,6 +1,6 @@
-package com.myrgb.ledcontroller.feature.editipaddress.di
+package com.myrgb.ledcontroller.feature.ipsettings.di
 
-import com.myrgb.ledcontroller.feature.editipaddress.IpAddressListFragment
+import com.myrgb.ledcontroller.feature.ipsettings.IpAddressListFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [IpAddressModule::class])

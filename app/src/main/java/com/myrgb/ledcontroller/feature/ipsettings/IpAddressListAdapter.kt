@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.editipaddress
+package com.myrgb.ledcontroller.feature.ipsettings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.myrgb.ledcontroller.IpAddressNamePair
 import com.myrgb.ledcontroller.databinding.IpAddressItemBinding
 
-class IpAddressListAdapter(private val itemDeleteClickListener: (IpAddressNamePair) -> Unit) :
-    ListAdapter<IpAddressNamePair, IpAddressListAdapter.IpAddressNamePairViewHolder>(DiffCallback) {
+class IpAddressListAdapter(
+    private val itemDeleteClickListener: (IpAddressNamePair) -> Unit,
+    private val itemClickListener: (IpAddressNamePair) -> Unit
+) : ListAdapter<IpAddressNamePair, IpAddressListAdapter.IpAddressNamePairViewHolder>(DiffCallback) {
 
     companion object DiffCallback : DiffUtil.ItemCallback<IpAddressNamePair>() {
         override fun areItemsTheSame(oldItem: IpAddressNamePair, newItem: IpAddressNamePair) =
@@ -26,6 +28,7 @@ class IpAddressListAdapter(private val itemDeleteClickListener: (IpAddressNamePa
             binding.tvIpAddress.text = ipAddressNamePair.ipAddress
             binding.tvIpAddressName.text = ipAddressNamePair.name
             binding.btnDeleteIp.setOnClickListener { itemDeleteClickListener(ipAddressNamePair) }
+            itemView.setOnClickListener { itemClickListener(ipAddressNamePair) }
         }
     }
 

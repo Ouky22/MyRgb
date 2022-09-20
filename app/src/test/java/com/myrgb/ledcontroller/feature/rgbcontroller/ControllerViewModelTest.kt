@@ -8,7 +8,7 @@ import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.testutil.getOrAwaitValue
 import com.myrgb.ledcontroller.network.*
-import com.myrgb.ledcontroller.persistence.FakeIpAddressSettingsRepository
+import com.myrgb.ledcontroller.persistence.ipAddress.FakeIpAddressSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest

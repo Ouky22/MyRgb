@@ -1,30 +1,47 @@
-package com.myrgb.ledcontroller.feature.editipaddress
+package com.myrgb.ledcontroller.feature.ipsettings
 
 import android.content.Context
+import android.view.View
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.myrgb.ledcontroller.IpAddressNamePair
 import com.myrgb.ledcontroller.IpAddressSettings
-import com.myrgb.ledcontroller.persistence.ipaddress.FakeIpAddressSettingsRepository
-import com.myrgb.ledcontroller.util.DataBindingIdlingResource
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.TestApp
 import com.myrgb.ledcontroller.di.TestAppComponent
+import com.myrgb.ledcontroller.persistence.ipaddress.FakeIpAddressSettingsRepository
+import com.myrgb.ledcontroller.util.DataBindingIdlingResource
 import com.myrgb.ledcontroller.util.monitorFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Matcher
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import javax.inject.Inject
 
-class IpAddressListFragmentTest {
 
+@RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
+class IpAddressListFragmentTest {
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Inject
@@ -58,9 +75,7 @@ class IpAddressListFragmentTest {
 
     @Test
     fun when_there_are_stored_ip_addresses_then_they_are_displayed() = runBlocking<Unit> {
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        startFragment()
 
         val ip1 = "192.168.1.1"
         val ip2 = "192.168.1.2"
@@ -74,29 +89,8 @@ class IpAddressListFragmentTest {
     }
 
     @Test
-    fun when_valid_ip_address_and_name_is_added_then_it_is_displayed_in_list() {
-        val ip = "192.168.1.1"
-        val name = "test"
-
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-        onView(withId(R.id.btn_add_ip)).perform(click())
-        onView(withId(R.id.edit_text_name)).perform(replaceText(name))
-        onView(withId(R.id.edit_text_ip)).perform(replaceText(ip))
-        onView(withText(R.string.add)).perform(click())
-        onView(withId(R.id.edit_text_name)).check(doesNotExist())
-        onView(withId(R.id.edit_text_ip)).check(doesNotExist())
-        onView(withText(name)).check(matches(isDisplayed()))
-        onView(withText(ip)).check(matches(isDisplayed()))
-    }
-
-    @Test
     fun when_click_on_delete_ip_button_then_dialog_asks_before_deleting_ip() = runBlocking<Unit> {
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        startFragment()
 
         val ip = "192.168.1.1"
         val ipName = "test"
@@ -115,9 +109,7 @@ class IpAddressListFragmentTest {
 
     @Test
     fun when_ip_address_deleted_then_it_is_no_longer_displayed() = runBlocking<Unit> {
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        startFragment()
 
         val ip = "192.168.1.1"
         val ipName = "test"
@@ -126,64 +118,16 @@ class IpAddressListFragmentTest {
         onView(withText(ip)).check(matches(isDisplayed()))
         onView(withText(ipName)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_delete_ip)).perform(click())
+        onView(withText(R.string.delete)).perform(click()) // accept dialog "are you sure to delete?"
+        onView(withId(R.id.edit_text_ip)).check(doesNotExist()) // dialog should be closed
         onView(withText(ip)).check(doesNotExist())
         onView(withText(ipName)).check(doesNotExist())
     }
 
-    @Test
-    fun when_invalid_ip_address_entered_then_an_error_message_is_displayed() {
-        val invalidIp = "0.700.1.1"
-
+    private fun startFragment() {
         val fragmentScenario =
             launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
         dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-        onView(withId(R.id.btn_add_ip)).perform(click())
-        onView(withId(R.id.edit_text_ip)).perform(replaceText(invalidIp))
-        onView(withId(R.id.btn_add_ip_dialog)).perform(click())
-        onView(withId(R.id.edit_text_ip)).check(
-            matches(
-                hasErrorText(
-                    getApplicationContext<Context>().getString(R.string.invalid_ip)
-                )
-            )
-        )
-    }
-
-    @Test
-    fun when_invalid_ip_name_entered_then_an_erro_message_is_displayed() {
-        val invalidIpName = "  "
-
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-        onView(withId(R.id.btn_add_ip)).perform(click())
-        onView(withId(R.id.edit_text_name)).perform(replaceText(invalidIpName))
-        onView(withId(R.id.btn_add_ip_dialog)).perform(click())
-        onView(withId(R.id.edit_text_name)).check(
-            matches(
-                hasErrorText(
-                    getApplicationContext<Context>().getString(R.string.no_name_entered)
-                )
-            )
-        )
-    }
-
-    @Test
-    fun when_add_ip_address_dialog_is_canceled_then_dialog_is_closed() {
-        val fragmentScenario =
-            launchFragmentInContainer<IpAddressListFragment>(themeResId = R.style.Theme_LedController)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-        onView(withId(R.id.btn_add_ip)).perform(click())
-        onView(withId(R.id.btn_cancel)).perform(click())
-        onView(
-            withText(
-                getApplicationContext<Context>().getString(R.string.add_rgb_controller)
-            )
-        ).check(doesNotExist())
-        onView(withId(R.id.rv_ip_addresses)).check(matches(isCompletelyDisplayed()))
     }
 }
 
