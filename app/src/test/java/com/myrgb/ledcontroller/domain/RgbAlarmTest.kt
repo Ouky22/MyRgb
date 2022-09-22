@@ -11,14 +11,14 @@ class RgbAlarmTest {
 
     @Before
     fun initAlarm() {
-        alarm = RgbAlarm(0, 0, false, 0, 0, 0)
+        alarm = RgbAlarm(0, 0, false, RgbTriplet(0, 0, 0))
     }
 
     private fun initForNextTriggerDateTimeTest(
         triggerTimeMinutes: Int,
         dateTimeStringForFixedClock: String
     ) {
-        alarm = RgbAlarm(0, triggerTimeMinutes, false, 0, 0, 0)
+        alarm = RgbAlarm(0, triggerTimeMinutes, false, RgbTriplet(0, 0, 0))
         alarm.setClockForTesting(
             Clock.fixed(
                 Instant.parse(dateTimeStringForFixedClock),

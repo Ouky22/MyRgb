@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmAddEditBinding
 import com.myrgb.ledcontroller.domain.RgbAlarm
+import com.myrgb.ledcontroller.domain.RgbTriplet
 
 class RgbAlarmAddEditFragment : Fragment() {
 
@@ -39,6 +40,6 @@ class RgbAlarmAddEditFragment : Fragment() {
         val id = navigationArgs.alarmId
 
         // TODO get alarm from shared vieModel with given id
-        binding.rgbAlarm = RgbAlarm(0, 260, false, 255, 255, 0)
+        binding.rgbAlarm = RgbAlarm(0, 260, false, RgbTriplet(255, 200, 0))
     }
 }

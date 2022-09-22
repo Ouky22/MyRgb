@@ -107,7 +107,7 @@
             android:layout_height="0dp"
             android:layout_margin="80dp"
             android:importantForAccessibility="no"
-            android:tint="@{rgbAlarm.rgbTriplet.toRgbInt()}"
+            android:tint="@{rgbAlarm.color.toRgbInt()}"
             app:layout_constraintBottom_toBottomOf="@id/iv_rgb_circle"
             app:layout_constraintEnd_toEndOf="@id/iv_rgb_circle"
             app:layout_constraintStart_toStartOf="@id/iv_rgb_circle"

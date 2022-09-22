@@ -1,10 +1,5 @@
 package com.myrgb.ledcontroller.domain
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import java.lang.Exception
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -15,14 +10,11 @@ import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
 
-@Entity(tableName = "rgbAlarm")
 data class RgbAlarm(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "trigger_time_minutes_of_day") var triggerTimeMinutesOfDay: Int,
-    @ColumnInfo(name = "is_active") var activated: Boolean = false,
-    @ColumnInfo(name = "red_value") var redValue: Int,
-    @ColumnInfo(name = "green_value") var greenValue: Int,
-    @ColumnInfo(name = "blue_value") var blueValue: Int,
+    val id: Int,
+    var triggerTimeMinutesOfDay: Int,
+    var activated: Boolean = false,
+    var color: RgbTriplet,
 
     /**
      * The 7 least significant bits of this byte indicate whether the alarm will be triggered on
@@ -31,9 +23,9 @@ data class RgbAlarm(
      * in regular order (2nd most significant bit -> Monday, ..., least significant bit -> Sunday).
      * The most significant bit has no meaning.
      */
-    @ColumnInfo(name = "repetitive_alarm_weekdays") var repetitiveAlarmWeekdays: Byte = 0b00000000.toByte()
+    var repetitiveAlarmWeekdays: Byte = 0b00000000.toByte()
 ) {
-    @Ignore private var clock = Clock.systemDefaultZone()
+    private var clock = Clock.systemDefaultZone()
 
     val triggerTimeHoursOfDay: Int
         get() = triggerTimeMinutesOfDay / 60
@@ -84,9 +76,6 @@ data class RgbAlarm(
 
     val isOneTimeAlarm
         get() = repetitiveAlarmWeekdays == 0b00000000.toByte() || repetitiveAlarmWeekdays == 0b10000000.toByte()
-
-    val rgbTriplet: RgbTriplet
-        get() = RgbTriplet(redValue, greenValue, blueValue)
 
     fun isRepetitiveOn(day: Weekday) = (repetitiveAlarmWeekdays and day.bitMask) > 0
 

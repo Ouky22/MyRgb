@@ -1,8 +1,7 @@
 package com.myrgb.ledcontroller.feature.rgbalarmclock
 
-import android.app.Application
-import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.domain.RgbAlarm
+import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
 
 class RgbAlarmRepository(private val alarmDao: RgbAlarmDao) {
 
@@ -17,14 +16,14 @@ class RgbAlarmRepository(private val alarmDao: RgbAlarmDao) {
     suspend fun getById(id: Int) = alarmDao.getById(id)
 
     suspend fun insert(rgbAlarm: RgbAlarm) {
-        alarmDao.insert(rgbAlarm)
+        alarmDao.insert(rgbAlarm.asEntityDatabaseModel())
     }
 
     suspend fun update(rgbAlarm: RgbAlarm) {
-        alarmDao.update(rgbAlarm)
+        alarmDao.update(rgbAlarm.asEntityDatabaseModel())
     }
 
     suspend fun delete(rgbAlarm: RgbAlarm) {
-        alarmDao.delete(rgbAlarm)
+        alarmDao.delete(rgbAlarm.asEntityDatabaseModel())
     }
 }

@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmDao
+import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
 
-@Database(entities = [RgbAlarm::class], version = 1, exportSchema = false)
+@Database(entities = [RgbAlarmDatabaseEntity::class], version = 1, exportSchema = false)
 abstract class LedControllerDatabase : RoomDatabase() {
 
     abstract val rgbAlarmDao: RgbAlarmDao
