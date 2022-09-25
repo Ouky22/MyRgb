@@ -15,8 +15,8 @@ import javax.inject.Singleton
         ViewModelModule::class
     ]
 )
+@ExperimentalCoroutinesApi
 interface TestAppComponent : AppComponent {
-    @ExperimentalCoroutinesApi
     fun inject(testFragment: ControllerFragmentTest)
 
     fun inject(testFragment: IpAddressListFragmentTest)

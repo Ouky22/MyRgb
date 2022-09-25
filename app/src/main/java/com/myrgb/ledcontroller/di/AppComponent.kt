@@ -4,6 +4,7 @@ import android.content.Context
 import com.myrgb.ledcontroller.feature.ipsettings.addedit.di.IpAddressAddEditComponent
 import com.myrgb.ledcontroller.feature.rgbcontroller.di.ControllerComponent
 import com.myrgb.ledcontroller.feature.ipsettings.di.IpAddressComponent
+import com.myrgb.ledcontroller.feature.rgbalarmclock.di.RgbAlarmComponent
 import com.myrgb.ledcontroller.feature.rgbshow.di.RgbShowComponent
 import dagger.BindsInstance
 import dagger.Component
@@ -28,4 +29,5 @@ interface AppComponent {
     fun ipAddressComponent(): IpAddressComponent.Factory
     fun ipAddressAddEditComponent(): IpAddressAddEditComponent.Factory
     fun rgbShowComponent(): RgbShowComponent.Factory
+    fun rgbAlarmComponent(): RgbAlarmComponent.Factory
 }

@@ -9,8 +9,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import javax.inject.Inject
 
-class DefaultRgbAlarmRepository(private val alarmDao: RgbAlarmDao) : RgbAlarmRepository {
+class DefaultRgbAlarmRepository @Inject constructor(
+    private val alarmDao: RgbAlarmDao
+) : RgbAlarmRepository {
 
     @ExperimentalCoroutinesApi
     override val alarms = alarmDao.observeAllAlarmsSortedByTime().mapLatest {
@@ -19,7 +22,8 @@ class DefaultRgbAlarmRepository(private val alarmDao: RgbAlarmDao) : RgbAlarmRep
         refreshedAlarms.asDomainModels()
     }
 
-    override suspend fun getNextActivatedAlarm() = alarmDao.getNextActivatedAlarm() ?: throw Resources.NotFoundException("There is no active alarm")
+    override suspend fun getNextActivatedAlarm() = alarmDao.getNextActivatedAlarm()
+        ?: throw Resources.NotFoundException("There is no active alarm")
 
     override suspend fun getById(id: Int) =
         alarmDao.getById(id) ?: throw Resources.NotFoundException("Alarm with id $id not found")
