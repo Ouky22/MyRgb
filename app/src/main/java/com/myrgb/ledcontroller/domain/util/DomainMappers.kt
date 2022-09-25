@@ -2,10 +2,12 @@ package com.myrgb.ledcontroller.domain.util
 
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
+import java.time.ZoneOffset
 
 fun RgbAlarm.asEntityDatabaseModel() = RgbAlarmDatabaseEntity(
     id = id,
-    triggerTimeMinutesOfDay = triggerTimeMinutesOfDay,
+    timeMinutesOfDay = timeMinutesOfDay,
+    dateTimeMillisTheAlarmWasActivatedFor = nextTriggerDateTime.toEpochSecond(ZoneOffset.UTC),
     activated = activated,
     redValue = color.red,
     greenValue = color.green,

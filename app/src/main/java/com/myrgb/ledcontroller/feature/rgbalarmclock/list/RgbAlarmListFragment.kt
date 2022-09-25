@@ -35,7 +35,7 @@ class RgbAlarmListFragment : Fragment() {
 
         val appContainer = (requireActivity().application as App).appContainer
         if (appContainer.rgbAlarmContainer == null)
-            appContainer.rgbAlarmContainer = RgbAlarmContainer(appContainer.rgbAlarmRepository)
+            appContainer.rgbAlarmContainer = RgbAlarmContainer(appContainer.defaultRgbAlarmRepository)
         appContainer.rgbAlarmContainer?.let {
             val vm: RgbAlarmViewModel by viewModels {
                 it.rgbAlarmViewModelFactory

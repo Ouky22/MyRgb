@@ -12,7 +12,7 @@ import kotlin.experimental.or
 
 data class RgbAlarm(
     val id: Int,
-    var triggerTimeMinutesOfDay: Int,
+    var timeMinutesOfDay: Int,
     var activated: Boolean = false,
     var color: RgbTriplet,
 
@@ -25,12 +25,10 @@ data class RgbAlarm(
      */
     var repetitiveAlarmWeekdays: Byte = 0b00000000.toByte()
 ) {
-    private var clock = Clock.systemDefaultZone()
-
     val triggerTimeHoursOfDay: Int
-        get() = triggerTimeMinutesOfDay / 60
+        get() = timeMinutesOfDay / 60
     val triggerTimeMinutesOfHour: Int
-        get() = triggerTimeMinutesOfDay % 60
+        get() = timeMinutesOfDay % 60
 
     val triggerTimeString: String
         get() = LocalTime.of(triggerTimeHoursOfDay, triggerTimeMinutesOfHour)
@@ -87,8 +85,9 @@ data class RgbAlarm(
         repetitiveAlarmWeekdays = repetitiveAlarmWeekdays and day.bitMask.inv()
     }
 
-    fun setClockForTesting(clock: Clock) {
-        this.clock = clock
+    companion object {
+        // make the clock for all rgbAlarms swappable for testing
+        var clock: Clock = Clock.systemDefaultZone()
     }
 }
 

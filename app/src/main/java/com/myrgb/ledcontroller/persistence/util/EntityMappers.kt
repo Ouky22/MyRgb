@@ -6,7 +6,7 @@ import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
 
 fun RgbAlarmDatabaseEntity.asDomainModel() = RgbAlarm(
     id = id,
-    triggerTimeMinutesOfDay = triggerTimeMinutesOfDay,
+    timeMinutesOfDay = timeMinutesOfDay,
     activated = activated,
     color = RgbTriplet(redValue, greenValue, blueValue),
     repetitiveAlarmWeekdays = repetitiveAlarmWeekdays

@@ -19,11 +19,9 @@ class RgbAlarmTest {
         dateTimeStringForFixedClock: String
     ) {
         alarm = RgbAlarm(0, triggerTimeMinutes, false, RgbTriplet(0, 0, 0))
-        alarm.setClockForTesting(
-            Clock.fixed(
-                Instant.parse(dateTimeStringForFixedClock),
-                ZoneId.of("UTC")
-            )
+        RgbAlarm.clock = Clock.fixed(
+            Instant.parse(dateTimeStringForFixedClock),
+            ZoneId.of("UTC")
         )
     }
 

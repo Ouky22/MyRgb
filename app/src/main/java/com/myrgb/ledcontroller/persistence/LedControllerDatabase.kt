@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmDao
+import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDao
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
 
 @Database(entities = [RgbAlarmDatabaseEntity::class], version = 1, exportSchema = false)
