@@ -4,8 +4,12 @@ import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.persistence.rgbalarm.DefaultRgbAlarmRepository
+import javax.inject.Inject
 
-class RgbAlarmViewModel(private val alarmRepository: DefaultRgbAlarmRepository) : ViewModel() {
+class RgbAlarmViewModel @Inject constructor(
+    private val alarmRepository: DefaultRgbAlarmRepository
+) : ViewModel() {
+
     private val _alarms = MutableLiveData<List<RgbAlarm>>()
     val alarms: LiveData<List<RgbAlarm>>
         get() = _alarms
@@ -23,7 +27,8 @@ class RgbAlarmViewModel(private val alarmRepository: DefaultRgbAlarmRepository) 
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val defaultRgbAlarmRepository: DefaultRgbAlarmRepository) : ViewModelProvider.Factory {
+    class Factory(private val defaultRgbAlarmRepository: DefaultRgbAlarmRepository) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             RgbAlarmViewModel(defaultRgbAlarmRepository) as T
     }
