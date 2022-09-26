@@ -11,7 +11,6 @@ import kotlin.experimental.inv
 import kotlin.experimental.or
 
 data class RgbAlarm(
-    val id: Int,
     var timeMinutesOfDay: Int,
     var activated: Boolean = false,
     var color: RgbTriplet,
@@ -88,6 +87,9 @@ data class RgbAlarm(
     companion object {
         // make the clock for all rgbAlarms swappable for testing
         var clock: Clock = Clock.systemDefaultZone()
+
+        val defaultRgbAlarmInstance: RgbAlarm
+            get() = RgbAlarm(0, false, RgbTriplet(255, 0, 0))
     }
 }
 
@@ -108,7 +110,6 @@ enum class Weekday(val bitMask: Byte) {
     val nextWeekday: Weekday
         get() = values()[(this.ordinal + 1) % 7]
 }
-
 
 
 

@@ -1,6 +1,5 @@
 package com.myrgb.ledcontroller.persistence.rgbalarm
 
-import android.content.res.Resources
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
 import com.myrgb.ledcontroller.persistence.util.asDomainModel
@@ -22,11 +21,17 @@ class DefaultRgbAlarmRepository @Inject constructor(
         refreshedAlarms.asDomainModels()
     }
 
-    override suspend fun getNextActivatedAlarm() = alarmDao.getNextActivatedAlarm()
-        ?: throw Resources.NotFoundException("There is no active alarm")
+    override suspend fun getNextActivatedAlarm() = try {
+        alarmDao.getNextActivatedAlarm()
+    } catch (e: NoSuchElementException) {
+        throw NoSuchElementException("There is no active alarm")
+    }
 
-    override suspend fun getById(id: Int) =
-        alarmDao.getById(id) ?: throw Resources.NotFoundException("Alarm with id $id not found")
+    override suspend fun getByTime(timeMinutesOfDay: Int) = try {
+        alarmDao.getByTime(timeMinutesOfDay)
+    } catch (e: NoSuchElementException) {
+        throw NoSuchElementException("RgbAlarm with time $timeMinutesOfDay does not exist")
+    }
 
     override suspend fun insertOrUpdate(rgbAlarm: RgbAlarm) {
         alarmDao.insertOrUpdate(rgbAlarm.asEntityDatabaseModel())
@@ -34,6 +39,10 @@ class DefaultRgbAlarmRepository @Inject constructor(
 
     override suspend fun delete(rgbAlarm: RgbAlarm) {
         alarmDao.delete(rgbAlarm.asEntityDatabaseModel())
+    }
+
+    override suspend fun deleteByTime(timeMinutesOfDay: Int) {
+        alarmDao.deleteByTime(timeMinutesOfDay)
     }
 
     private fun disableExpiredOneTimeAlarms(alarms: List<RgbAlarmDatabaseEntity>): List<RgbAlarmDatabaseEntity> {

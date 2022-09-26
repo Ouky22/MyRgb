@@ -4,9 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "rgbAlarm")
+@Entity(tableName = "rgbAlarm", primaryKeys = ["time_minutes_of_day"])
 data class RgbAlarmDatabaseEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "time_minutes_of_day") val timeMinutesOfDay: Int,
     @ColumnInfo(name = "date_time_millis_the_alarm_was_activated_for") val dateTimeMillisTheAlarmWasActivatedFor: Long,
     @ColumnInfo(name = "is_active") val activated: Boolean,

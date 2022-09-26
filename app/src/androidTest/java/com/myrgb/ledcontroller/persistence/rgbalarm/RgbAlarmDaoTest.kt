@@ -50,19 +50,19 @@ class RgbAlarmDaoTest {
             ZoneId.of("UTC")
         )
         // triggers today at 10:00 am
-        val oneTimeAlarm1 = RgbAlarm(1, 10 * 60, true, RgbTriplet(0, 0, 0))
+        val oneTimeAlarm1 = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0))
         // triggers tomorrow at 8:00 am
-        val oneTimeAlarm2 = RgbAlarm(2, 8 * 60, true, RgbTriplet(0, 0, 0))
+        val oneTimeAlarm2 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
         // triggers today at 12:00 pm
-        val repetitiveAlarm1 = RgbAlarm(3, 12 * 60, true, RgbTriplet(0, 0, 0)).apply {
+        val repetitiveAlarm1 = RgbAlarm(12 * 60, true, RgbTriplet(0, 0, 0)).apply {
             makeRepetitiveOn(Weekday.SUNDAY)
         }
         // triggers in two days and in six days at 6:00 pm
-        val repetitiveAlarm2 = RgbAlarm(4, 18 * 60, true, RgbTriplet(0, 0, 0)).apply {
+        val repetitiveAlarm2 = RgbAlarm(18 * 60, true, RgbTriplet(0, 0, 0)).apply {
             makeRepetitiveOn(Weekday.TUESDAY)
             makeRepetitiveOn(Weekday.SATURDAY)
         }
-        val disabledAlarm = RgbAlarm(5, 12 * 60, false, RgbTriplet(0, 0, 0))
+        val disabledAlarm = RgbAlarm(11 * 60, false, RgbTriplet(0, 0, 0))
         rgbAlarmDao.insertOrUpdate(oneTimeAlarm1.asEntityDatabaseModel())
         rgbAlarmDao.insertOrUpdate(oneTimeAlarm2.asEntityDatabaseModel())
         rgbAlarmDao.insertOrUpdate(repetitiveAlarm1.asEntityDatabaseModel())
@@ -70,16 +70,16 @@ class RgbAlarmDaoTest {
         rgbAlarmDao.insertOrUpdate(disabledAlarm.asEntityDatabaseModel())
 
 
-        assertEquals(oneTimeAlarm1, rgbAlarmDao.getNextActivatedAlarm()!!.asDomainModel())
+        assertEquals(oneTimeAlarm1, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
         rgbAlarmDao.delete(oneTimeAlarm1.asEntityDatabaseModel())
 
-        assertEquals(repetitiveAlarm1, rgbAlarmDao.getNextActivatedAlarm()!!.asDomainModel())
+        assertEquals(repetitiveAlarm1, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
         rgbAlarmDao.delete(repetitiveAlarm1.asEntityDatabaseModel())
 
-        assertEquals(oneTimeAlarm2, rgbAlarmDao.getNextActivatedAlarm()!!.asDomainModel())
+        assertEquals(oneTimeAlarm2, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
         rgbAlarmDao.delete(oneTimeAlarm2.asEntityDatabaseModel())
 
-        assertEquals(repetitiveAlarm2, rgbAlarmDao.getNextActivatedAlarm()!!.asDomainModel())
+        assertEquals(repetitiveAlarm2, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
         rgbAlarmDao.delete(repetitiveAlarm2.asEntityDatabaseModel())
 
         assertNull(rgbAlarmDao.getNextActivatedAlarm())
@@ -87,10 +87,10 @@ class RgbAlarmDaoTest {
 
     @Test
     fun test_getAllActiveAlarms() = runTest {
-        val alarm1 = RgbAlarm(1, 8 * 60, true, RgbTriplet(0, 0, 0))
-        val alarm2 = RgbAlarm(2, 12 * 60, false, RgbTriplet(0, 0, 0))
-        val alarm3 = RgbAlarm(3, 18 * 60, false, RgbTriplet(0, 0, 0))
-        val alarm4 = RgbAlarm(4, 9 * 60, true, RgbTriplet(0, 0, 0))
+        val alarm1 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
+        val alarm2 = RgbAlarm(12 * 60, false, RgbTriplet(0, 0, 0))
+        val alarm3 = RgbAlarm(18 * 60, false, RgbTriplet(0, 0, 0))
+        val alarm4 = RgbAlarm(9 * 60, true, RgbTriplet(0, 0, 0))
 
         rgbAlarmDao.insertOrUpdate(
             listOf(
@@ -110,17 +110,19 @@ class RgbAlarmDaoTest {
     @Test
     fun when_adding_existing_and_new_alarms_the_existing_alarms_are_updated_and_the_new_alarms_are_added() =
         runTest {
-            var alarm1 = RgbAlarm(1, 8 * 60, true, RgbTriplet(0, 0, 0))
-            val alarm2 = RgbAlarm(2, 12 * 60, false, RgbTriplet(0, 0, 0))
-            val alarm3 = RgbAlarm(3, 18 * 60, false, RgbTriplet(0, 0, 0))
+            var alarm1 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
+            val alarm2 = RgbAlarm(12 * 60, false, RgbTriplet(0, 0, 0))
+            val alarm3 = RgbAlarm(18 * 60, false, RgbTriplet(0, 0, 0))
             rgbAlarmDao.insertOrUpdate(alarm1.asEntityDatabaseModel())
-            alarm1 = RgbAlarm(1, 8 * 60, false, RgbTriplet(32, 0, 10))
+            alarm1 = RgbAlarm(8 * 60, false, RgbTriplet(32, 0, 10))
 
-            rgbAlarmDao.insertOrUpdate(listOf(
-                alarm1.asEntityDatabaseModel(), // gets updated
-                alarm2.asEntityDatabaseModel(), // gets added
-                alarm3.asEntityDatabaseModel(), // gets added
-            ))
+            rgbAlarmDao.insertOrUpdate(
+                listOf(
+                    alarm1.asEntityDatabaseModel(), // gets updated
+                    alarm2.asEntityDatabaseModel(), // gets added
+                    alarm3.asEntityDatabaseModel(), // gets added
+                )
+            )
 
             val allAlarms = rgbAlarmDao.observeAllAlarmsSortedByTime().first()
             assertEquals(3, allAlarms.size)

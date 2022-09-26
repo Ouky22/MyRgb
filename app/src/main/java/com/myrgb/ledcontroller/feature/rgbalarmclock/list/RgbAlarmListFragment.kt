@@ -40,7 +40,7 @@ class RgbAlarmListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerViewAlarms.adapter = RgbAlarmListAdapter { rgbAlarm ->
-            val action = RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.id)
+            val action = RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.timeMinutesOfDay)
             findNavController().navigate(action)
         }
         binding.recyclerViewAlarms.setHasFixedSize(true)

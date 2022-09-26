@@ -23,19 +23,12 @@ class FakeRgbAlarmDao @Inject constructor() : RgbAlarmDao {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): RgbAlarmDatabaseEntity =
-        alarmList.first { it.id == id }
-
-    override suspend fun existsAlarmWithTime(timeMinutesOfDay: Int): Boolean {
-        return alarmList.any { it.timeMinutesOfDay == timeMinutesOfDay }
-    }
+    override suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity =
+        alarmList.first { it.timeMinutesOfDay == timeMinutesOfDay }
 
     override suspend fun insertOrUpdate(rgbAlarm: RgbAlarmDatabaseEntity) {
-        if (alarmList.any { it.id == rgbAlarm.id }) {
-            alarmList.removeIf { it.id == rgbAlarm.id }
-            alarmList.add(rgbAlarm)
-        } else
-            alarmList.add(rgbAlarm)
+        alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
+        alarmList.add(rgbAlarm)
     }
 
     override suspend fun insertOrUpdate(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
@@ -43,6 +36,10 @@ class FakeRgbAlarmDao @Inject constructor() : RgbAlarmDao {
     }
 
     override suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity) {
-        alarmList.removeIf { it.id == rgbAlarm.id }
+        alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
+    }
+
+    override suspend fun deleteByTime(timeMinutesOfDay: Int) {
+        alarmList.removeIf { it.timeMinutesOfDay == timeMinutesOfDay }
     }
 }

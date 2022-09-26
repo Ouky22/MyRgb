@@ -6,6 +6,7 @@ import com.myrgb.ledcontroller.domain.LedMicrocontroller
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
+import com.myrgb.ledcontroller.domain.util.computeAngleInCircle
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
@@ -73,7 +74,8 @@ class ControllerViewModel @Inject constructor(
     }
 
     fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
-        val angle = computeAngleBetweenTouchAndRgbCircleCenter(touchPositionX, touchPositionY)
+        val angle =
+            computeAngleInCircle(rgbCircleCenterX, rgbCircleCenterY, touchPositionX, touchPositionY)
         val newColor = rgbCircle.calculateColorAtAngle(angle)
         _currentlySelectedColor.value = newColor
 
@@ -175,28 +177,6 @@ class ControllerViewModel @Inject constructor(
         ledMicrocontroller.forEach { controller ->
             controller.rgbStrips.forEach { it.enabled = true }
         }
-    }
-
-    private fun computeAngleBetweenTouchAndRgbCircleCenter(x: Int, y: Int): Int {
-        // This method computes the angle (0-359) between a vertical vector (0,-1) starting in the rgb
-        // center and a vector between the rgb circle center and the specified position
-
-        // vector from the rgb circle center to the specified position
-        val centerPointVectorX = x - rgbCircleCenterX
-        val centerPointVectorY = y - rgbCircleCenterY
-
-        // length of the vector from rgb circle center to the specified position
-        val centerPointVectorLength =
-            sqrt((centerPointVectorX * centerPointVectorX + centerPointVectorY * centerPointVectorY).toDouble())
-
-        // compute the angle between the two vectors
-        var angle = acos(-centerPointVectorY / centerPointVectorLength) / Math.PI * 180
-
-        // if the position is left to the center, compute the greater angle
-        if (x < rgbCircleCenterX)
-            angle = 360 - angle
-
-        return angle.toInt()
     }
 
     private fun allStripsAreOff(): Boolean {

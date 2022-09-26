@@ -13,7 +13,7 @@ class RgbAlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
 
     companion object DiffCallback : DiffUtil.ItemCallback<RgbAlarm>() {
         override fun areItemsTheSame(oldItem: RgbAlarm, newItem: RgbAlarm): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.timeMinutesOfDay == newItem.timeMinutesOfDay
         }
 
         override fun areContentsTheSame(oldItem: RgbAlarm, newItem: RgbAlarm): Boolean {

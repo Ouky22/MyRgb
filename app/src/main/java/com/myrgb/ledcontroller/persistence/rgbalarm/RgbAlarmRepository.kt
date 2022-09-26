@@ -9,9 +9,11 @@ interface RgbAlarmRepository {
 
     suspend fun getNextActivatedAlarm(): RgbAlarmDatabaseEntity
 
-    suspend fun getById(id: Int): RgbAlarmDatabaseEntity
+    suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity
 
     suspend fun insertOrUpdate(rgbAlarm: RgbAlarm)
 
     suspend fun delete(rgbAlarm: RgbAlarm)
+
+    suspend fun deleteByTime(timeMinutesOfDay: Int)
 }

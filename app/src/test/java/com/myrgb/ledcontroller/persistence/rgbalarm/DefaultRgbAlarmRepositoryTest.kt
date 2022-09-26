@@ -39,10 +39,10 @@ class DefaultRgbAlarmRepositoryTest {
             Instant.parse("2023-12-31T09:00:00Z"),
             ZoneId.of("UTC")
         )
-        // activate alarms for 10:00 am
-        val activeOneTimeAlarm = RgbAlarm(1, 10 * 60, true, RgbTriplet(0, 0, 0))
-        val disabledOneTimeAlarm = RgbAlarm(2, 10 * 60, false, RgbTriplet(0, 0, 0))
-        val activeRepetitiveAlarm = RgbAlarm(3, 10 * 60, true, RgbTriplet(0, 0, 0)).apply {
+        // activate alarms between 10:00 and 10:30 am
+        val activeOneTimeAlarm = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0))
+        val disabledOneTimeAlarm = RgbAlarm( 10 * 60 + 15, false, RgbTriplet(0, 0, 0))
+        val activeRepetitiveAlarm = RgbAlarm( 10 * 60 + 30, true, RgbTriplet(0, 0, 0)).apply {
             makeRepetitiveOn(Weekday.MONDAY)
         }
         fakeRgbAlarmDao.insertOrUpdate(activeOneTimeAlarm.asEntityDatabaseModel())
@@ -56,9 +56,9 @@ class DefaultRgbAlarmRepositoryTest {
         // repository should receive the alarms..
         fakeRgbAlarmDao.emitAlarms()
         // ..and disables expired one-time alarms
-        assertFalse(emittedValues.last().first { it.id == activeOneTimeAlarm.id }.activated)
-        assertFalse(emittedValues.last().first { it.id == disabledOneTimeAlarm.id }.activated)
-        assertTrue(emittedValues.last().first { it.id == activeRepetitiveAlarm.id }.activated)
+        assertFalse(emittedValues.last().first { it.timeMinutesOfDay == activeOneTimeAlarm.timeMinutesOfDay }.activated)
+        assertFalse(emittedValues.last().first { it.timeMinutesOfDay == disabledOneTimeAlarm.timeMinutesOfDay }.activated)
+        assertTrue(emittedValues.last().first { it.timeMinutesOfDay == activeRepetitiveAlarm.timeMinutesOfDay }.activated)
 
         collectJob.cancel()
     }

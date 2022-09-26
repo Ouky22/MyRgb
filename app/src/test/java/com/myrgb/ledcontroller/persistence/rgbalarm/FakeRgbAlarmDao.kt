@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class FakeRgbAlarmDao : RgbAlarmDao {
-    private val alarmList = mutableListOf<RgbAlarmDatabaseEntity>()
+    val alarmList = mutableListOf<RgbAlarmDatabaseEntity>()
     private val alarms = MutableSharedFlow<MutableList<RgbAlarmDatabaseEntity>>()
 
     suspend fun emitAlarms() {
@@ -20,12 +20,12 @@ class FakeRgbAlarmDao : RgbAlarmDao {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getById(id: Int): RgbAlarmDatabaseEntity =
-        alarmList.first { it.id == id }
+    override suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity =
+        alarmList.first { it.timeMinutesOfDay == timeMinutesOfDay }
 
     override suspend fun insertOrUpdate(rgbAlarm: RgbAlarmDatabaseEntity) {
-        if (alarmList.any { it.id == rgbAlarm.id }) {
-            alarmList.removeIf { it.id == rgbAlarm.id }
+        if (alarmList.any { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }) {
+            alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
             alarmList.add(rgbAlarm)
         } else
             alarmList.add(rgbAlarm)
@@ -36,6 +36,10 @@ class FakeRgbAlarmDao : RgbAlarmDao {
     }
 
     override suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity) {
-        alarmList.removeIf { it.id == rgbAlarm.id }
+        alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
+    }
+
+    override suspend fun deleteByTime(timeMinutesOfDay: Int) {
+        alarmList.removeIf { it.timeMinutesOfDay == timeMinutesOfDay }
     }
 }

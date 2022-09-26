@@ -37,9 +37,7 @@ class RgbAlarmAddEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val id = navigationArgs.alarmId
-
         // TODO get alarm from shared vieModel with given id
-        binding.rgbAlarm = RgbAlarm(0, 260, false, RgbTriplet(255, 200, 0))
+        binding.rgbAlarm = RgbAlarm(260, false, RgbTriplet(255, 200, 0))
     }
 }

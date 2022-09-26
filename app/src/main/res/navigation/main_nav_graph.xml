@@ -34,7 +34,7 @@
         android:label="@string/alarm_add_edit_dest_label"
         tools:layout="@layout/fragment_rgb_alarm_add_edit">
         <argument
-            android:name="alarm_id"
+            android:name="alarm_time"
             android:defaultValue="0"
             app:argType="integer" />
     </fragment>

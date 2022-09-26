@@ -5,7 +5,6 @@ import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
 import java.time.ZoneOffset
 
 fun RgbAlarm.asEntityDatabaseModel() = RgbAlarmDatabaseEntity(
-    id = id,
     timeMinutesOfDay = timeMinutesOfDay,
     dateTimeMillisTheAlarmWasActivatedFor = nextTriggerDateTime.toEpochSecond(ZoneOffset.UTC),
     activated = activated,

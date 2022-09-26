@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LedController</string>
     <string name="controller_dest_label">Led Controller</string>
-    <string name="alarm_list_dest_label">RGB Alarme</string>
+    <string name="alarm_list_dest_label">RGB Alarms</string>
     <string name="alarm_add_edit_dest_label">Alarm Details</string>
     <string name="ip_address_list_dest_label">Edit RGB-Controllers</string>
     <string name="rgb_show_dest_label">RGB Show</string>
@@ -24,6 +24,8 @@
     <string name="no_ip_entered">No IP address entered</string>
     <string name="ip_already_exists">IP already exists</string>
     <string name="no_name_entered">No name entered</string>
+
+    <string name="add_rgb_alarm">Add RGB alarm</string>
 
     <string name="monday_start_letter">M</string>
     <string name="tuesday_start_letter">T</string>
