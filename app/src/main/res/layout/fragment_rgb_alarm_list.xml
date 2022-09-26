@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmViewModel" />
+            type="com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

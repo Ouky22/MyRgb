@@ -13,15 +13,16 @@ import androidx.navigation.fragment.findNavController
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
-import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class RgbAlarmListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel by viewModels<RgbAlarmViewModel> { viewModelFactory }
+    private val viewModel by viewModels<RgbAlarmListViewModel> { viewModelFactory }
 
     private lateinit var binding: FragmentRgbAlarmListBinding
 
@@ -44,12 +45,17 @@ class RgbAlarmListFragment : Fragment() {
             findNavController().navigate(action)
         }
         binding.recyclerViewAlarms.setHasFixedSize(true)
+
+        binding.fabAddRgbAlarm.setOnClickListener {
+            val action = RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit()
+            findNavController().navigate(action)
+        }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        (requireContext().applicationContext as App).appComponent.rgbAlarmComponent().create()
+        (requireContext().applicationContext as App).appComponent.rgbAlarmListComponent().create()
             .inject(this)
     }
 }

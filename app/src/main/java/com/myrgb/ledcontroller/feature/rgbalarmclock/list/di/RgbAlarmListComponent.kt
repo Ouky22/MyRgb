@@ -1,14 +1,14 @@
-package com.myrgb.ledcontroller.feature.rgbalarmclock.di
+package com.myrgb.ledcontroller.feature.rgbalarmclock.list.di
 
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [RgbAlarmModule::class])
-interface RgbAlarmComponent {
+interface RgbAlarmListComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(): RgbAlarmComponent
+        fun create(): RgbAlarmListComponent
     }
 
     fun inject(rgbAlarmListFragment: RgbAlarmListFragment)

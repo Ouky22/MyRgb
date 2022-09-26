@@ -35,7 +35,7 @@
         tools:layout="@layout/fragment_rgb_alarm_add_edit">
         <argument
             android:name="alarm_time"
-            android:defaultValue="0"
+            android:defaultValue="-1"
             app:argType="integer" />
     </fragment>
     <fragment
