@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
@@ -20,6 +21,7 @@ import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmAddEditBinding
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
+import com.myrgb.ledcontroller.util.collectLatestLifecycleFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -59,16 +61,17 @@ class RgbAlarmAddEditFragment : Fragment() {
         if (navigationArgs.alarmTime > -1)
             viewModel.setRgbAlarmForEditing(navigationArgs.alarmTime)
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.rgbAlarmToAddOrEdit.collect {
-                    binding.rgbAlarm = it
-                    updateCheckedStateOfDayButtons(it)
-                }
-            }
+        collectLatestLifecycleFlow(viewModel.rgbAlarmToAddOrEdit) {
+            binding.rgbAlarm = it
+            updateCheckedStateOfDayButtons(it)
+        }
+        collectLatestLifecycleFlow(viewModel.dataSaved) { dataSaved ->
+            if (dataSaved) findNavController().popBackStack()
         }
 
         setClickListenerOfDayButtons()
+        binding.btnSave.setOnClickListener { viewModel.saveRgbAlarm() }
+        binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
     }
 
     private fun updateCheckedStateOfDayButtons(rgbAlarm: RgbAlarm) {

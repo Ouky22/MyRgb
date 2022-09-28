@@ -29,6 +29,10 @@ class RgbAlarmAddEditViewModel @Inject constructor(
     private val inEditingMode
         get() = initialTimeOfEditedRgbAlarm > -1
 
+    private val _dataSaved = MutableStateFlow(false)
+    val dataSaved: StateFlow<Boolean>
+    get() = _dataSaved
+
     fun setRgbAlarmForEditing(timeMinutesOfDay: Int) {
         viewModelScope.launch {
             try {
@@ -51,6 +55,8 @@ class RgbAlarmAddEditViewModel @Inject constructor(
                 rgbAlarmRepository.insertOrUpdate(_rgbAlarmToAddOrEdit.value)
             } else // when new alarm added or edited alarm has same time
                 rgbAlarmRepository.insertOrUpdate(_rgbAlarmToAddOrEdit.value)
+
+            _dataSaved.value = true
         }
     }
 
