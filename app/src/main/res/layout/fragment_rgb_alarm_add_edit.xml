@@ -39,6 +39,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_trigger_time">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_monday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,6 +47,7 @@
                 android:text="@string/monday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tuesday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,6 +55,7 @@
                 android:text="@string/tuesday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_wednesday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,6 +63,7 @@
                 android:text="@string/wednesday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_thursday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,6 +71,7 @@
                 android:text="@string/thursday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_friday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,6 +79,7 @@
                 android:text="@string/friday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_saturday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,6 +87,7 @@
                 android:text="@string/saturday_start_letter" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sunday"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

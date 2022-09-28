@@ -13,11 +13,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmAddEditBinding
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
+import com.myrgb.ledcontroller.domain.Weekday
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -61,8 +63,45 @@ class RgbAlarmAddEditFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.rgbAlarmToAddOrEdit.collect {
                     binding.rgbAlarm = it
+                    updateCheckedStateOfDayButtons(it)
                 }
             }
+        }
+
+        setClickListenerOfDayButtons()
+    }
+
+    private fun updateCheckedStateOfDayButtons(rgbAlarm: RgbAlarm) {
+        binding.btnMonday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.MONDAY)
+        binding.btnTuesday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.TUESDAY)
+        binding.btnWednesday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.WEDNESDAY)
+        binding.btnThursday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.THURSDAY)
+        binding.btnFriday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.FRIDAY)
+        binding.btnSaturday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.SATURDAY)
+        binding.btnSunday.isChecked = rgbAlarm.isRepetitiveOn(Weekday.SUNDAY)
+    }
+
+    private fun setClickListenerOfDayButtons() {
+        binding.btnMonday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.MONDAY)
+        }
+        binding.btnTuesday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.TUESDAY)
+        }
+        binding.btnWednesday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.WEDNESDAY)
+        }
+        binding.btnThursday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.THURSDAY)
+        }
+        binding.btnFriday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.FRIDAY)
+        }
+        binding.btnSaturday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.SATURDAY)
+        }
+        binding.btnSunday.setOnClickListener {
+            viewModel.toggleRepetitiveStatusForWeekday(Weekday.SUNDAY)
         }
     }
 }

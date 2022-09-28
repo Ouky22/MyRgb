@@ -4,6 +4,7 @@ import android.content.Context
 import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragmentTest
 import com.myrgb.ledcontroller.feature.ipsettings.IpAddressListFragmentTest
 import com.myrgb.ledcontroller.feature.ipsettings.addedit.IpAddressAddEditDialogFragmentTest
+import com.myrgb.ledcontroller.feature.rgbalarmclock.addedit.RgbAlarmAddEditFragmentTest
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragmentTest
 import dagger.BindsInstance
 import dagger.Component
@@ -33,4 +34,6 @@ interface TestAppComponent : AppComponent {
     fun inject(testFragment: IpAddressAddEditDialogFragmentTest)
 
     fun inject(testFragment: RgbAlarmListFragmentTest)
+
+    fun inject(testFragment: RgbAlarmAddEditFragmentTest)
 }

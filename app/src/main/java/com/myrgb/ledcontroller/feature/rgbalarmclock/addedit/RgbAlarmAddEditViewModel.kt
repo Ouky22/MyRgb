@@ -60,15 +60,12 @@ class RgbAlarmAddEditViewModel @Inject constructor(
         )
     }
 
-    fun makeRepetitiveOn(weekday: Weekday) {
+    fun toggleRepetitiveStatusForWeekday(weekday: Weekday) {
         _rgbAlarmToAddOrEdit.value = _rgbAlarmToAddOrEdit.value.apply {
-            makeRepetitiveOn(weekday)
-        }
-    }
-
-    fun makeNotRepetitiveOn(weekday: Weekday) {
-        _rgbAlarmToAddOrEdit.value = _rgbAlarmToAddOrEdit.value.apply {
-            makeNotRepetitiveOn(weekday)
+            if (isRepetitiveOn(weekday))
+                makeNotRepetitiveOn(weekday)
+            else
+                makeRepetitiveOn(weekday)
         }
     }
 
@@ -81,7 +78,6 @@ class RgbAlarmAddEditViewModel @Inject constructor(
             color = newColor
         )
     }
-
 }
 
 

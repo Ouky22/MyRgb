@@ -45,7 +45,7 @@ class RgbAlarmAddEditViewModelTest {
             val newTime = 7 * 60 + 59
             rgbAlarmViewModel.setRgbAlarmForEditing(rgbAlarm.timeMinutesOfDay)
             rgbAlarmViewModel.setTime(newTime)
-            rgbAlarmViewModel.makeRepetitiveOn(Weekday.SATURDAY)
+            rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.SATURDAY)
             rgbAlarmViewModel.saveRgbAlarm()
 
             val allAlarms = alarmDao.alarmList
@@ -63,7 +63,7 @@ class RgbAlarmAddEditViewModelTest {
 
             rgbAlarmViewModel.setRgbAlarmForEditing(2 * 60)
             rgbAlarmViewModel.setTime(13 * 60)
-            rgbAlarmViewModel.makeRepetitiveOn(Weekday.SATURDAY)
+            rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.SATURDAY)
             rgbAlarmViewModel.saveRgbAlarm()
 
             val allAlarms = alarmDao.alarmList
@@ -83,10 +83,10 @@ class RgbAlarmAddEditViewModelTest {
         val time = 23 * 60 + 59
         val color = RgbTriplet(255, 0, 0)
         rgbAlarmViewModel.setTime(time)
-        rgbAlarmViewModel.makeRepetitiveOn(Weekday.MONDAY)
-        rgbAlarmViewModel.makeRepetitiveOn(Weekday.WEDNESDAY)
-        rgbAlarmViewModel.makeNotRepetitiveOn(Weekday.WEDNESDAY)
-        rgbAlarmViewModel.makeRepetitiveOn(Weekday.SUNDAY)
+        rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.MONDAY)
+        rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.WEDNESDAY)
+        rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.WEDNESDAY)
+        rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.SUNDAY)
         rgbAlarmViewModel.setAlarmColorOnRgbCircleTouch(5, 0) // touch is at 0° => color = red
         rgbAlarmViewModel.saveRgbAlarm()
 
@@ -110,7 +110,7 @@ class RgbAlarmAddEditViewModelTest {
             alarmDao.insertOrUpdate(alarm.asEntityDatabaseModel())
 
             rgbAlarmViewModel.setTime(time)
-            rgbAlarmViewModel.makeRepetitiveOn(Weekday.WEDNESDAY)
+            rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.WEDNESDAY)
             rgbAlarmViewModel.setAlarmColorOnRgbCircleTouch(5, 0) // touch at 0° => color = red
             rgbAlarmViewModel.saveRgbAlarm()
 

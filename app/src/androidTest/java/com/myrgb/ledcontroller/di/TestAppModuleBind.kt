@@ -22,10 +22,6 @@ abstract class TestAppModuleBind {
     @Binds
     abstract fun bindRgbRequestService(service: FakeRgbRequestService): RgbRequestService
 
-//    @Singleton
-//    @Binds
-//    abstract fun bindRgbAlarmDao(dao: FakeRgbAlarmDao): RgbAlarmDao
-
     @Singleton
     @Binds
     abstract fun bindRgbAlarmRepository(repo: DefaultRgbAlarmRepository): RgbAlarmRepository
