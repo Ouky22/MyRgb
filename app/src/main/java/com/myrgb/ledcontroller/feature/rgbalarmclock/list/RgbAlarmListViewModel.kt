@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.myrgb.ledcontroller.domain.RgbAlarm
-import com.myrgb.ledcontroller.persistence.rgbalarm.DefaultRgbAlarmRepository
+import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class RgbAlarmListViewModel @Inject constructor(
-    private val alarmRepository: DefaultRgbAlarmRepository
+    private val alarmRepository: RgbAlarmRepository
 ) : ViewModel() {
 
     private val _alarms = MutableStateFlow<List<RgbAlarm>>(emptyList())
@@ -45,9 +45,9 @@ class RgbAlarmListViewModel @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val defaultRgbAlarmRepository: DefaultRgbAlarmRepository) :
+    class Factory(private val rgbAlarmRepository: RgbAlarmRepository) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RgbAlarmListViewModel(defaultRgbAlarmRepository) as T
+            RgbAlarmListViewModel(rgbAlarmRepository) as T
     }
 }

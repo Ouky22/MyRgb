@@ -4,9 +4,6 @@ import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.network.RgbRequestService
 import com.myrgb.ledcontroller.persistence.ipaddress.FakeIpAddressSettingsRepository
 import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
-import com.myrgb.ledcontroller.persistence.rgbalarm.DefaultRgbAlarmRepository
-import com.myrgb.ledcontroller.persistence.rgbalarm.FakeRgbAlarmDao
-import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDao
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import dagger.Binds
 import dagger.Module
@@ -21,8 +18,4 @@ abstract class TestAppModuleBind {
     @Singleton
     @Binds
     abstract fun bindRgbRequestService(service: FakeRgbRequestService): RgbRequestService
-
-    @Singleton
-    @Binds
-    abstract fun bindRgbAlarmRepository(repo: DefaultRgbAlarmRepository): RgbAlarmRepository
 }

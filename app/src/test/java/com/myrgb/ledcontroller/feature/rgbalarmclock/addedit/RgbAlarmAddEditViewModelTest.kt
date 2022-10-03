@@ -5,7 +5,7 @@ import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
-import com.myrgb.ledcontroller.persistence.rgbalarm.DefaultRgbAlarmRepository
+import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import com.myrgb.ledcontroller.persistence.rgbalarm.FakeRgbAlarmDao
 import com.myrgb.ledcontroller.persistence.util.asDomainModel
 import com.myrgb.ledcontroller.testutil.MainDispatcherRule
@@ -19,7 +19,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class RgbAlarmAddEditViewModelTest {
     private lateinit var alarmDao: FakeRgbAlarmDao
-    private lateinit var repository: DefaultRgbAlarmRepository
+    private lateinit var repository: RgbAlarmRepository
     private lateinit var rgbAlarmViewModel: RgbAlarmAddEditViewModel
 
     @get:Rule
@@ -31,7 +31,7 @@ class RgbAlarmAddEditViewModelTest {
     @Before
     fun setup() {
         alarmDao = FakeRgbAlarmDao()
-        repository = DefaultRgbAlarmRepository(alarmDao)
+        repository = RgbAlarmRepository(alarmDao)
         rgbAlarmViewModel = RgbAlarmAddEditViewModel(repository)
     }
 

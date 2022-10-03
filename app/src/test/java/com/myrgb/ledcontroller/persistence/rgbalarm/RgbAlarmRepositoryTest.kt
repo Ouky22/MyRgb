@@ -17,14 +17,14 @@ import java.time.Instant
 import java.time.ZoneId
 
 @ExperimentalCoroutinesApi
-class DefaultRgbAlarmRepositoryTest {
+class RgbAlarmRepositoryTest {
     private lateinit var fakeRgbAlarmDao: FakeRgbAlarmDao
-    private lateinit var repository: DefaultRgbAlarmRepository
+    private lateinit var repository: RgbAlarmRepository
 
     @Before
     fun setup() {
         fakeRgbAlarmDao = FakeRgbAlarmDao()
-        repository = DefaultRgbAlarmRepository(fakeRgbAlarmDao)
+        repository = RgbAlarmRepository(fakeRgbAlarmDao)
     }
 
     @Test
