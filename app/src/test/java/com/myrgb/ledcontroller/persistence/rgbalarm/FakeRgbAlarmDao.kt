@@ -23,7 +23,7 @@ class FakeRgbAlarmDao : RgbAlarmDao {
     override suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity =
         alarmList.first { it.timeMinutesOfDay == timeMinutesOfDay }
 
-    override suspend fun insertOrUpdate(rgbAlarm: RgbAlarmDatabaseEntity) {
+    override suspend fun insertOrReplace(rgbAlarm: RgbAlarmDatabaseEntity) {
         if (alarmList.any { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }) {
             alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
             alarmList.add(rgbAlarm)
@@ -31,8 +31,15 @@ class FakeRgbAlarmDao : RgbAlarmDao {
             alarmList.add(rgbAlarm)
     }
 
-    override suspend fun insertOrUpdate(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
-        rgbAlarms.forEach { insertOrUpdate(it) }
+    override suspend fun insertOrReplace(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
+        rgbAlarms.forEach { insertOrReplace(it) }
+    }
+
+    override suspend fun insertOrIgnore(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
+        rgbAlarms.forEach { alarm ->
+            if (!alarmList.any { it == alarm })
+                alarmList.add(alarm)
+        }
     }
 
     override suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity) {

@@ -26,13 +26,17 @@ class FakeRgbAlarmDao @Inject constructor() : RgbAlarmDao {
     override suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity =
         alarmList.first { it.timeMinutesOfDay == timeMinutesOfDay }
 
-    override suspend fun insertOrUpdate(rgbAlarm: RgbAlarmDatabaseEntity) {
+    override suspend fun insertOrReplace(rgbAlarm: RgbAlarmDatabaseEntity) {
         alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
         alarmList.add(rgbAlarm)
     }
 
-    override suspend fun insertOrUpdate(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
-        rgbAlarms.forEach { insertOrUpdate(it) }
+    override suspend fun insertOrReplace(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
+        rgbAlarms.forEach { insertOrReplace(it) }
+    }
+
+    override suspend fun insertOrIgnore(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity) {

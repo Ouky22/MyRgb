@@ -56,8 +56,8 @@ class RgbAlarmListFragmentTest {
     fun when_clicking_on_rgb_alarm_in_list_then_navigate_to_add_edit_fragment() = runTest {
         val alarm1 = RgbAlarm(10 * 60 + 15, false, RgbTriplet(0, 255, 0))
         val alarm2 = RgbAlarm(10 * 60 + 30, true, RgbTriplet(0, 0, 255))
-        rgbAlarmDao.insertOrUpdate(alarm1.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrUpdate(alarm2.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(alarm2.asEntityDatabaseModel())
 
         val navController = TestNavHostController(getApplicationContext())
         val fragmentScenario =

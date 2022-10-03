@@ -11,7 +11,7 @@ interface RgbAlarmRepository {
 
     suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity
 
-    suspend fun insertOrUpdate(rgbAlarm: RgbAlarm)
+    suspend fun insertOrReplace(rgbAlarm: RgbAlarm)
 
     suspend fun delete(rgbAlarm: RgbAlarm)
 

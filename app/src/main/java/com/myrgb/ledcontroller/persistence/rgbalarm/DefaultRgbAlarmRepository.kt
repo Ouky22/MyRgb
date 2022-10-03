@@ -17,7 +17,7 @@ class DefaultRgbAlarmRepository @Inject constructor(
     @ExperimentalCoroutinesApi
     override val alarms = alarmDao.observeAllAlarmsSortedByTime().mapLatest {
         val refreshedAlarms = disableExpiredOneTimeAlarms(it)
-        alarmDao.insertOrUpdate(refreshedAlarms)
+        alarmDao.insertOrIgnore(refreshedAlarms)
         refreshedAlarms.asDomainModels()
     }
 
@@ -33,8 +33,8 @@ class DefaultRgbAlarmRepository @Inject constructor(
         throw NoSuchElementException("RgbAlarm with time $timeMinutesOfDay does not exist")
     }
 
-    override suspend fun insertOrUpdate(rgbAlarm: RgbAlarm) {
-        alarmDao.insertOrUpdate(rgbAlarm.asEntityDatabaseModel())
+    override suspend fun insertOrReplace(rgbAlarm: RgbAlarm) {
+        alarmDao.insertOrReplace(rgbAlarm.asEntityDatabaseModel())
     }
 
     override suspend fun delete(rgbAlarm: RgbAlarm) {

@@ -63,11 +63,11 @@ class RgbAlarmDaoTest {
             makeRepetitiveOn(Weekday.SATURDAY)
         }
         val disabledAlarm = RgbAlarm(11 * 60, false, RgbTriplet(0, 0, 0))
-        rgbAlarmDao.insertOrUpdate(oneTimeAlarm1.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrUpdate(oneTimeAlarm2.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrUpdate(repetitiveAlarm1.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrUpdate(repetitiveAlarm2.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrUpdate(disabledAlarm.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(oneTimeAlarm1.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(oneTimeAlarm2.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(repetitiveAlarm1.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(repetitiveAlarm2.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(disabledAlarm.asEntityDatabaseModel())
 
 
         assertEquals(oneTimeAlarm1, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
@@ -92,7 +92,7 @@ class RgbAlarmDaoTest {
         val alarm3 = RgbAlarm(18 * 60, false, RgbTriplet(0, 0, 0))
         val alarm4 = RgbAlarm(9 * 60, true, RgbTriplet(0, 0, 0))
 
-        rgbAlarmDao.insertOrUpdate(
+        rgbAlarmDao.insertOrReplace(
             listOf(
                 alarm1.asEntityDatabaseModel(),
                 alarm2.asEntityDatabaseModel(),
@@ -113,10 +113,10 @@ class RgbAlarmDaoTest {
             var alarm1 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
             val alarm2 = RgbAlarm(12 * 60, false, RgbTriplet(0, 0, 0))
             val alarm3 = RgbAlarm(18 * 60, false, RgbTriplet(0, 0, 0))
-            rgbAlarmDao.insertOrUpdate(alarm1.asEntityDatabaseModel())
+            rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
             alarm1 = RgbAlarm(8 * 60, false, RgbTriplet(32, 0, 10))
 
-            rgbAlarmDao.insertOrUpdate(
+            rgbAlarmDao.insertOrReplace(
                 listOf(
                     alarm1.asEntityDatabaseModel(), // gets updated
                     alarm2.asEntityDatabaseModel(), // gets added

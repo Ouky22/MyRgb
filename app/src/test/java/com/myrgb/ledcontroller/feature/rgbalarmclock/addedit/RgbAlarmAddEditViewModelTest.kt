@@ -7,7 +7,6 @@ import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
 import com.myrgb.ledcontroller.persistence.rgbalarm.DefaultRgbAlarmRepository
 import com.myrgb.ledcontroller.persistence.rgbalarm.FakeRgbAlarmDao
-import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDatabaseEntity
 import com.myrgb.ledcontroller.persistence.util.asDomainModel
 import com.myrgb.ledcontroller.testutil.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +39,7 @@ class RgbAlarmAddEditViewModelTest {
     fun `when an alarm is set for editing then the corresponding alarm will be edited`() =
         runTest {
             val rgbAlarm = RgbAlarm(23 * 60, true, RgbTriplet(0, 0, 0))
-            alarmDao.insertOrUpdate(rgbAlarm.asEntityDatabaseModel())
+            alarmDao.insertOrReplace(rgbAlarm.asEntityDatabaseModel())
 
             val newTime = 7 * 60 + 59
             rgbAlarmViewModel.setRgbAlarmForEditing(rgbAlarm.timeMinutesOfDay)
@@ -59,7 +58,7 @@ class RgbAlarmAddEditViewModelTest {
     fun `when a not existing time is set for editing an alarm then the a new alarm is added`() =
         runTest {
             val initialAlarm = RgbAlarm(23 * 60, false, RgbTriplet(0, 0, 0))
-            alarmDao.insertOrUpdate(initialAlarm.asEntityDatabaseModel())
+            alarmDao.insertOrReplace(initialAlarm.asEntityDatabaseModel())
 
             rgbAlarmViewModel.setRgbAlarmForEditing(2 * 60)
             rgbAlarmViewModel.setTime(13 * 60)
@@ -76,7 +75,7 @@ class RgbAlarmAddEditViewModelTest {
     @Test
     fun `test adding an alarm`() = runTest {
         val initialAlarm = RgbAlarm(0, false, RgbTriplet(0, 100, 0))
-        alarmDao.insertOrUpdate(initialAlarm.asEntityDatabaseModel())
+        alarmDao.insertOrReplace(initialAlarm.asEntityDatabaseModel())
         rgbAlarmViewModel.rgbCircleCenterX = 5
         rgbAlarmViewModel.rgbCircleCenterY = 5
 
@@ -107,7 +106,7 @@ class RgbAlarmAddEditViewModelTest {
             rgbAlarmViewModel.rgbCircleCenterY = 5
             val time = 23 * 60
             val alarm = RgbAlarm(time, false, RgbTriplet(0, 0, 0))
-            alarmDao.insertOrUpdate(alarm.asEntityDatabaseModel())
+            alarmDao.insertOrReplace(alarm.asEntityDatabaseModel())
 
             rgbAlarmViewModel.setTime(time)
             rgbAlarmViewModel.toggleRepetitiveStatusForWeekday(Weekday.WEDNESDAY)

@@ -23,10 +23,13 @@ interface RgbAlarmDao {
     suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(rgbAlarm: RgbAlarmDatabaseEntity)
+    suspend fun insertOrReplace(rgbAlarm: RgbAlarmDatabaseEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(rgbAlarms: List<RgbAlarmDatabaseEntity>)
+    suspend fun insertOrReplace(rgbAlarms: List<RgbAlarmDatabaseEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertOrIgnore(rgbAlarms: List<RgbAlarmDatabaseEntity>)
 
     @Delete
     suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity)

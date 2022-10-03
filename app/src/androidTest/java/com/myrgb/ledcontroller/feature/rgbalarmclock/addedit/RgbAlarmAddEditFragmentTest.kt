@@ -60,7 +60,7 @@ class RgbAlarmAddEditFragmentTest {
             makeRepetitiveOn(Weekday.MONDAY)
             makeRepetitiveOn(Weekday.FRIDAY)
         }
-        rgbAlarmDao.insertOrUpdate(alarm.asEntityDatabaseModel())
+        rgbAlarmDao.insertOrReplace(alarm.asEntityDatabaseModel())
 
         startFragment(bundleOf("alarm_time" to alarm.timeMinutesOfDay))
 

@@ -45,9 +45,9 @@ class DefaultRgbAlarmRepositoryTest {
         val activeRepetitiveAlarm = RgbAlarm( 10 * 60 + 30, true, RgbTriplet(0, 0, 0)).apply {
             makeRepetitiveOn(Weekday.MONDAY)
         }
-        fakeRgbAlarmDao.insertOrUpdate(activeOneTimeAlarm.asEntityDatabaseModel())
-        fakeRgbAlarmDao.insertOrUpdate(disabledOneTimeAlarm.asEntityDatabaseModel())
-        fakeRgbAlarmDao.insertOrUpdate(activeRepetitiveAlarm.asEntityDatabaseModel())
+        fakeRgbAlarmDao.insertOrReplace(activeOneTimeAlarm.asEntityDatabaseModel())
+        fakeRgbAlarmDao.insertOrReplace(disabledOneTimeAlarm.asEntityDatabaseModel())
+        fakeRgbAlarmDao.insertOrReplace(activeRepetitiveAlarm.asEntityDatabaseModel())
         // set clock to 11.00
         RgbAlarm.clock = Clock.fixed(
             Instant.parse("2023-12-31T11:00:00Z"),

@@ -52,9 +52,9 @@ class RgbAlarmAddEditViewModel @Inject constructor(
 
             if (inEditingMode && rgbAlarmTimeChanged) {
                 rgbAlarmRepository.deleteByTime(initialTimeOfEditedRgbAlarm)
-                rgbAlarmRepository.insertOrUpdate(_rgbAlarmToAddOrEdit.value)
-            } else // when new alarm added or edited alarm has same time
-                rgbAlarmRepository.insertOrUpdate(_rgbAlarmToAddOrEdit.value)
+                rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
+            } else // when new alarm added or edited and alarm has same time
+                rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
 
             _dataSaved.value = true
         }
