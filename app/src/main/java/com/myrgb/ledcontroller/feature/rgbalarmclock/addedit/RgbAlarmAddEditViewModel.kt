@@ -7,7 +7,6 @@ import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.domain.util.computeAngleInCircle
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
-import com.myrgb.ledcontroller.persistence.util.asDomainModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,13 +30,12 @@ class RgbAlarmAddEditViewModel @Inject constructor(
 
     private val _dataSaved = MutableStateFlow(false)
     val dataSaved: StateFlow<Boolean>
-    get() = _dataSaved
+        get() = _dataSaved
 
     fun setRgbAlarmForEditing(timeMinutesOfDay: Int) {
         viewModelScope.launch {
             try {
-                _rgbAlarmToAddOrEdit.value =
-                    rgbAlarmRepository.getByTime(timeMinutesOfDay).asDomainModel()
+                _rgbAlarmToAddOrEdit.value = rgbAlarmRepository.getByTime(timeMinutesOfDay)
                 initialTimeOfEditedRgbAlarm = _rgbAlarmToAddOrEdit.value.timeMinutesOfDay
             } catch (e: NoSuchElementException) {
                 e.printStackTrace()

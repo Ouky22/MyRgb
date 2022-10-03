@@ -24,13 +24,13 @@ class RgbAlarmRepository @Inject constructor(
     }
 
     suspend fun getNextActivatedAlarm() = try {
-        alarmDao.getNextActivatedAlarm()
+        alarmDao.getNextActivatedAlarm().asDomainModel()
     } catch (e: NoSuchElementException) {
         throw NoSuchElementException("There is no active alarm")
     }
 
     suspend fun getByTime(timeMinutesOfDay: Int) = try {
-        alarmDao.getByTime(timeMinutesOfDay)
+        alarmDao.getByTime(timeMinutesOfDay).asDomainModel()
     } catch (e: NoSuchElementException) {
         throw NoSuchElementException("RgbAlarm with time $timeMinutesOfDay does not exist")
     }
