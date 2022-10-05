@@ -8,7 +8,9 @@ import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import java.time.LocalTime
 
-class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+class TimePickerFragment(
+    private val onTimeSet: (timeMinutes: Int) -> Unit
+) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val currentTime = LocalTime.now()
@@ -25,6 +27,6 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        TODO("Not yet implemented")
+        onTimeSet(hourOfDay * 60 + minute)
     }
 }

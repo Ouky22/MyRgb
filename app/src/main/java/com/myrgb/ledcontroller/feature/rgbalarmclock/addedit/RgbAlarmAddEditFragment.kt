@@ -72,6 +72,11 @@ class RgbAlarmAddEditFragment : Fragment() {
         setClickListenerOfDayButtons()
         binding.btnSave.setOnClickListener { viewModel.saveRgbAlarm() }
         binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
+        binding.tvTriggerTime.setOnClickListener {
+            TimePickerFragment { timeMinutes ->
+                viewModel.setTime(timeMinutes)
+            }.show(parentFragmentManager, "alarmTimePicker")
+        }
     }
 
     private fun updateCheckedStateOfDayButtons(rgbAlarm: RgbAlarm) {
