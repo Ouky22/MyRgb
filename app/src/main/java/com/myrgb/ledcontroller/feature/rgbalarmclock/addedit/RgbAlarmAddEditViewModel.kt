@@ -33,6 +33,10 @@ class RgbAlarmAddEditViewModel @Inject constructor(
         get() = _dataSaved
 
     fun setRgbAlarmForEditing(timeMinutesOfDay: Int) {
+        val rgbAlarmAlreadySetForEditing = inEditingMode
+        if (rgbAlarmAlreadySetForEditing)
+            return
+
         viewModelScope.launch {
             try {
                 _rgbAlarmToAddOrEdit.value = rgbAlarmRepository.getByTime(timeMinutesOfDay)

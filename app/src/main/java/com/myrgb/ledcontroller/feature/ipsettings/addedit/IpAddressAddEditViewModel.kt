@@ -46,6 +46,10 @@ class IpAddressAddEditViewModel @Inject constructor(
     }
 
     fun setSelectedIpAddressNamePair(ipAddress: String) {
+        val ipAddressNamePairAlreadySetForEditing = inEditingMode
+        if (ipAddressNamePairAlreadySetForEditing)
+            return
+
         viewModelScope.launch {
             ipAddressSettingsRepository.getIpAddressNamePairByIpAddress(ipAddress)?.let {
                 _selectedIpAddressNamePair = it
