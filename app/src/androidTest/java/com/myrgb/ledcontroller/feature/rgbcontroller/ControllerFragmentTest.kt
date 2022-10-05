@@ -23,7 +23,7 @@ import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.network.FakeRgbRequestService
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.persistence.ipaddress.FakeIpAddressSettingsRepository
-import com.myrgb.ledcontroller.util.*
+import com.myrgb.ledcontroller.extensions.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.After

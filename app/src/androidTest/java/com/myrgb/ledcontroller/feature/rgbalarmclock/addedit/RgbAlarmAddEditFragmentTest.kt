@@ -17,9 +17,9 @@ import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmDao
-import com.myrgb.ledcontroller.util.DataBindingIdlingResource
-import com.myrgb.ledcontroller.util.monitorFragment
-import com.myrgb.ledcontroller.util.withTint
+import com.myrgb.ledcontroller.extensions.DataBindingIdlingResource
+import com.myrgb.ledcontroller.extensions.monitorFragment
+import com.myrgb.ledcontroller.extensions.withTint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.containsString

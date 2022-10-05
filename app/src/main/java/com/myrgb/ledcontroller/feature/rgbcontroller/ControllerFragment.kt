@@ -14,7 +14,8 @@ import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
 import com.myrgb.ledcontroller.domain.RgbStrip
-import com.myrgb.ledcontroller.util.collectLatestLifecycleFlow
+import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
+import com.myrgb.ledcontroller.extensions.coordinateIsInsideView
 import javax.inject.Inject
 
 class ControllerFragment : Fragment() {
@@ -45,12 +46,10 @@ class ControllerFragment : Fragment() {
             if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
                 return@setOnTouchListener true
 
-            val touchPositionX = e.x.toInt()
-            val touchPositionY = e.y.toInt()
-
-            // only change color if touch position inside of the rgb circle image view
-            if (touchPositionY > binding.ivRgbCircle.top && touchPositionY < binding.ivRgbCircle.bottom)
-                viewModel.onRgbCircleTouch(touchPositionX, touchPositionY)
+            val touchPositionX = e.x
+            val touchPositionY = e.y
+            if (binding.ivRgbCircle.coordinateIsInsideView(touchPositionX, touchPositionY))
+                viewModel.onRgbCircleTouch(touchPositionX.toInt(), touchPositionY.toInt())
 
             return@setOnTouchListener true
         }

@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.util
+package com.myrgb.ledcontroller.extensions
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle

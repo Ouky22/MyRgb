@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.util
+package com.myrgb.ledcontroller.extensions
 
 import android.view.InputDevice
 import android.view.MotionEvent

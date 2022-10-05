@@ -3,26 +3,22 @@ package com.myrgb.ledcontroller.feature.rgbalarmclock.addedit
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.button.MaterialButton
 import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmAddEditBinding
 import com.myrgb.ledcontroller.domain.RgbAlarm
-import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
-import com.myrgb.ledcontroller.util.collectLatestLifecycleFlow
-import kotlinx.coroutines.launch
+import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
+import com.myrgb.ledcontroller.extensions.coordinateIsInsideView
 import javax.inject.Inject
 
 class RgbAlarmAddEditFragment : Fragment() {
@@ -76,6 +72,28 @@ class RgbAlarmAddEditFragment : Fragment() {
             TimePickerFragment { timeMinutes ->
                 viewModel.setTime(timeMinutes)
             }.show(parentFragmentManager, "alarmTimePicker")
+        }
+
+        binding.root.setOnTouchListener { v, e ->
+            v.performClick()
+
+            if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
+                return@setOnTouchListener true
+
+            val touchPositionX = e.x
+            val touchPositionY = e.y
+            if (binding.ivRgbCircle.coordinateIsInsideView(touchPositionX, touchPositionY))
+                viewModel.setAlarmColorOnRgbCircleTouch(
+                    touchPositionX.toInt(),
+                    touchPositionY.toInt()
+                )
+
+            return@setOnTouchListener true
+        }
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+            viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
+            viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.util
+package com.myrgb.ledcontroller.extensions
 
 import android.graphics.Color.*
 import android.view.View
