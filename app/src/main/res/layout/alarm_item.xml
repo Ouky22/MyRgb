@@ -23,7 +23,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/iv_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:importantForAccessibility="no"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/tv_alarm_time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_alarm_time"
+                app:srcCompat="@drawable/ic_selected" />
+
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_alarm_time"
                 style="@style/Widget.LedControllerV2.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,7 +44,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@{alarm.triggerTimeString}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_selected"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="07:00" />
 

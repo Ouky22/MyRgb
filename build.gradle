@@ -38,6 +38,8 @@ ext {
     moshiVersion = '2.9.0'
     moshiKotlinVersion = '1.13.0'
     protobufVersion = '3.19.4'
+    recyclerViewVersion = '1.2.1'
+    recyclerViewSelectionVersion = '1.1.0'
     testRunnerVersion = '1.4.0'
     testRulesVersion = '1.4.0'
     testJunitVersion = '1.4.0'
