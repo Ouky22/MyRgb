@@ -14,5 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/green_dark</item>
         <item name="bottomNavigationStyle">@style/Widget.LedControllerV2.BottomNavBar</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/green</item>
     </style>
 </resources>

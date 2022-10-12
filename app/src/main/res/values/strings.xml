@@ -24,7 +24,7 @@
     <string name="no_ip_entered">No IP address entered</string>
     <string name="ip_already_exists">IP already exists</string>
     <string name="no_name_entered">No name entered</string>
-    <string name="rgb_alarms_selected">%d RGB alarms selected</string>
+    <string name="item_selected">%d selected</string>
     <string name="delete_rgb_alarm">Delete RGB alarm</string>
 
     <string name="add_rgb_alarm">Add RGB alarm</string>

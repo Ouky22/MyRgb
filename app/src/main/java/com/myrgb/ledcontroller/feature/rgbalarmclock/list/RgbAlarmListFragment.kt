@@ -70,7 +70,7 @@ class RgbAlarmListFragment : Fragment() {
             actionMode =
                 (requireActivity() as MainActivity).startSupportActionMode(actionModeCallback)
             actionMode?.title =
-                getString(R.string.rgb_alarms_selected, selectionTracker.selection.size())
+                getString(R.string.item_selected, selectionTracker.selection.size())
         }
         super.onViewStateRestored(savedInstanceState)
     }
@@ -115,7 +115,7 @@ class RgbAlarmListFragment : Fragment() {
             val anyRgbAlarmSelected = selectionTracker.selection.size() > 0
             if (anyRgbAlarmSelected)
                 actionMode?.title =
-                    getString(R.string.rgb_alarms_selected, selectionTracker.selection.size())
+                    getString(R.string.item_selected, selectionTracker.selection.size())
             else
                 actionMode?.finish()
         }
