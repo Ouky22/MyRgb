@@ -215,7 +215,7 @@ class ControllerFragmentTest {
             val rgbCircleHeight = fragmentScenario.getHeightOfView(R.id.iv_rgb_circle)
 
             onView(withId(R.id.iv_rgb_circle)).perform(
-                relativeClickAt(0F, rgbCircleHeight / 2)
+                relativeClickAt(1F, rgbCircleHeight / 2)
             )
             val expectedTint = RgbCircle().calculateColorAtAngle(270)
             onView(withId(R.id.iv_bulb)).check(matches(withTint(expectedTint)))

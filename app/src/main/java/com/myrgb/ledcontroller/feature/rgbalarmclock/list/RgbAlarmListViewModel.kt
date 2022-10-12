@@ -44,6 +44,12 @@ class RgbAlarmListViewModel @Inject constructor(
 //        }
     }
 
+    fun deleteRgbAlarms(rgbAlarms: List<RgbAlarm>) {
+        viewModelScope.launch {
+            alarmRepository.delete(rgbAlarms)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     class Factory(private val rgbAlarmRepository: RgbAlarmRepository) :
         ViewModelProvider.Factory {

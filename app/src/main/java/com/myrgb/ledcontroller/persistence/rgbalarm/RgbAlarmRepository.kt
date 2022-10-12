@@ -2,6 +2,7 @@ package com.myrgb.ledcontroller.persistence.rgbalarm
 
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
+import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModels
 import com.myrgb.ledcontroller.persistence.util.asDomainModel
 import com.myrgb.ledcontroller.persistence.util.asDomainModels
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,6 +42,10 @@ class RgbAlarmRepository @Inject constructor(
 
     suspend fun delete(rgbAlarm: RgbAlarm) {
         alarmDao.delete(rgbAlarm.asEntityDatabaseModel())
+    }
+
+    suspend fun delete(rgbAlarms: List<RgbAlarm>) {
+        alarmDao.delete(rgbAlarms.asEntityDatabaseModels())
     }
 
     suspend fun deleteByTime(timeMinutesOfDay: Int) {

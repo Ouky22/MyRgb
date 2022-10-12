@@ -43,6 +43,12 @@ class FakeRgbAlarmDao @Inject constructor() : RgbAlarmDao {
         alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
     }
 
+    override suspend fun delete(rgbAlarms: List<RgbAlarmDatabaseEntity>) {
+        rgbAlarms.forEach { rgbAlarm ->
+            alarmList.removeIf { it.timeMinutesOfDay == rgbAlarm.timeMinutesOfDay }
+        }
+    }
+
     override suspend fun deleteByTime(timeMinutesOfDay: Int) {
         alarmList.removeIf { it.timeMinutesOfDay == timeMinutesOfDay }
     }

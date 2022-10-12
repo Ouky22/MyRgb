@@ -34,6 +34,9 @@ interface RgbAlarmDao {
     @Delete
     suspend fun delete(rgbAlarm: RgbAlarmDatabaseEntity)
 
+    @Delete
+    suspend fun delete(rgbAlarms: List<RgbAlarmDatabaseEntity>)
+
     @Query("DELETE FROM rgbAlarm WHERE time_minutes_of_day = :timeMinutesOfDay")
     suspend fun deleteByTime(timeMinutesOfDay: Int)
 }

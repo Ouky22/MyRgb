@@ -2,9 +2,8 @@ package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.view.ActionMode
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +13,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.myrgb.ledcontroller.App
+import com.myrgb.ledcontroller.MainActivity
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListAdapter
@@ -33,6 +33,9 @@ class RgbAlarmListFragment : Fragment() {
     private lateinit var binding: FragmentRgbAlarmListBinding
 
     private lateinit var selectionTracker: SelectionTracker<Long>
+
+    private var actionMode: ActionMode? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +66,12 @@ class RgbAlarmListFragment : Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         selectionTracker.onRestoreInstanceState(savedInstanceState)
+        if (selectionTracker.hasSelection()) {
+            actionMode =
+                (requireActivity() as MainActivity).startSupportActionMode(actionModeCallback)
+            actionMode?.title =
+                getString(R.string.rgb_alarms_selected, selectionTracker.selection.size())
+        }
         super.onViewStateRestored(savedInstanceState)
     }
 
@@ -90,6 +99,55 @@ class RgbAlarmListFragment : Fragment() {
         ).withSelectionPredicate(
             SelectionPredicates.createSelectAnything()
         ).build()
+        selectionTracker.addObserver(selectionTrackerObserver)
         alarmListAdapter.tracker = selectionTracker
+    }
+
+    private val selectionTrackerObserver = object : SelectionTracker.SelectionObserver<Long>() {
+        override fun onSelectionChanged() {
+            super.onSelectionChanged()
+            val actionModeNotEnabled = actionMode == null
+            if (actionModeNotEnabled) {
+                val mainActivity = requireActivity() as MainActivity
+                actionMode = mainActivity.startSupportActionMode(actionModeCallback)
+            }
+
+            val anyRgbAlarmSelected = selectionTracker.selection.size() > 0
+            if (anyRgbAlarmSelected)
+                actionMode?.title =
+                    getString(R.string.rgb_alarms_selected, selectionTracker.selection.size())
+            else
+                actionMode?.finish()
+        }
+    }
+
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.rgb_alarm_selection_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = true
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.action_delete_rgb_alarm -> {
+                    val listAdapter = binding.recyclerViewAlarms.adapter as RgbAlarmListAdapter
+                    val selectedRgbAlarms = listAdapter.currentList.filter { rgbAlarm ->
+                        selectionTracker.selection.contains(rgbAlarm.timeMinutesOfDay.toLong())
+                    }
+                    viewModel.deleteRgbAlarms(selectedRgbAlarms)
+                    actionMode?.finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+            val listAdapter = binding.recyclerViewAlarms.adapter as RgbAlarmListAdapter
+            listAdapter.tracker?.clearSelection()
+        }
     }
 }
