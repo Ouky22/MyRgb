@@ -16,10 +16,6 @@ class RgbAlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
 
     var tracker: SelectionTracker<Long>? = null
 
-    init {
-        setHasStableIds(true)
-    }
-
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
