@@ -35,6 +35,48 @@ class RgbAlarmListViewModelTest {
     }
 
     @Test
+    fun `activate rgb alarm`() = runTest {
+        val rgbAlarm1 = RgbAlarm(15 * 60, true, RgbTriplet(0, 0, 0))
+        val rgbAlarm2 = RgbAlarm(7 * 60, false, RgbTriplet(10, 0, 0))
+        alarmDao.insertOrIgnore(
+            listOf(
+                rgbAlarm1.asEntityDatabaseModel(), rgbAlarm2.asEntityDatabaseModel()
+            )
+        )
+
+        rgbAlarmListViewModel.activateRgbAlarm(rgbAlarm1)
+        rgbAlarmListViewModel.activateRgbAlarm(rgbAlarm2)
+
+        val rgbAlarm1FromDb =
+            alarmDao.alarmList.first { it.timeMinutesOfDay == rgbAlarm1.timeMinutesOfDay }
+        assertTrue(rgbAlarm1FromDb.activated)
+        val rgbAlarm2FromDb =
+            alarmDao.alarmList.first { it.timeMinutesOfDay == rgbAlarm2.timeMinutesOfDay }
+        assertTrue(rgbAlarm2FromDb.activated)
+    }
+
+    @Test
+    fun `deactivate rgb alarm`() = runTest {
+        val rgbAlarm1 = RgbAlarm(15 * 60, true, RgbTriplet(0, 0, 0))
+        val rgbAlarm2 = RgbAlarm(7 * 60, false, RgbTriplet(10, 0, 0))
+        alarmDao.insertOrIgnore(
+            listOf(
+                rgbAlarm1.asEntityDatabaseModel(), rgbAlarm2.asEntityDatabaseModel()
+            )
+        )
+
+        rgbAlarmListViewModel.deactivateRgbAlarm(rgbAlarm1)
+        rgbAlarmListViewModel.deactivateRgbAlarm(rgbAlarm2)
+
+        val rgbAlarm1FromDb =
+            alarmDao.alarmList.first { it.timeMinutesOfDay == rgbAlarm1.timeMinutesOfDay }
+        assertFalse(rgbAlarm1FromDb.activated)
+        val rgbAlarm2FromDb =
+            alarmDao.alarmList.first { it.timeMinutesOfDay == rgbAlarm2.timeMinutesOfDay }
+        assertFalse(rgbAlarm2FromDb.activated)
+    }
+
+    @Test
     fun `delete multiple alarms`() = runTest {
         val rgbAlarm1 = RgbAlarm(13 * 60, true, RgbTriplet(0, 0, 0))
         val rgbAlarm2 = RgbAlarm(10 * 60, false, RgbTriplet(10, 0, 0))

@@ -82,11 +82,19 @@ class RgbAlarmListFragment : Fragment() {
     }
 
     private fun initRecyclerViewAdapter() {
-        val alarmListAdapter = RgbAlarmListAdapter { rgbAlarm ->
-            val action =
-                RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.timeMinutesOfDay)
-            findNavController().navigate(action)
-        }
+        val alarmListAdapter = RgbAlarmListAdapter(
+            itemClickListener = { rgbAlarm ->
+                val action =
+                    RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.timeMinutesOfDay)
+                findNavController().navigate(action)
+            },
+            onSwitchCheckedChangeListener = { alarmActivated, rgbAlarm ->
+                if (alarmActivated)
+                    viewModel.activateRgbAlarm(rgbAlarm)
+                else
+                    viewModel.deactivateRgbAlarm(rgbAlarm)
+            }
+        )
         binding.recyclerViewAlarms.adapter = alarmListAdapter
         binding.recyclerViewAlarms.setHasFixedSize(true)
 

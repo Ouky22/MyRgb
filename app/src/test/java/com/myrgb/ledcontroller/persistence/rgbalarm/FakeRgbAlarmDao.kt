@@ -55,4 +55,26 @@ class FakeRgbAlarmDao : RgbAlarmDao {
     override suspend fun deleteByTime(timeMinutesOfDay: Int) {
         alarmList.removeIf { it.timeMinutesOfDay == timeMinutesOfDay }
     }
+
+    override suspend fun activateRgbAlarmByTime(timeMinutesOfDay: Int) {
+        val indexOfAlarmToUpdate =
+            alarmList.indexOfFirst { it.timeMinutesOfDay == timeMinutesOfDay }
+
+        val alarmExists = indexOfAlarmToUpdate > -1
+        if (alarmExists) {
+            val updatedAlarm = alarmList.removeAt(indexOfAlarmToUpdate).copy(activated = true)
+            alarmList.add(updatedAlarm)
+        }
+    }
+
+    override suspend fun deactivateRgbAlarmByTime(timeMinutesOfDay: Int) {
+        val indexOfAlarmToUpdate =
+            alarmList.indexOfFirst { it.timeMinutesOfDay == timeMinutesOfDay }
+
+        val alarmExists = indexOfAlarmToUpdate > -1
+        if (alarmExists) {
+            val updatedAlarm = alarmList.removeAt(indexOfAlarmToUpdate).copy(activated = false)
+            alarmList.add(updatedAlarm)
+        }
+    }
 }

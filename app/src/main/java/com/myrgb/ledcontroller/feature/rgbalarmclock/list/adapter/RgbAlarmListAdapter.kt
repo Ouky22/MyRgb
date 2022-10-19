@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.myrgb.ledcontroller.databinding.AlarmItemBinding
 import com.myrgb.ledcontroller.domain.RgbAlarm
 
-class RgbAlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
+class RgbAlarmListAdapter(
+    private val itemClickListener: (RgbAlarm) -> Unit,
+    private val onSwitchCheckedChangeListener: (alarmActivated: Boolean, RgbAlarm) -> Unit
+) :
     ListAdapter<RgbAlarm, RgbAlarmListAdapter.AlarmViewHolder>(DiffCallback) {
 
     var tracker: SelectionTracker<Long>? = null
@@ -35,6 +38,9 @@ class RgbAlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
 
         fun bind(rgbAlarm: RgbAlarm) {
             binding.alarm = rgbAlarm
+            binding.switchAlarm.setOnCheckedChangeListener { _, checked ->
+                onSwitchCheckedChangeListener(checked, rgbAlarm)
+            }
             itemView.setOnClickListener { itemClickListener(rgbAlarm) }
 
             tracker?.let {
@@ -46,7 +52,7 @@ class RgbAlarmListAdapter(private val itemClickListener: (RgbAlarm) -> Unit) :
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
             object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getPosition(): Int =  bindingAdapterPosition
+                override fun getPosition(): Int = bindingAdapterPosition
                 override fun getSelectionKey(): Long =
                     getItem(bindingAdapterPosition).timeMinutesOfDay.toLong()
             }

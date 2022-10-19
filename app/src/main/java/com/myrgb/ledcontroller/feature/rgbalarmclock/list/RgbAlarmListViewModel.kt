@@ -44,6 +44,18 @@ class RgbAlarmListViewModel @Inject constructor(
 //        }
     }
 
+    fun activateRgbAlarm(rgbAlarm: RgbAlarm) {
+        viewModelScope.launch {
+            alarmRepository.activateRgbAlarm(rgbAlarm)
+        }
+    }
+
+    fun deactivateRgbAlarm(rgbAlarm: RgbAlarm) {
+        viewModelScope.launch {
+            alarmRepository.deactivateRgbAlarm(rgbAlarm)
+        }
+    }
+
     fun deleteRgbAlarms(rgbAlarms: List<RgbAlarm>) {
         viewModelScope.launch {
             alarmRepository.delete(rgbAlarms)

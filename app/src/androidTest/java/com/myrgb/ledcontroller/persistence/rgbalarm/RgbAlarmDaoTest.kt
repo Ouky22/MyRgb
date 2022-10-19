@@ -130,6 +130,64 @@ class RgbAlarmDaoTest {
             assertTrue(allAlarms.any { it == alarm2.asEntityDatabaseModel() })
             assertTrue(allAlarms.any { it == alarm3.asEntityDatabaseModel() })
         }
+
+    @Test
+    fun when_activating_active_alarm_then_it_is_still_activated() = runTest {
+        val alarm1 = RgbAlarm(5 * 60, true, RgbTriplet(0, 0, 0))
+        rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
+
+        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+
+        val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
+        assertTrue(rgbAlarmFromDb.activated)
+    }
+
+    @Test
+    fun when_activating_not_active_alarm_then_it_is_activated() = runTest {
+        val alarm1 = RgbAlarm(5 * 60, false, RgbTriplet(0, 0, 0))
+        rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
+
+        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+
+        val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
+        assertTrue(rgbAlarmFromDb.activated)
+    }
+
+    @Test
+    fun when_deactivating_not_active_alarm_then_it_is_still_deactivated() = runTest {
+        val alarm1 = RgbAlarm(5 * 60, false, RgbTriplet(0, 0, 0))
+        rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
+
+        rgbAlarmDao.deactivateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+
+        val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
+        assertFalse(rgbAlarmFromDb.activated)
+    }
+
+    @Test
+    fun when_deactivating_active_alarm_then_it_is_deactivated() = runTest {
+        val alarm1 = RgbAlarm(5 * 60, true, RgbTriplet(0, 0, 0))
+        rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
+
+        rgbAlarmDao.deactivateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+
+        val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
+        assertFalse(rgbAlarmFromDb.activated)
+    }
+
+    @Test
+    fun when_activating_non_existing_alarm_nothing_changes() = runTest {
+        rgbAlarmDao.activateRgbAlarmByTime(42)
+
+        assertTrue(rgbAlarmDao.observeAllAlarmsSortedByTime().first().isEmpty())
+    }
+
+    @Test
+    fun when_deactivating_non_existing_alarm_nothing_changes() = runTest {
+        rgbAlarmDao.deactivateRgbAlarmByTime(42)
+
+        assertTrue(rgbAlarmDao.observeAllAlarmsSortedByTime().first().isEmpty())
+    }
 }
 
 
