@@ -2,10 +2,9 @@ package com.myrgb.ledcontroller.feature.rgbalarmclock.addedit
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +18,7 @@ import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
 import com.myrgb.ledcontroller.extensions.coordinateIsInsideView
+import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragmentDirections
 import javax.inject.Inject
 
 class RgbAlarmAddEditFragment : Fragment() {
@@ -54,8 +54,10 @@ class RgbAlarmAddEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navigationArgs: RgbAlarmAddEditFragmentArgs by navArgs()
-        if (navigationArgs.alarmTime > -1)
+        if (navigationArgs.alarmTime > -1) {
             viewModel.setRgbAlarmForEditing(navigationArgs.alarmTime)
+            setupMenu()
+        }
 
         collectLatestLifecycleFlow(viewModel.rgbAlarmToAddOrEdit) {
             binding.rgbAlarm = it
@@ -95,6 +97,26 @@ class RgbAlarmAddEditFragment : Fragment() {
             viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
             viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
         }
+    }
+
+    private fun setupMenu() {
+        val menuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.delete_rgb_alarm_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId != R.id.action_delete_rgb_alarm)
+                    return false
+
+                viewModel.deleteAlarm()
+                findNavController().navigate(
+                    RgbAlarmAddEditFragmentDirections.actionAlarmAddEditToAlarmList()
+                )
+                return true
+            }
+        }, viewLifecycleOwner)
     }
 
     private fun updateCheckedStateOfDayButtons(rgbAlarm: RgbAlarm) {

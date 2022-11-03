@@ -86,6 +86,15 @@ class RgbAlarmAddEditViewModel @Inject constructor(
             color = newColor
         )
     }
+
+    fun deleteAlarm() {
+        if (!inEditingMode)
+            return
+
+        viewModelScope.launch {
+            rgbAlarmRepository.delete(_rgbAlarmToAddOrEdit.value)
+        }
+    }
 }
 
 

@@ -131,7 +131,7 @@ class RgbAlarmListFragment : Fragment() {
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            mode?.menuInflater?.inflate(R.menu.rgb_alarm_selection_menu, menu)
+            mode?.menuInflater?.inflate(R.menu.delete_rgb_alarm_menu, menu)
             return true
         }
 

@@ -37,6 +37,9 @@
             android:name="alarm_time"
             android:defaultValue="-1"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_alarm_add_edit_to_alarm_list"
+            app:destination="@id/alarm_list_dest" />
     </fragment>
     <fragment
         android:id="@+id/ip_address_list_dest"
