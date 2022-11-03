@@ -32,7 +32,7 @@ class RgbAlarmListFragment : Fragment() {
 
     private lateinit var binding: FragmentRgbAlarmListBinding
 
-    private lateinit var selectionTracker: SelectionTracker<Long>
+    private var selectionTracker: SelectionTracker<Long>? = null
 
     private var actionMode: ActionMode? = null
 
@@ -60,17 +60,17 @@ class RgbAlarmListFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        selectionTracker.onSaveInstanceState(outState)
+        selectionTracker?.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        selectionTracker.onRestoreInstanceState(savedInstanceState)
-        if (selectionTracker.hasSelection()) {
+        selectionTracker?.onRestoreInstanceState(savedInstanceState)
+        if (selectionTracker?.hasSelection() == true) {
             actionMode =
                 (requireActivity() as MainActivity).startSupportActionMode(actionModeCallback)
             actionMode?.title =
-                getString(R.string.item_selected, selectionTracker.selection.size())
+                getString(R.string.item_selected, selectionTracker?.selection?.size())
         }
         super.onViewStateRestored(savedInstanceState)
     }
@@ -107,7 +107,7 @@ class RgbAlarmListFragment : Fragment() {
         ).withSelectionPredicate(
             SelectionPredicates.createSelectAnything()
         ).build()
-        selectionTracker.addObserver(selectionTrackerObserver)
+        selectionTracker?.addObserver(selectionTrackerObserver)
         alarmListAdapter.tracker = selectionTracker
     }
 
@@ -120,10 +120,10 @@ class RgbAlarmListFragment : Fragment() {
                 actionMode = mainActivity.startSupportActionMode(actionModeCallback)
             }
 
-            val anyRgbAlarmSelected = selectionTracker.selection.size() > 0
+            val anyRgbAlarmSelected = (selectionTracker?.selection?.size() ?: -1) > 0
             if (anyRgbAlarmSelected)
                 actionMode?.title =
-                    getString(R.string.item_selected, selectionTracker.selection.size())
+                    getString(R.string.item_selected, selectionTracker?.selection?.size())
             else
                 actionMode?.finish()
         }
@@ -142,7 +142,8 @@ class RgbAlarmListFragment : Fragment() {
                 R.id.action_delete_rgb_alarm -> {
                     val listAdapter = binding.recyclerViewAlarms.adapter as RgbAlarmListAdapter
                     val selectedRgbAlarms = listAdapter.currentList.filter { rgbAlarm ->
-                        selectionTracker.selection.contains(rgbAlarm.timeMinutesOfDay.toLong())
+                        selectionTracker?.selection
+                            ?.contains(rgbAlarm.timeMinutesOfDay.toLong()) ?: false
                     }
                     viewModel.deleteRgbAlarms(selectedRgbAlarms)
                     actionMode?.finish()
