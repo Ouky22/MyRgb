@@ -16,6 +16,7 @@ import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.MainActivity
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
+import com.myrgb.ledcontroller.extensions.showAreYouSureToDeleteAlertDialog
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListAdapter
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListItemDetailsLookup
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListItemKeyProvider
@@ -138,19 +139,23 @@ class RgbAlarmListFragment : Fragment() {
         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = true
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.action_delete_rgb_alarm -> {
+            if (item?.itemId != R.id.action_delete_rgb_alarm)
+                return false
+
+            showAreYouSureToDeleteAlertDialog(
+                message = getString(R.string.are_sure_to_delete, ""),
+                positiveButtonClickHandler = { _, _ ->
                     val listAdapter = binding.recyclerViewAlarms.adapter as RgbAlarmListAdapter
                     val selectedRgbAlarms = listAdapter.currentList.filter { rgbAlarm ->
-                        selectionTracker?.selection
-                            ?.contains(rgbAlarm.timeMinutesOfDay.toLong()) ?: false
+                        selectionTracker?.selection?.contains(rgbAlarm.timeMinutesOfDay.toLong())
+                            ?: false
                     }
                     viewModel.deleteRgbAlarms(selectedRgbAlarms)
                     actionMode?.finish()
-                    true
                 }
-                else -> false
-            }
+            )
+
+            return true
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {

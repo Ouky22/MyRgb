@@ -1,6 +1,5 @@
 package com.myrgb.ledcontroller.feature.ipsettings
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.IpAddressNamePair
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentIpAddressListBinding
+import com.myrgb.ledcontroller.extensions.showAreYouSureToDeleteAlertDialog
 import javax.inject.Inject
 
 class IpAddressListFragment : Fragment() {
@@ -73,19 +73,15 @@ class IpAddressListFragment : Fragment() {
     }
 
     private fun createAreYouSureToDeleteDialog(ipAddressNamePair: IpAddressNamePair) {
-        AlertDialog.Builder(requireActivity(), R.style.Widget_LedControllerV2_DialogTheme)
-            .setMessage(
-                getString(
-                    R.string.sure_to_delete_ip_address,
-                    "\"${ipAddressNamePair.name}\" (${ipAddressNamePair.ipAddress})"
-                )
-            )
-            .setPositiveButton(R.string.delete) { _, _ ->
+        showAreYouSureToDeleteAlertDialog(
+            message = getString(
+                R.string.are_sure_to_delete,
+                "\"${ipAddressNamePair.name}\" (${ipAddressNamePair.ipAddress})"
+            ),
+            positiveButtonClickHandler = { _, _ ->
                 viewModel.removeIpAddressNamePair(ipAddressNamePair)
             }
-            .setNegativeButton(android.R.string.cancel) { _, _ -> }
-            .create()
-            .show()
+        )
     }
 }
 

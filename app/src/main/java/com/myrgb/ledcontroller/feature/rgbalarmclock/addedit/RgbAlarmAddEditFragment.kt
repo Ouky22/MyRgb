@@ -2,7 +2,6 @@ package com.myrgb.ledcontroller.feature.rgbalarmclock.addedit
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
@@ -18,7 +17,7 @@ import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
 import com.myrgb.ledcontroller.extensions.coordinateIsInsideView
-import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragmentDirections
+import com.myrgb.ledcontroller.extensions.showAreYouSureToDeleteAlertDialog
 import javax.inject.Inject
 
 class RgbAlarmAddEditFragment : Fragment() {
@@ -110,10 +109,16 @@ class RgbAlarmAddEditFragment : Fragment() {
                 if (menuItem.itemId != R.id.action_delete_rgb_alarm)
                     return false
 
-                viewModel.deleteAlarm()
-                findNavController().navigate(
-                    RgbAlarmAddEditFragmentDirections.actionAlarmAddEditToAlarmList()
+                showAreYouSureToDeleteAlertDialog(
+                    message = getString(R.string.are_sure_to_delete, ""),
+                    positiveButtonClickHandler = { _, _ ->
+                        viewModel.deleteAlarm()
+                        findNavController().navigate(
+                            RgbAlarmAddEditFragmentDirections.actionAlarmAddEditToAlarmList()
+                        )
+                    }
                 )
+
                 return true
             }
         }, viewLifecycleOwner)

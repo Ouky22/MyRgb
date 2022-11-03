@@ -88,7 +88,7 @@ class IpAddressListFragmentTest {
         onView(
             withText(
                 getApplicationContext<Context>().getString(
-                    R.string.sure_to_delete_ip_address,
+                    R.string.are_sure_to_delete,
                     "\"$ipName\" ($ip)"
                 )
             )
