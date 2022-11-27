@@ -12,14 +12,6 @@ interface RgbAlarmDao {
     @Query("SELECT * FROM rgbAlarm WHERE is_active = 1")
     suspend fun getAllActiveAlarms(): List<RgbAlarmDatabaseEntity>
 
-    @Query(
-        "SELECT * FROM rgbAlarm " +
-                "WHERE is_active = 1 " +
-                "ORDER BY date_time_millis_the_alarm_was_activated_for " +
-                "LIMIT 1"
-    )
-    suspend fun getNextActivatedAlarm(): RgbAlarmDatabaseEntity
-
     @Query("SELECT * FROM rgbAlarm WHERE time_minutes_of_day = :timeMinutesOfDay LIMIT 1")
     suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity
 

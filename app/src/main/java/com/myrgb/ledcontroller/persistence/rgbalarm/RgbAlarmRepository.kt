@@ -16,18 +16,11 @@ import javax.inject.Singleton
 class RgbAlarmRepository @Inject constructor(
     private val alarmDao: RgbAlarmDao
 ) {
-
     @ExperimentalCoroutinesApi
     val alarms = alarmDao.observeAllAlarmsSortedByTime().mapLatest {
         val refreshedAlarms = disableExpiredOneTimeAlarms(it)
         alarmDao.insertOrIgnore(refreshedAlarms)
         refreshedAlarms.asDomainModels()
-    }
-
-    suspend fun getNextActivatedAlarm() = try {
-        alarmDao.getNextActivatedAlarm().asDomainModel()
-    } catch (e: NoSuchElementException) {
-        throw NoSuchElementException("There is no active alarm")
     }
 
     suspend fun getByTime(timeMinutesOfDay: Int) = try {

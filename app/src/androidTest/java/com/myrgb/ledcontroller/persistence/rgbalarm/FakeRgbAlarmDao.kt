@@ -19,10 +19,6 @@ class FakeRgbAlarmDao @Inject constructor() : RgbAlarmDao {
     override suspend fun getAllActiveAlarms(): List<RgbAlarmDatabaseEntity> =
         alarmList.filter { it.activated }
 
-    override suspend fun getNextActivatedAlarm(): RgbAlarmDatabaseEntity {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getByTime(timeMinutesOfDay: Int): RgbAlarmDatabaseEntity =
         alarmList.first { it.timeMinutesOfDay == timeMinutesOfDay }
 

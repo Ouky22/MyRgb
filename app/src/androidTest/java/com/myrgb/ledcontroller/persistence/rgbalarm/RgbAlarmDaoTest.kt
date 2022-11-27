@@ -44,48 +44,6 @@ class RgbAlarmDaoTest {
     }
 
     @Test
-    fun test_getNextActivatedAlarm() = runTest {
-        RgbAlarm.clock = Clock.fixed(
-            Instant.parse("2023-12-31T09:00:00Z"), // current day is sunday, 9:00 am
-            ZoneId.of("UTC")
-        )
-        // triggers today at 10:00 am
-        val oneTimeAlarm1 = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0))
-        // triggers tomorrow at 8:00 am
-        val oneTimeAlarm2 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
-        // triggers today at 12:00 pm
-        val repetitiveAlarm1 = RgbAlarm(12 * 60, true, RgbTriplet(0, 0, 0)).apply {
-            makeRepetitiveOn(Weekday.SUNDAY)
-        }
-        // triggers in two days and in six days at 6:00 pm
-        val repetitiveAlarm2 = RgbAlarm(18 * 60, true, RgbTriplet(0, 0, 0)).apply {
-            makeRepetitiveOn(Weekday.TUESDAY)
-            makeRepetitiveOn(Weekday.SATURDAY)
-        }
-        val disabledAlarm = RgbAlarm(11 * 60, false, RgbTriplet(0, 0, 0))
-        rgbAlarmDao.insertOrReplace(oneTimeAlarm1.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrReplace(oneTimeAlarm2.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrReplace(repetitiveAlarm1.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrReplace(repetitiveAlarm2.asEntityDatabaseModel())
-        rgbAlarmDao.insertOrReplace(disabledAlarm.asEntityDatabaseModel())
-
-
-        assertEquals(oneTimeAlarm1, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
-        rgbAlarmDao.delete(oneTimeAlarm1.asEntityDatabaseModel())
-
-        assertEquals(repetitiveAlarm1, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
-        rgbAlarmDao.delete(repetitiveAlarm1.asEntityDatabaseModel())
-
-        assertEquals(oneTimeAlarm2, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
-        rgbAlarmDao.delete(oneTimeAlarm2.asEntityDatabaseModel())
-
-        assertEquals(repetitiveAlarm2, rgbAlarmDao.getNextActivatedAlarm().asDomainModel())
-        rgbAlarmDao.delete(repetitiveAlarm2.asEntityDatabaseModel())
-
-        assertNull(rgbAlarmDao.getNextActivatedAlarm())
-    }
-
-    @Test
     fun test_getAllActiveAlarms() = runTest {
         val alarm1 = RgbAlarm(8 * 60, true, RgbTriplet(0, 0, 0))
         val alarm2 = RgbAlarm(12 * 60, false, RgbTriplet(0, 0, 0))
