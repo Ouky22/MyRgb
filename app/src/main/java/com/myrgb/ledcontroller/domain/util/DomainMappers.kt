@@ -6,7 +6,7 @@ import java.time.ZoneOffset
 
 fun RgbAlarm.asEntityDatabaseModel() = RgbAlarmDatabaseEntity(
     timeMinutesOfDay = timeMinutesOfDay,
-    dateTimeMillisTheAlarmWasActivatedFor = nextTriggerDateTime.toEpochSecond(ZoneOffset.UTC),
+    lastTimeActivatedSeconds = lastTimeActivated?.toEpochSecond(ZoneOffset.UTC),
     activated = activated,
     redValue = color.red,
     greenValue = color.green,

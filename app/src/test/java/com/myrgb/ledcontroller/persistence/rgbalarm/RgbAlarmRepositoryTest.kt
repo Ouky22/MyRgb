@@ -1,5 +1,6 @@
 package com.myrgb.ledcontroller.persistence.rgbalarm
 
+import android.util.Log
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
@@ -14,7 +15,9 @@ import org.junit.Before
 import org.junit.Test
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 @ExperimentalCoroutinesApi
 class RgbAlarmRepositoryTest {
@@ -30,40 +33,51 @@ class RgbAlarmRepositoryTest {
     @Test
     fun `when repository is initialized then all expired one time alarms are disabled`() = runTest {
         val emittedValues = mutableListOf<List<RgbAlarm>>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
+        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             repository.alarms.toList(emittedValues)
         }
 
         // set clock to 9:00 am
+        val testDateTime = LocalDateTime.of(2023, 12, 31, 9, 0)
         RgbAlarm.clock = Clock.fixed(
-            Instant.parse("2023-12-31T09:00:00Z"),
+            Instant.ofEpochSecond(testDateTime.toEpochSecond(ZoneOffset.UTC)),
             ZoneId.of("UTC")
         )
         // activate alarms between 10:00 and 10:30 am
-        val activeOneTimeAlarm = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0))
-        val disabledOneTimeAlarm = RgbAlarm( 10 * 60 + 15, false, RgbTriplet(0, 0, 0))
-        val activeRepetitiveAlarm = RgbAlarm( 10 * 60 + 30, true, RgbTriplet(0, 0, 0)).apply {
-            makeRepetitiveOn(Weekday.MONDAY)
-        }
+        val activeOneTimeAlarm = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0), testDateTime)
+        val disabledOneTimeAlarm = RgbAlarm(10 * 60 + 15, false, RgbTriplet(0, 0, 0), testDateTime)
+        val activeRepetitiveAlarm =
+            RgbAlarm(10 * 60 + 30, true, RgbTriplet(0, 0, 0), testDateTime).apply {
+                makeRepetitiveOn(Weekday.MONDAY)
+            }
         fakeRgbAlarmDao.insertOrReplace(activeOneTimeAlarm.asEntityDatabaseModel())
         fakeRgbAlarmDao.insertOrReplace(disabledOneTimeAlarm.asEntityDatabaseModel())
         fakeRgbAlarmDao.insertOrReplace(activeRepetitiveAlarm.asEntityDatabaseModel())
         // set clock to 11.00
         RgbAlarm.clock = Clock.fixed(
-            Instant.parse("2023-12-31T11:00:00Z"),
+            Instant.ofEpochSecond(testDateTime.plusHours(2).toEpochSecond(ZoneOffset.UTC)),
             ZoneId.of("UTC")
         )
+
         // repository should receive the alarms..
         fakeRgbAlarmDao.emitAlarms()
+        fakeRgbAlarmDao.emitAlarms() // retrieve alarms again after they got refreshed by AlarmRepository
         // ..and disables expired one-time alarms
-        assertFalse(emittedValues.last().first { it.timeMinutesOfDay == activeOneTimeAlarm.timeMinutesOfDay }.activated)
-        assertFalse(emittedValues.last().first { it.timeMinutesOfDay == disabledOneTimeAlarm.timeMinutesOfDay }.activated)
-        assertTrue(emittedValues.last().first { it.timeMinutesOfDay == activeRepetitiveAlarm.timeMinutesOfDay }.activated)
+        assertFalse(
+            emittedValues.last()
+                .first { it.timeMinutesOfDay == activeOneTimeAlarm.timeMinutesOfDay }.activated
+        )
+        assertFalse(
+            emittedValues.last()
+                .first { it.timeMinutesOfDay == disabledOneTimeAlarm.timeMinutesOfDay }.activated
+        )
+        assertTrue(
+            emittedValues.last()
+                .first { it.timeMinutesOfDay == activeRepetitiveAlarm.timeMinutesOfDay }.activated
+        )
 
         collectJob.cancel()
     }
-
-
 }
 
 

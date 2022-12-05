@@ -89,7 +89,7 @@ class RgbAlarmListFragment : Fragment() {
                     RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit(rgbAlarm.timeMinutesOfDay)
                 findNavController().navigate(action)
             },
-            onSwitchCheckedChangeListener = { alarmActivated, rgbAlarm ->
+            onUserChangedAlarmActivatedStatusListener = { alarmActivated, rgbAlarm ->
                 if (alarmActivated)
                     viewModel.activateRgbAlarm(rgbAlarm)
                 else

@@ -14,6 +14,7 @@ data class RgbAlarm(
     var timeMinutesOfDay: Int,
     var activated: Boolean = false,
     var color: RgbTriplet,
+    var lastTimeActivated: LocalDateTime? = null,
 
     /**
      * The 7 least significant bits of this byte indicate whether the alarm will be triggered on
@@ -39,37 +40,38 @@ data class RgbAlarm(
         )
 
     val nextTriggerDateTime: LocalDateTime
-        get() {
-            val currentDateTime = LocalDateTime.now(clock)
-            var nextTriggerDateTime = LocalDateTime.of(
-                currentDateTime.year,
-                currentDateTime.month,
-                currentDateTime.dayOfMonth,
-                triggerTimeHoursOfDay,
-                triggerTimeMinutesOfHour
-            )
+        get() = getNextTriggerDateTimeFrom(LocalDateTime.now(clock))
 
-            if (isOneTimeAlarm) {
-                if (currentDateTime.isBefore(nextTriggerDateTime))
-                    return nextTriggerDateTime
-                else
-                    return nextTriggerDateTime.plusDays(1)
-            } else {
-                var currentWeekday: Weekday = Weekday.values()
-                    .find { it.ordinal + 1 == currentDateTime.dayOfWeek.value }
-                    ?: throw Exception("Could not find current weekday")
+    fun getNextTriggerDateTimeFrom(startDateTime: LocalDateTime): LocalDateTime {
+        var nextTriggerDateTime = LocalDateTime.of(
+            startDateTime.year,
+            startDateTime.month,
+            startDateTime.dayOfMonth,
+            triggerTimeHoursOfDay,
+            triggerTimeMinutesOfHour
+        )
 
-                while (!isRepetitiveOn(currentWeekday)
-                    || currentDateTime.isAfter(nextTriggerDateTime)
-                    || currentDateTime.isEqual(nextTriggerDateTime)
-                ) {
-                    currentWeekday = currentWeekday.nextWeekday
-                    nextTriggerDateTime = nextTriggerDateTime.plusDays(1)
-                }
-
+        if (isOneTimeAlarm) {
+            if (startDateTime.isBefore(nextTriggerDateTime))
                 return nextTriggerDateTime
+            else
+                return nextTriggerDateTime.plusDays(1)
+        } else {
+            var currentWeekday: Weekday = Weekday.values()
+                .find { it.ordinal + 1 == startDateTime.dayOfWeek.value }
+                ?: throw Exception("Could not find current weekday")
+
+            while (!isRepetitiveOn(currentWeekday)
+                || startDateTime.isAfter(nextTriggerDateTime)
+                || startDateTime.isEqual(nextTriggerDateTime)
+            ) {
+                currentWeekday = currentWeekday.nextWeekday
+                nextTriggerDateTime = nextTriggerDateTime.plusDays(1)
             }
+
+            return nextTriggerDateTime
         }
+    }
 
     val isOneTimeAlarm
         get() = repetitiveAlarmWeekdays == 0b00000000.toByte() || repetitiveAlarmWeekdays == 0b10000000.toByte()

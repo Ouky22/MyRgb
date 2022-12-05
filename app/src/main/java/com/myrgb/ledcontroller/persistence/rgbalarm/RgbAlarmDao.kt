@@ -1,7 +1,6 @@
 package com.myrgb.ledcontroller.persistence.rgbalarm
 
 import androidx.room.*
-import com.myrgb.ledcontroller.domain.RgbAlarm
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,9 +32,11 @@ interface RgbAlarmDao {
     @Query("DELETE FROM rgbAlarm WHERE time_minutes_of_day = :timeMinutesOfDay")
     suspend fun deleteByTime(timeMinutesOfDay: Int)
 
-    @Query("UPDATE rgbAlarm SET is_active = 1 WHERE time_minutes_of_day = :timeMinutesOfDay")
-    suspend fun activateRgbAlarmByTime(timeMinutesOfDay: Int)
+    @Query(
+        "UPDATE rgbAlarm SET is_active = 1, last_time_activated_seconds = :currentDateTimeSeconds " +
+            "WHERE time_minutes_of_day = :timeMinutesOfDay")
+    suspend fun activateRgbAlarmByTime(timeMinutesOfDay: Int, currentDateTimeSeconds: Long)
 
-    @Query("UPDATE rgbAlarm SET is_active = 0 WHERE time_minutes_of_day = :timeMinutesOfDay")
+    @Query("UPDATE rgbAlarm SET is_active = 0 WHERE time_minutes_of_day = :timeMinutesOfDay AND is_active = 1")
     suspend fun deactivateRgbAlarmByTime(timeMinutesOfDay: Int)
 }

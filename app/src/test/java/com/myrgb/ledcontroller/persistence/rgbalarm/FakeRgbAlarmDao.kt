@@ -8,7 +8,7 @@ class FakeRgbAlarmDao : RgbAlarmDao {
     private val alarms = MutableSharedFlow<MutableList<RgbAlarmDatabaseEntity>>()
 
     suspend fun emitAlarms() {
-        alarms.emit(alarmList)
+        alarms.emit(alarmList.toMutableList())
     }
 
     override fun observeAllAlarmsSortedByTime(): Flow<List<RgbAlarmDatabaseEntity>> = alarms
@@ -52,13 +52,17 @@ class FakeRgbAlarmDao : RgbAlarmDao {
         alarmList.removeIf { it.timeMinutesOfDay == timeMinutesOfDay }
     }
 
-    override suspend fun activateRgbAlarmByTime(timeMinutesOfDay: Int) {
+    override suspend fun activateRgbAlarmByTime(
+        timeMinutesOfDay: Int,
+        currentDateTimeSeconds: Long
+    ) {
         val indexOfAlarmToUpdate =
             alarmList.indexOfFirst { it.timeMinutesOfDay == timeMinutesOfDay }
 
-        val alarmExists = indexOfAlarmToUpdate > -1
+        val alarmExists = indexOfAlarmToUpdate >= 0
         if (alarmExists) {
-            val updatedAlarm = alarmList.removeAt(indexOfAlarmToUpdate).copy(activated = true)
+            val updatedAlarm = alarmList.removeAt(indexOfAlarmToUpdate)
+                .copy(activated = true, lastTimeActivatedSeconds = currentDateTimeSeconds)
             alarmList.add(updatedAlarm)
         }
     }

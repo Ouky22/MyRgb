@@ -94,7 +94,7 @@ class RgbAlarmDaoTest {
         val alarm1 = RgbAlarm(5 * 60, true, RgbTriplet(0, 0, 0))
         rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
 
-        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay, 0)
 
         val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
         assertTrue(rgbAlarmFromDb.activated)
@@ -105,7 +105,7 @@ class RgbAlarmDaoTest {
         val alarm1 = RgbAlarm(5 * 60, false, RgbTriplet(0, 0, 0))
         rgbAlarmDao.insertOrReplace(alarm1.asEntityDatabaseModel())
 
-        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay)
+        rgbAlarmDao.activateRgbAlarmByTime(alarm1.timeMinutesOfDay, 0)
 
         val rgbAlarmFromDb = rgbAlarmDao.getByTime(alarm1.timeMinutesOfDay)
         assertTrue(rgbAlarmFromDb.activated)
@@ -135,7 +135,7 @@ class RgbAlarmDaoTest {
 
     @Test
     fun when_activating_non_existing_alarm_nothing_changes() = runTest {
-        rgbAlarmDao.activateRgbAlarmByTime(42)
+        rgbAlarmDao.activateRgbAlarmByTime(42, 0)
 
         assertTrue(rgbAlarmDao.observeAllAlarmsSortedByTime().first().isEmpty())
     }
