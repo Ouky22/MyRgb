@@ -1,6 +1,5 @@
 package com.myrgb.ledcontroller.persistence.rgbalarm
 
-import android.util.Log
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.domain.Weekday
@@ -13,11 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import java.time.Clock
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
 
 @ExperimentalCoroutinesApi
 class RgbAlarmRepositoryTest {
@@ -77,6 +72,41 @@ class RgbAlarmRepositoryTest {
         )
 
         collectJob.cancel()
+    }
+
+    @Test
+    fun `when there is no active alarm then getNextActiveAlarm returns null`() = runTest {
+        val deactivatedAlarm = RgbAlarm(0, false, RgbTriplet(0, 0, 0))
+        repository.insertOrReplace(deactivatedAlarm)
+        assertNull(repository.getNextActiveAlarm())
+    }
+
+    @Test
+    fun `when there are active alarms then getNextActiveAlarm returns the next alarm`() = runTest {
+        // set clock to 9:00 am
+        val testDateTime = LocalDateTime.of(2023, 12, 31, 9, 0)
+        RgbAlarm.clock = Clock.fixed(
+            Instant.ofEpochSecond(testDateTime.toEpochSecond(ZoneOffset.UTC)),
+            ZoneId.of("UTC")
+        )
+        val deactivatedAlarm1 = RgbAlarm(7 * 60, false, RgbTriplet(0, 0, 0), testDateTime)
+        val deactivatedAlarm2 = RgbAlarm(11 * 60 + 30, false, RgbTriplet(0, 0, 0), testDateTime)
+        val activatedAlarm1 = RgbAlarm(12 * 60, true, RgbTriplet(0, 0, 0), testDateTime)
+        val activatedAlarm2 = RgbAlarm(10 * 60, true, RgbTriplet(0, 0, 0), testDateTime).apply {
+            makeRepetitiveOn(Weekday.FRIDAY)
+        }
+        repository.insertOrReplace(deactivatedAlarm1)
+        repository.insertOrReplace(deactivatedAlarm2)
+        repository.insertOrReplace(activatedAlarm1)
+        repository.insertOrReplace(activatedAlarm2)
+
+        // set clock to 11.00
+        RgbAlarm.clock = Clock.fixed(
+            Instant.ofEpochSecond(testDateTime.plusHours(2).toEpochSecond(ZoneOffset.UTC)),
+            ZoneId.of("UTC")
+        )
+
+        assertEquals(activatedAlarm1, repository.getNextActiveAlarm())
     }
 }
 

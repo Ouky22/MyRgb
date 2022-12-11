@@ -30,6 +30,14 @@ class RgbAlarmRepository @Inject constructor(
         throw NoSuchElementException("RgbAlarm with time $timeMinutesOfDay does not exist")
     }
 
+    suspend fun getNextActiveAlarm(): RgbAlarm? {
+        val allActiveAlarms = alarmDao.getAllActiveAlarms()
+        if (allActiveAlarms.isEmpty())
+            return null
+
+        return allActiveAlarms.asDomainModels().minByOrNull { it.nextTriggerDateTime }
+    }
+
     suspend fun insertOrReplace(rgbAlarm: RgbAlarm) {
         alarmDao.insertOrReplace(rgbAlarm.asEntityDatabaseModel())
     }
