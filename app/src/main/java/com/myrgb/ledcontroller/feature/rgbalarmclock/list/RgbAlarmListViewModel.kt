@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.myrgb.ledcontroller.domain.RgbAlarm
+import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmScheduler
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class RgbAlarmListViewModel @Inject constructor(
-    private val alarmRepository: RgbAlarmRepository
+    private val alarmRepository: RgbAlarmRepository,
+    private val rgbAlarmScheduler: RgbAlarmScheduler
 ) : ViewModel() {
 
     private val _alarms = MutableStateFlow<List<RgbAlarm>>(emptyList())
@@ -47,6 +49,7 @@ class RgbAlarmListViewModel @Inject constructor(
     fun activateRgbAlarm(rgbAlarm: RgbAlarm) {
         viewModelScope.launch {
             alarmRepository.activateRgbAlarm(rgbAlarm)
+            rgbAlarmScheduler.scheduleNextAlarm()
         }
     }
 
@@ -63,9 +66,12 @@ class RgbAlarmListViewModel @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val rgbAlarmRepository: RgbAlarmRepository) :
+    class Factory(
+        private val rgbAlarmRepository: RgbAlarmRepository,
+        private val rgbAlarmScheduler: RgbAlarmScheduler
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RgbAlarmListViewModel(rgbAlarmRepository) as T
+            RgbAlarmListViewModel(rgbAlarmRepository, rgbAlarmScheduler) as T
     }
 }
