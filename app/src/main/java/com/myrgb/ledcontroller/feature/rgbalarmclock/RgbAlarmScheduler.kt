@@ -2,11 +2,13 @@ package com.myrgb.ledcontroller.feature.rgbalarmclock
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.content.pm.PackageManager
 import com.myrgb.ledcontroller.domain.RgbAlarm
-import com.myrgb.ledcontroller.feature.rgbalarmclock.alarmbrodacastreceiver.RgbAlarmReceiver
+import com.myrgb.ledcontroller.feature.rgbalarmclock.broadcastreceiver.RebootReceiver
+import com.myrgb.ledcontroller.feature.rgbalarmclock.broadcastreceiver.RgbAlarmReceiver
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import java.time.ZoneId
 import javax.inject.Inject
@@ -17,7 +19,7 @@ class RgbAlarmScheduler @Inject constructor(
     private val rgbAlarmRepository: RgbAlarmRepository,
     private val context: Context
 ) {
-    suspend fun scheduleNextAlarm() {
+    suspend fun scheduleNextAlarmIfExists() {
         val nextAlarm = rgbAlarmRepository.getNextActiveAlarm()
 
         if (nextAlarm == null) {
@@ -47,8 +49,18 @@ class RgbAlarmScheduler @Inject constructor(
     }
 
     private fun activateAlarmRestartReceiver() {
+        context.packageManager.setComponentEnabledSetting(
+            ComponentName(context.applicationContext, RebootReceiver::class.java),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
     private fun deactivateAlarmRestartReceiver() {
+        context.packageManager.setComponentEnabledSetting(
+            ComponentName(context.applicationContext, RebootReceiver::class.java),
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 }

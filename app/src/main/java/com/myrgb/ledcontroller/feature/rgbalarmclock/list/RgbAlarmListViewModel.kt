@@ -49,13 +49,14 @@ class RgbAlarmListViewModel @Inject constructor(
     fun activateRgbAlarm(rgbAlarm: RgbAlarm) {
         viewModelScope.launch {
             alarmRepository.activateRgbAlarm(rgbAlarm)
-            rgbAlarmScheduler.scheduleNextAlarm()
+            rgbAlarmScheduler.scheduleNextAlarmIfExists()
         }
     }
 
     fun deactivateRgbAlarm(rgbAlarm: RgbAlarm) {
         viewModelScope.launch {
             alarmRepository.deactivateRgbAlarm(rgbAlarm)
+            rgbAlarmScheduler.scheduleNextAlarmIfExists()
         }
     }
 

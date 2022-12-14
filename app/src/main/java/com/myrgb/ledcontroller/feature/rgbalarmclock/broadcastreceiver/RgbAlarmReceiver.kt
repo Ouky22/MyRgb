@@ -1,4 +1,4 @@
-package com.myrgb.ledcontroller.feature.rgbalarmclock.alarmbrodacastreceiver
+package com.myrgb.ledcontroller.feature.rgbalarmclock.broadcastreceiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
