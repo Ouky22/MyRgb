@@ -5,6 +5,7 @@ import com.myrgb.ledcontroller.feature.ipsettings.addedit.di.IpAddressAddEditCom
 import com.myrgb.ledcontroller.feature.rgbcontroller.di.ControllerComponent
 import com.myrgb.ledcontroller.feature.ipsettings.di.IpAddressComponent
 import com.myrgb.ledcontroller.feature.rgbalarmclock.addedit.di.RgbAlarmAddEditComponent
+import com.myrgb.ledcontroller.feature.rgbalarmclock.broadcastreceiver.di.RgbAlarmBroadcastComponent
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.di.RgbAlarmListComponent
 import com.myrgb.ledcontroller.feature.rgbshow.di.RgbShowComponent
 import dagger.BindsInstance
@@ -32,4 +33,5 @@ interface AppComponent {
     fun rgbShowComponent(): RgbShowComponent.Factory
     fun rgbAlarmListComponent(): RgbAlarmListComponent.Factory
     fun rgbAlarmAddEditComponent(): RgbAlarmAddEditComponent.Factory
+    fun rgbAlarmBroadcastComponent(): RgbAlarmBroadcastComponent.Factory
 }
