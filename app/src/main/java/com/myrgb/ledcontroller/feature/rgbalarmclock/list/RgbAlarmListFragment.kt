@@ -1,6 +1,7 @@
 package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
 import android.content.Context
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.ActionMode
@@ -133,6 +134,7 @@ class RgbAlarmListFragment : Fragment() {
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             mode?.menuInflater?.inflate(R.menu.delete_rgb_alarm_menu, menu)
+            binding.fabAddRgbAlarm.visibility = View.INVISIBLE
             return true
         }
 
@@ -162,6 +164,7 @@ class RgbAlarmListFragment : Fragment() {
             actionMode = null
             val listAdapter = binding.recyclerViewAlarms.adapter as RgbAlarmListAdapter
             listAdapter.tracker?.clearSelection()
+            binding.fabAddRgbAlarm.visibility = View.VISIBLE
         }
     }
 }
