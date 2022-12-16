@@ -26,4 +26,4 @@ const val rgbShowCommandIdentifier = 600
 const val settingsCommandIdentifier = 700
 
 // 800.xxx.xxx.
-const val alarmClockCommandIdentifier = 800
+const val rgbAlarmCommandIdentifier = 800

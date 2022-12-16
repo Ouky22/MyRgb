@@ -56,6 +56,10 @@ class RgbRequestRepository @Inject constructor(private val rgbRequestService: Rg
         sendRgbRequest(ledMicrocontroller.ipAddress, RgbRequest(rgbShowCommandIdentifier, speed))
     }
 
+    suspend fun triggerRgbAlarm(ledMicrocontrollerIpAddress: String) {
+        sendRgbRequest(ledMicrocontrollerIpAddress, RgbRequest(rgbAlarmCommandIdentifier))
+    }
+
     private suspend fun sendRgbRequest(ipAddress: String, rgbRequest: RgbRequest) {
         try {
             rgbRequestService.sendRgbRequest(ipAddress, rgbRequest)
