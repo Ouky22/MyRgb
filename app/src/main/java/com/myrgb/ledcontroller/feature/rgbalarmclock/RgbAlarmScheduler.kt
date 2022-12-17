@@ -14,6 +14,8 @@ import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val RGB_ALARM_EXTRA_NAME = "rgb_alarm_color"
+
 @Singleton
 class RgbAlarmScheduler @Inject constructor(
     private val rgbAlarmRepository: RgbAlarmRepository,
@@ -35,8 +37,10 @@ class RgbAlarmScheduler @Inject constructor(
         val alarmIntent = PendingIntent.getBroadcast(
             context.applicationContext,
             0,
-            Intent(context.applicationContext, RgbAlarmReceiver::class.java),
-            PendingIntent.FLAG_IMMUTABLE
+            Intent(context.applicationContext, RgbAlarmReceiver::class.java).putExtra(
+                RGB_ALARM_EXTRA_NAME, nextAlarm.color
+            ),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val triggerDateTimeMillis =

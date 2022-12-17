@@ -29,21 +29,6 @@ class RgbAlarmListViewModel @Inject constructor(
                 _alarms.value = it
             }
         }
-
-//        _alarms.value = listOf(
-//            RgbAlarm(221, false, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1300, false, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1233, true, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1020, false, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1324, true, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1341, true, RgbTriplet(0, 0, 0)),
-//            RgbAlarm(1214, false, RgbTriplet(0, 0, 0)),
-//        )
-//        runBlocking {
-//            _alarms.value?.forEach {
-//                alarmRepository.insertOrUpdate(it)
-//            }
-//        }
     }
 
     fun activateRgbAlarm(rgbAlarm: RgbAlarm) {
