@@ -6,6 +6,7 @@ import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.Weekday
 import com.myrgb.ledcontroller.domain.util.computeAngleInCircle
+import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmScheduler
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RgbAlarmAddEditViewModel @Inject constructor(
-    private val rgbAlarmRepository: RgbAlarmRepository
+    private val rgbAlarmRepository: RgbAlarmRepository,
+    private val rgbAlarmScheduler: RgbAlarmScheduler
 ) : ViewModel() {
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
@@ -57,6 +59,8 @@ class RgbAlarmAddEditViewModel @Inject constructor(
                 rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
             } else // when new alarm added or edited and alarm has same time
                 rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
+
+            rgbAlarmScheduler.scheduleNextAlarmIfExists()
 
             _dataSaved.value = true
         }
