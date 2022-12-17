@@ -25,6 +25,7 @@ class RgbAlarmScheduler @Inject constructor(
         val nextAlarm = rgbAlarmRepository.getNextActiveAlarm()
 
         if (nextAlarm == null) {
+            cancelActiveAlarmIntent()
             deactivateAlarmRestartReceiver()
             return
         }
@@ -66,5 +67,14 @@ class RgbAlarmScheduler @Inject constructor(
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
             PackageManager.DONT_KILL_APP
         )
+    }
+
+    private fun cancelActiveAlarmIntent() {
+        PendingIntent.getBroadcast(
+            context.applicationContext,
+            0,
+            Intent(context.applicationContext, RgbAlarmReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        ).cancel()
     }
 }
