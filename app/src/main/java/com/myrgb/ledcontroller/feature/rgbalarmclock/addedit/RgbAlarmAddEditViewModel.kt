@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RgbAlarmAddEditViewModel @Inject constructor(
-    private val rgbAlarmRepository: RgbAlarmRepository,
-    private val rgbAlarmScheduler: RgbAlarmScheduler
+    private val rgbAlarmRepository: RgbAlarmRepository
 ) : ViewModel() {
     var rgbCircleCenterX = 0
     var rgbCircleCenterY = 0
@@ -59,8 +58,6 @@ class RgbAlarmAddEditViewModel @Inject constructor(
                 rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
             } else // when new alarm added or edited and alarm has same time
                 rgbAlarmRepository.insertOrReplace(_rgbAlarmToAddOrEdit.value)
-
-            rgbAlarmScheduler.scheduleNextAlarmIfExists()
 
             _dataSaved.value = true
         }
