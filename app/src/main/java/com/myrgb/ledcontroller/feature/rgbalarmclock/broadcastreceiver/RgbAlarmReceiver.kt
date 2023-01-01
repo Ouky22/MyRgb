@@ -10,6 +10,7 @@ import com.myrgb.ledcontroller.feature.rgbalarmclock.RGB_ALARM_EXTRA_NAME
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmScheduler
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.persistence.ipaddress.DefaultIpAddressSettingsRepository
+import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.firstOrNull
@@ -22,7 +23,7 @@ class RgbAlarmReceiver : BroadcastReceiver() {
     lateinit var rgbAlarmScheduler: RgbAlarmScheduler
 
     @Inject
-    lateinit var ipAddressSettingsRepository: DefaultIpAddressSettingsRepository
+    lateinit var ipAddressSettingsRepository: IpAddressSettingsRepository
 
     @Inject
     lateinit var rgbRequestRepository: RgbRequestRepository

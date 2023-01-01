@@ -13,8 +13,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class RgbAlarmListViewModel @Inject constructor(
-    private val alarmRepository: RgbAlarmRepository,
-    private val rgbAlarmScheduler: RgbAlarmScheduler
+    private val alarmRepository: RgbAlarmRepository
 ) : ViewModel() {
 
     private val _alarms = MutableStateFlow<List<RgbAlarm>>(emptyList())
@@ -22,14 +21,13 @@ class RgbAlarmListViewModel @Inject constructor(
         get() = _alarms
 
     private val _nextActiveAlarm = MutableLiveData<RgbAlarm?>()
-    val nextActiveAlarm : LiveData<RgbAlarm?>
+    val nextActiveAlarm: LiveData<RgbAlarm?>
         get() = _nextActiveAlarm
 
     init {
         viewModelScope.launch {
             alarmRepository.alarms.collectLatest {
                 _alarms.value = it
-                rgbAlarmScheduler.scheduleNextAlarmIfExists()
                 _nextActiveAlarm.value = alarmRepository.getNextActiveAlarm()
             }
         }
@@ -54,12 +52,9 @@ class RgbAlarmListViewModel @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(
-        private val rgbAlarmRepository: RgbAlarmRepository,
-        private val rgbAlarmScheduler: RgbAlarmScheduler
-    ) :
+    class Factory(private val rgbAlarmRepository: RgbAlarmRepository) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RgbAlarmListViewModel(rgbAlarmRepository, rgbAlarmScheduler) as T
+            RgbAlarmListViewModel(rgbAlarmRepository) as T
     }
 }

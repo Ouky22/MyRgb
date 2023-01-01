@@ -16,7 +16,9 @@ import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.MainActivity
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentRgbAlarmListBinding
+import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
 import com.myrgb.ledcontroller.extensions.showAreYouSureToDeleteAlertDialog
+import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmScheduler
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListAdapter
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListItemDetailsLookup
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.adapter.RgbAlarmListItemKeyProvider
@@ -28,6 +30,9 @@ class RgbAlarmListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var rgbAlarmScheduler: RgbAlarmScheduler
 
     private val viewModel by viewModels<RgbAlarmListViewModel> { viewModelFactory }
 
@@ -57,6 +62,10 @@ class RgbAlarmListFragment : Fragment() {
         binding.fabAddRgbAlarm.setOnClickListener {
             val action = RgbAlarmListFragmentDirections.actionAlarmListToAlarmAddEdit()
             findNavController().navigate(action)
+        }
+
+        collectLatestLifecycleFlow(viewModel.alarms) {
+            rgbAlarmScheduler.scheduleNextAlarmIfExists()
         }
     }
 
