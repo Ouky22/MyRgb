@@ -1,7 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
 import android.content.Context
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.ActionMode

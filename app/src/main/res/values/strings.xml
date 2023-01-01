@@ -26,8 +26,19 @@
     <string name="no_name_entered">No name entered</string>
     <string name="item_selected">%d selected</string>
     <string name="delete_rgb_alarm">Delete RGB alarm</string>
-
     <string name="add_rgb_alarm">Add RGB alarm</string>
+    <string name="no_alarms_active">No RGB Alarms are active</string>
+
+    <string name="next_alarm_in_full">Alarm in %1$s and %2$s</string>
+    <string name="next_alarm_in_only_minute_or_hour">Alarm in %1$s</string>
+    <plurals name="trigger_time_hour">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="trigger_time_minute">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
 
     <string name="monday_start_letter">M</string>
     <string name="tuesday_start_letter">T</string>

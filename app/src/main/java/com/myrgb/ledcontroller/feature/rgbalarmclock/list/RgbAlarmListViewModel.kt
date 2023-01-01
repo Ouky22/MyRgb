@@ -1,8 +1,6 @@
 package com.myrgb.ledcontroller.feature.rgbalarmclock.list
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.myrgb.ledcontroller.domain.RgbAlarm
 import com.myrgb.ledcontroller.feature.rgbalarmclock.RgbAlarmScheduler
 import com.myrgb.ledcontroller.persistence.rgbalarm.RgbAlarmRepository
@@ -23,11 +21,16 @@ class RgbAlarmListViewModel @Inject constructor(
     val alarms: StateFlow<List<RgbAlarm>>
         get() = _alarms
 
+    private val _nextActiveAlarm = MutableLiveData<RgbAlarm?>()
+    val nextActiveAlarm : LiveData<RgbAlarm?>
+        get() = _nextActiveAlarm
+
     init {
         viewModelScope.launch {
             alarmRepository.alarms.collectLatest {
                 _alarms.value = it
                 rgbAlarmScheduler.scheduleNextAlarmIfExists()
+                _nextActiveAlarm.value = alarmRepository.getNextActiveAlarm()
             }
         }
     }
