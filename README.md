@@ -4,11 +4,11 @@
 
 MyRgb allows you to send HTTP-Requests to your RGB-LED controller to control your LED strips.
 
-## Screenshots
+# Screenshots
 
 <img src="./docs/main_screens.png" width="1000dp">
 
-## Features
+# Features
 
 - LED Controller
   - set the color and brightness of your LED strips
