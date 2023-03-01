@@ -31,7 +31,8 @@ MyRgb is an android app and allows you to send HTTP-Requests to your RGB-LED con
 # Add your rgb controller
 
 - you can easily add a new controller with its local IP address and a meaningful name
-- in my case I am using an esp32 microcontroller that executes the commands sent by the app via HTTP requests to control the connected LED strips
+- I am using an esp8266 microcontroller that executes the commands sent by the app via HTTP requests to control the connected LED strips. See https://github.com/Ouky22/rgb_led_controller_2x.git for a programm
+that runs on the esp8266 and receives the commands.
 
 <img src="./docs/add_rgb_controller_screen.jpg" width="300dp">
 
@@ -81,6 +82,6 @@ This is an Android Studio project. The UI is implemented with XML files and the 
 
 - Room Database for storing rgb alarms
 - Proto DataStore for storing ip addresses and names of rgb controller
-- Retrofit with moshi converter to send HTTP requests and receive HTTP Responses
+- Retrofit with moshi converter to send HTTP requests and receive HTTP responses
 - Dagger for dependency injection
 - Espresso for UI testing
