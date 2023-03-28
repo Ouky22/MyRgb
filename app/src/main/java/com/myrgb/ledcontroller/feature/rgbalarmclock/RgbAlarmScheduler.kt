@@ -21,11 +21,13 @@ class RgbAlarmScheduler @Inject constructor(
     private val rgbAlarmRepository: RgbAlarmRepository,
     private val context: Context
 ) {
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
     suspend fun scheduleNextAlarmIfExists() {
         val nextAlarm = rgbAlarmRepository.getNextActiveAlarm()
 
         if (nextAlarm == null) {
-            cancelActiveAlarmIntent()
+            cancelActiveRgbAlarm()
             deactivateAlarmRestartReceiver()
             return
         }
@@ -35,23 +37,12 @@ class RgbAlarmScheduler @Inject constructor(
     }
 
     private fun scheduleNextAlarmWithAlarmManager(nextAlarm: RgbAlarm) {
-        val alarmIntent = PendingIntent.getBroadcast(
-            context.applicationContext,
-            0,
-            Intent(context.applicationContext, RgbAlarmReceiver::class.java).putExtra(
-                RGB_ALARM_EXTRA_NAME, nextAlarm.color
-            ),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
         val triggerDateTimeMillis =
             nextAlarm.nextTriggerDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
         alarmManager.setAlarmClock(
             AlarmManager.AlarmClockInfo(triggerDateTimeMillis, null),
-            alarmIntent
+            getRgbAlarmIntent(nextAlarm)
         )
     }
 
@@ -71,12 +62,17 @@ class RgbAlarmScheduler @Inject constructor(
         )
     }
 
-    private fun cancelActiveAlarmIntent() {
+    private fun cancelActiveRgbAlarm() {
+        alarmManager.cancel(getRgbAlarmIntent())
+    }
+
+    private fun getRgbAlarmIntent(rgbAlarm: RgbAlarm? = null): PendingIntent =
         PendingIntent.getBroadcast(
             context.applicationContext,
             0,
-            Intent(context.applicationContext, RgbAlarmReceiver::class.java),
+            Intent(context.applicationContext, RgbAlarmReceiver::class.java).apply {
+                rgbAlarm?.let { putExtra(RGB_ALARM_EXTRA_NAME, it.color) }
+            },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        ).cancel()
-    }
+        )
 }
