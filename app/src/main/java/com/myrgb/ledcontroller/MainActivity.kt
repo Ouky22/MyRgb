@@ -1,29 +1,27 @@
 package com.myrgb.ledcontroller
 
-import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.myrgb.ledcontroller.databinding.ActivityMainBinding
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment
 import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragment
 import com.myrgb.ledcontroller.feature.rgbshow.RgbShowFragment
+import com.myrgb.ledcontroller.network.NetworkConnectivityObserver
+import com.myrgb.ledcontroller.network.WifiStatus
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -31,22 +29,17 @@ class MainActivity : AppCompatActivity() {
 
     private var showUiFirstTime = true
 
+    private lateinit var netWorkConnectivityObserver: NetworkConnectivityObserver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-        val connectivityManager = ContextCompat.getSystemService(
-            this, ConnectivityManager::class.java
-        ) as ConnectivityManager
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-
         binding.ivNoWifi.visibility = View.VISIBLE
         binding.navHostFragment.visibility = View.GONE
+
+        initWifiConnectivityObserver()
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             onFragmentLifeCycleCallbackHandleBottomNavBarVisibility, true
@@ -75,28 +68,36 @@ class MainActivity : AppCompatActivity() {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            runOnUiThread {
-                if (showUiFirstTime) {
-                    initUi()
-                    showUiFirstTime = false
-                }
-
-                binding.ivNoWifi.visibility = View.GONE
-                binding.navHostFragment.visibility = View.VISIBLE
-                Log.d("test", "onAvailable")
+    private fun initWifiConnectivityObserver() {
+        netWorkConnectivityObserver = NetworkConnectivityObserver(this)
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        netWorkConnectivityObserver.observe(networkRequest).onEach { wifiStatus ->
+            when (wifiStatus) {
+                WifiStatus.AVAILABLE -> onWifiAvailable()
+                WifiStatus.UNAVAILABLE, WifiStatus.LOST -> onWifiUnavailable()
             }
+        }.launchIn(lifecycleScope)
+    }
+
+    private fun onWifiAvailable() {
+        runOnUiThread {
+            if (showUiFirstTime) {
+                initUi()
+                showUiFirstTime = false
+            }
+
+            binding.ivNoWifi.visibility = View.GONE
+            binding.navHostFragment.visibility = View.VISIBLE
         }
+    }
 
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            runOnUiThread {
-                binding.ivNoWifi.visibility = View.VISIBLE
-                binding.navHostFragment.visibility = View.GONE
-                Log.d("test", "onLost")
-            }
+    private fun onWifiUnavailable() {
+        runOnUiThread {
+            binding.ivNoWifi.visibility = View.VISIBLE
+            binding.navHostFragment.visibility = View.GONE
         }
     }
 
