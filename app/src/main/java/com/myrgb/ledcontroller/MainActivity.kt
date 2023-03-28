@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.snackbar.Snackbar
 import com.myrgb.ledcontroller.databinding.ActivityMainBinding
 import com.myrgb.ledcontroller.feature.rgbalarmclock.list.RgbAlarmListFragment
 import com.myrgb.ledcontroller.feature.rgbcontroller.ControllerFragment
@@ -26,9 +27,6 @@ import kotlinx.coroutines.flow.onEach
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
-    private var showUiFirstTime = true
-
     private lateinit var netWorkConnectivityObserver: NetworkConnectivityObserver
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,10 +34,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.ivNoWifi.visibility = View.VISIBLE
-        binding.navHostFragment.visibility = View.GONE
-
         initWifiConnectivityObserver()
+        initUi()
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             onFragmentLifeCycleCallbackHandleBottomNavBarVisibility, true
@@ -74,31 +70,17 @@ class MainActivity : AppCompatActivity() {
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
+
         netWorkConnectivityObserver.observe(networkRequest).onEach { wifiStatus ->
-            when (wifiStatus) {
-                WifiStatus.AVAILABLE -> onWifiAvailable()
-                WifiStatus.UNAVAILABLE, WifiStatus.LOST -> onWifiUnavailable()
-            }
+            if (wifiStatus == WifiStatus.UNAVAILABLE)
+                showSnackbarWithText(getString(R.string.no_wifi_connection))
+            else if (wifiStatus == WifiStatus.LOST)
+                showSnackbarWithText(getString(R.string.wifi_connection_lost))
         }.launchIn(lifecycleScope)
     }
 
-    private fun onWifiAvailable() {
-        runOnUiThread {
-            if (showUiFirstTime) {
-                initUi()
-                showUiFirstTime = false
-            }
-
-            binding.ivNoWifi.visibility = View.GONE
-            binding.navHostFragment.visibility = View.VISIBLE
-        }
-    }
-
-    private fun onWifiUnavailable() {
-        runOnUiThread {
-            binding.ivNoWifi.visibility = View.VISIBLE
-            binding.navHostFragment.visibility = View.GONE
-        }
+    private fun showSnackbarWithText(text: String) {
+        Snackbar.make(findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG).show()
     }
 
     private val onFragmentLifeCycleCallbackHandleBottomNavBarVisibility =

@@ -39,6 +39,7 @@ class NetworkConnectivityObserver(
                 }
             }
             connectivityManager.registerNetworkCallback(networkRequest, callback)
+            connectivityManager.requestNetwork(networkRequest, callback, 3000)
             awaitClose {
                 connectivityManager.unregisterNetworkCallback(callback)
             }

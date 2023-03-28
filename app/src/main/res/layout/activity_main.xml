@@ -27,15 +27,6 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/main_nav_graph" />
 
-    <ImageView
-        android:id="@+id/iv_no_wifi"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="64dp"
-        android:importantForAccessibility="no"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_wifi_off" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"

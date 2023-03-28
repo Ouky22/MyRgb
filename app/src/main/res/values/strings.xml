@@ -49,4 +49,6 @@
     <string name="sunday_start_letter">S</string>
 
     <string name="ip_addresses_preferences_file_key">com.myrgb.ledcontroller.IP_ADDRESSES</string>
+    <string name="no_wifi_connection">No WiFi connection</string>
+    <string name="wifi_connection_lost">WiFi connection lost</string>
 </resources>
