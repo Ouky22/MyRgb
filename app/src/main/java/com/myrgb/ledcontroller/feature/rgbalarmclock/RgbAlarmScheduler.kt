@@ -48,8 +48,10 @@ class RgbAlarmScheduler @Inject constructor(
             nextAlarm.nextTriggerDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, triggerDateTimeMillis, alarmIntent
+
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(triggerDateTimeMillis, null),
+            alarmIntent
         )
     }
 
