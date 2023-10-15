@@ -31,6 +31,8 @@ class RgbAlarmRepository @Inject constructor(
     }
 
     suspend fun getNextActiveAlarm(): RgbAlarm? {
+        deactivateAllExpiredOneTimeAlarms()
+
         val allActiveAlarms = alarmDao.getAllActiveAlarms()
         if (allActiveAlarms.isEmpty())
             return null
@@ -64,17 +66,21 @@ class RgbAlarmRepository @Inject constructor(
         alarmDao.deactivateRgbAlarmByTime(rgbAlarm.timeMinutesOfDay)
     }
 
+    private suspend fun deactivateAllExpiredOneTimeAlarms() {
+        alarmDao.getAllActiveAlarms().forEach { deactivateIfExpiredOneTimeAlarm(it) }
+    }
+
     private suspend fun deactivateIfExpiredOneTimeAlarm(alarmDatabaseEntity: RgbAlarmDatabaseEntity) {
         val alarmDomainModel = alarmDatabaseEntity.asDomainModel()
 
         if (alarmDomainModel.isOneTimeAlarm && alarmDomainModel.activated) {
             val dateTimeAlarmWasActivatedFor = alarmDomainModel.lastTimeActivated?.let {
                 alarmDomainModel.getNextTriggerDateTimeFrom(it)
-            }
+            } ?: return
 
-            val alarmExpired = dateTimeAlarmWasActivatedFor?.isBefore(
-                LocalDateTime.now(RgbAlarm.clock)
-            ) ?: false
+            val currentDateTime = LocalDateTime.now(RgbAlarm.clock)
+            val alarmExpired = dateTimeAlarmWasActivatedFor.isBefore(currentDateTime)
+                    || dateTimeAlarmWasActivatedFor.isEqual(currentDateTime)
             if (alarmExpired)
                 alarmDao.deactivateRgbAlarmByTime(alarmDatabaseEntity.timeMinutesOfDay)
         }
