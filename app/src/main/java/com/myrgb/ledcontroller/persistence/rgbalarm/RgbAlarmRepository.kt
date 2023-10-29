@@ -72,6 +72,10 @@ class RgbAlarmRepository @Inject constructor(
         alarmDao.deactivateRgbAlarmByTime(rgbAlarm.timeMinutesOfDay)
     }
 
+    suspend fun deactivateRgbAlarmById(id: Int) {
+        alarmDao.deactivateRgbAlarmByTime(id)
+    }
+
     private suspend fun deactivateAllExpiredOneTimeAlarms() {
         alarmDao.getAllActiveAlarms().forEach { alarmDatabaseEntity ->
             val alarmDomainModel = alarmDatabaseEntity.asDomainModel()
