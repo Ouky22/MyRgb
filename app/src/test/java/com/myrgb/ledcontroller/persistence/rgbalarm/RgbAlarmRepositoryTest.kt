@@ -56,6 +56,8 @@ class RgbAlarmRepositoryTest {
             ZoneId.of("UTC")
         )
 
+        repository = RgbAlarmRepository(fakeRgbAlarmDao)
+
         // repository should receive the alarms..
         fakeRgbAlarmDao.emitAlarms()
         fakeRgbAlarmDao.emitAlarms() // retrieve alarms again after they got refreshed by AlarmRepository

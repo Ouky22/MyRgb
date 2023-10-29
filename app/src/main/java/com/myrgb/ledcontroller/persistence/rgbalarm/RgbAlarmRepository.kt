@@ -5,10 +5,12 @@ import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModel
 import com.myrgb.ledcontroller.domain.util.asEntityDatabaseModels
 import com.myrgb.ledcontroller.persistence.util.asDomainModel
 import com.myrgb.ledcontroller.persistence.util.asDomainModels
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
@@ -20,9 +22,13 @@ class RgbAlarmRepository @Inject constructor(
 ) {
     @ExperimentalCoroutinesApi
     val alarms: Flow<List<RgbAlarm>> = alarmDao.observeAllAlarmsSortedByTime()
-        .onEach { alarms -> alarms.forEach { deactivateIfExpiredOneTimeAlarm(it) } }
         .mapLatest { alarms -> alarms.asDomainModels() }
 
+    init {
+        CoroutineScope(IO).launch {
+            deactivateAllExpiredOneTimeAlarms()
+        }
+    }
 
     suspend fun getByTime(timeMinutesOfDay: Int) = try {
         alarmDao.getByTime(timeMinutesOfDay).asDomainModel()
@@ -67,22 +73,20 @@ class RgbAlarmRepository @Inject constructor(
     }
 
     private suspend fun deactivateAllExpiredOneTimeAlarms() {
-        alarmDao.getAllActiveAlarms().forEach { deactivateIfExpiredOneTimeAlarm(it) }
-    }
+        alarmDao.getAllActiveAlarms().forEach { alarmDatabaseEntity ->
+            val alarmDomainModel = alarmDatabaseEntity.asDomainModel()
 
-    private suspend fun deactivateIfExpiredOneTimeAlarm(alarmDatabaseEntity: RgbAlarmDatabaseEntity) {
-        val alarmDomainModel = alarmDatabaseEntity.asDomainModel()
+            if (alarmDomainModel.isOneTimeAlarm && alarmDomainModel.activated) {
+                val dateTimeAlarmWasActivatedFor = alarmDomainModel.lastTimeActivated?.let {
+                    alarmDomainModel.getNextTriggerDateTimeFrom(it)
+                } ?: return
 
-        if (alarmDomainModel.isOneTimeAlarm && alarmDomainModel.activated) {
-            val dateTimeAlarmWasActivatedFor = alarmDomainModel.lastTimeActivated?.let {
-                alarmDomainModel.getNextTriggerDateTimeFrom(it)
-            } ?: return
-
-            val currentDateTime = LocalDateTime.now(RgbAlarm.clock)
-            val alarmExpired = dateTimeAlarmWasActivatedFor.isBefore(currentDateTime)
-                    || dateTimeAlarmWasActivatedFor.isEqual(currentDateTime)
-            if (alarmExpired)
-                alarmDao.deactivateRgbAlarmByTime(alarmDatabaseEntity.timeMinutesOfDay)
+                val currentDateTime = LocalDateTime.now(RgbAlarm.clock)
+                val alarmExpired = dateTimeAlarmWasActivatedFor.isBefore(currentDateTime)
+                        || dateTimeAlarmWasActivatedFor.isEqual(currentDateTime)
+                if (alarmExpired)
+                    alarmDao.deactivateRgbAlarmByTime(alarmDatabaseEntity.timeMinutesOfDay)
+            }
         }
     }
 }
