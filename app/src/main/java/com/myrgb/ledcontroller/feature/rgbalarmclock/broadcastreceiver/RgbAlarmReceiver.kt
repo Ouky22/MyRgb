@@ -54,7 +54,10 @@ class RgbAlarmReceiver : BroadcastReceiver() {
                     rgbRequestRepository.triggerRgbAlarm(ipAddressNamePair.ipAddress)
                 }
 
-                rgbAlarmRepository.deactivateRgbAlarmById(alarmId)
+                val alarm = rgbAlarmRepository.getByTime(alarmId)
+                if (alarm.isOneTimeAlarm)
+                    rgbAlarmRepository.deactivateRgbAlarmById(alarmId)
+                
                 rgbAlarmScheduler.scheduleNextAlarmIfExists()
             } finally {
                 pendingResult.finish()
