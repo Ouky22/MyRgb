@@ -49,29 +49,7 @@ class ControllerViewModelTest {
     }
 
     @Test
-    fun `when touch is at 0 degrees then currently selected color should be red`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.rgbCircleCenterX = 5
-            viewModel.rgbCircleCenterY = 5
-            viewModel.onRgbCircleTouch(5, 3)
-
-            val currentColor = viewModel.currentlySelectedColor.getOrAwaitValue()
-            assertEquals(RgbTriplet(255, 0, 0), currentColor)
-        }
-
-    @Test
-    fun `when touch is at 180 degrees then currently selected color should be (0,255,255)`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.rgbCircleCenterX = 0
-            viewModel.rgbCircleCenterY = 0
-            viewModel.onRgbCircleTouch(0, 1)
-
-            val currentColor = viewModel.currentlySelectedColor.getOrAwaitValue()
-            assertEquals(RgbTriplet(0, 255, 255), currentColor)
-        }
-
-    @Test
-    fun `when all strips are off and click on rgb bulb then all strips are turned on`() =
+    fun `when all strips are off and click on all-on-off-button then all strips are turned on`() =
         runTest(UnconfinedTestDispatcher()) {
             val currentRgbSettings = RgbSettingsResponse(
                 RgbTriplet(0, 0, 0), 0, false,
@@ -83,7 +61,7 @@ class ControllerViewModelTest {
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
             fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
-            viewModel.onRgbBulbButtonClick()
+            viewModel.onAllStripsOffOnButtonClick()
 
             viewModel.rgbStrips.value.forEach { strip ->
                 assertTrue(strip.enabled)
@@ -91,7 +69,7 @@ class ControllerViewModelTest {
         }
 
     @Test
-    fun `when all strips are on and click on rgb bulb then all strips are turned off`() =
+    fun `when all strips are on and click on all-on-off-button then all strips are turned off`() =
         runTest(UnconfinedTestDispatcher()) {
             val currentRgbSettings = RgbSettingsResponse(
                 RgbTriplet(0, 50, 0), 0, true,
@@ -103,7 +81,7 @@ class ControllerViewModelTest {
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
             fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
-            viewModel.onRgbBulbButtonClick()
+            viewModel.onAllStripsOffOnButtonClick()
 
             viewModel.rgbStrips.value.forEach { strip ->
                 assertFalse(strip.enabled)
@@ -111,7 +89,7 @@ class ControllerViewModelTest {
         }
 
     @Test
-    fun `when only one strip is on and click on rgb bulb then all strips are turned off`() =
+    fun `when only one strip is on and click on all-on-off-button then all strips are turned off`() =
         runTest(UnconfinedTestDispatcher()) {
             val currentRgbSettings = RgbSettingsResponse(
                 RgbTriplet(70, 10, 0), 0, false,
@@ -123,33 +101,11 @@ class ControllerViewModelTest {
             val currentIpAddressSettings = createIpAddressSettings(listOf(ipAddress1))
             fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
-            viewModel.onRgbBulbButtonClick()
+            viewModel.onAllStripsOffOnButtonClick()
 
             viewModel.rgbStrips.value.forEach { strip ->
                 assertFalse(strip.enabled)
             }
-        }
-
-    @Test
-    fun `when minimum brightness is selected then current brightness should be the min brightness`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onBrightnessSeekBarProgressChanged(0, true)
-
-            assertEquals(
-                viewModel.minBrightness,
-                viewModel.currentlySelectedBrightness.getOrAwaitValue()
-            )
-        }
-
-    @Test
-    fun `when maximum brightness is selected then current brightness should be the max brightness`() =
-        runTest(UnconfinedTestDispatcher()) {
-            viewModel.onBrightnessSeekBarProgressChanged(viewModel.maxBrightness / 10, true)
-
-            assertEquals(
-                viewModel.maxBrightness,
-                viewModel.currentlySelectedBrightness.getOrAwaitValue()
-            )
         }
 
     @Test
@@ -173,7 +129,6 @@ class ControllerViewModelTest {
         fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
         assertEquals(currentColor, viewModel.currentlySelectedColor.getOrAwaitValue())
-        assertEquals(currentBrightness, viewModel.currentlySelectedBrightness.getOrAwaitValue())
         val rgbStrips = viewModel.rgbStrips.value
         assertEquals(3, rgbStrips.size)
         assertTrue(rgbStrips.contains(strip1))

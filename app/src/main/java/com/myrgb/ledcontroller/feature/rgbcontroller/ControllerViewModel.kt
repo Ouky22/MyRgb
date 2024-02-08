@@ -3,10 +3,8 @@ package com.myrgb.ledcontroller.feature.rgbcontroller
 import androidx.lifecycle.*
 import com.myrgb.ledcontroller.IpAddressSettings
 import com.myrgb.ledcontroller.domain.LedMicrocontroller
-import com.myrgb.ledcontroller.domain.RgbCircle
 import com.myrgb.ledcontroller.domain.RgbStrip
 import com.myrgb.ledcontroller.domain.RgbTriplet
-import com.myrgb.ledcontroller.domain.util.computeAngleInCircle
 import com.myrgb.ledcontroller.network.RgbRequestRepository
 import com.myrgb.ledcontroller.network.RgbSettingsResponse
 import com.myrgb.ledcontroller.persistence.ipaddress.IpAddressSettingsRepository
@@ -15,8 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.acos
-import kotlin.math.sqrt
 
 enum class SettingsLoadingStatus { LOADING, DONE }
 
@@ -24,11 +20,6 @@ class ControllerViewModel @Inject constructor(
     private val rgbRequestRepository: RgbRequestRepository,
     private val ipAddressSettingsRepository: IpAddressSettingsRepository
 ) : ViewModel() {
-    var rgbCircleCenterX = 0
-    var rgbCircleCenterY = 0
-
-    val minBrightness = 10
-    val maxBrightness = 230
 
     private val _settingsLoadingStatus = MutableLiveData<SettingsLoadingStatus>()
     val settingsLoadingStatus: LiveData<SettingsLoadingStatus>
@@ -43,12 +34,6 @@ class ControllerViewModel @Inject constructor(
     private val _currentlySelectedColor = MutableLiveData<RgbTriplet>()
     val currentlySelectedColor: LiveData<RgbTriplet>
         get() = _currentlySelectedColor
-
-    private val _currentlySelectedBrightness = MutableLiveData<Int>()
-    val currentlySelectedBrightness: LiveData<Int>
-        get() = _currentlySelectedBrightness
-
-    private val rgbCircle = RgbCircle()
 
     private val rgbSetColorRequestTimer = Timer()
     private val rgbSetColorRequestTimerInterval = 200L
@@ -73,10 +58,7 @@ class ControllerViewModel @Inject constructor(
         rgbSetColorRequestTimer.cancel()
     }
 
-    fun onRgbCircleTouch(touchPositionX: Int, touchPositionY: Int) {
-        val angle =
-            computeAngleInCircle(rgbCircleCenterX, rgbCircleCenterY, touchPositionX, touchPositionY)
-        val newColor = rgbCircle.calculateColorAtAngle(angle)
+    fun onColorChange(newColor: RgbTriplet) {
         _currentlySelectedColor.value = newColor
 
         if (readyForNextSetColorRgbRequest) {
@@ -87,7 +69,7 @@ class ControllerViewModel @Inject constructor(
         }
     }
 
-    fun onRgbBulbButtonClick() {
+    fun onAllStripsOffOnButtonClick() {
         if (allStripsAreOff()) {
             setEnabledStatusOfAllStripsToTrue()
             viewModelScope.launch {
@@ -118,20 +100,6 @@ class ControllerViewModel @Inject constructor(
         }
     }
 
-    fun onBrightnessSeekBarProgressChanged(progress: Int, fromUser: Boolean) {
-        if (!fromUser)
-            return
-
-        val newBrightness = (progress * 10).coerceAtLeast(minBrightness).coerceAtMost(maxBrightness)
-        _currentlySelectedBrightness.value = newBrightness
-
-        viewModelScope.launch {
-            ledMicrocontroller.forEach { microcontroller ->
-                rgbRequestRepository.setBrightness(microcontroller, newBrightness)
-            }
-        }
-    }
-
     private fun loadCurrentSettings(ipAddressSettings: IpAddressSettings) {
         viewModelScope.launch {
             _settingsLoadingStatus.value = SettingsLoadingStatus.LOADING
@@ -154,8 +122,6 @@ class ControllerViewModel @Inject constructor(
 
             _currentlySelectedColor.value =
                 rgbSettingsResponses.firstOrNull()?.color ?: RgbTriplet(0, 0, 0)
-
-            _currentlySelectedBrightness.value = rgbSettingsResponses.firstOrNull()?.brightness ?: 0
 
             _settingsLoadingStatus.value = SettingsLoadingStatus.DONE
         }

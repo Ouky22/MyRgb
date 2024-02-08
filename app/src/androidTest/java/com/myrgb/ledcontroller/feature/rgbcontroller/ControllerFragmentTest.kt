@@ -120,10 +120,6 @@ class ControllerFragmentTest {
             createIpAddressSettings(listOf(fakeIpAddress1, fakeIpAddress2))
         fakeIpAddressSettingsRepository.emit(currentIpAddressSettings)
 
-
-        onView(withId(R.id.iv_bulb)).check(matches(withTint(rgbSettings1.color)))
-        val expectedProgress = rgbSettings1.brightness / 10
-        onView(withId(R.id.seekBar_brightness)).check(matches(withSeekbarProgress(expectedProgress)))
         onView(withText(rgbStrip1.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
         onView(withText(rgbStrip2.name)).check(matches(withStrokeColor(R.color.btn_color_on)))
         onView(withText(rgbStrip3.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
@@ -172,72 +168,6 @@ class ControllerFragmentTest {
         onView(withText(rgbStrip6.name)).perform(click())
 
         onView(withText(rgbStrip6.name)).check(matches(withStrokeColor(R.color.btn_color_off)))
-    }
-
-    @Test
-    fun touch_on_rgb_circle_image_view_at_0_degrees_should_display_right_color_in_bulb_image_view(): Unit =
-        runBlocking {
-            val fragmentScenario =
-                launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            onView(withId(R.id.iv_rgb_circle)).perform(
-                relativeClickAt(fragmentScenario.getWidthOfView(R.id.iv_rgb_circle) / 2, 10F)
-            )
-            val expectedTint = RgbCircle().calculateColorAtAngle(0)
-            onView(withId(R.id.iv_bulb)).check(matches(withTint(expectedTint)))
-        }
-
-    @Test
-    fun touch_on_rgb_circle_image_view_at_180_degrees_should_display_right_color_in_bulb_image_view(): Unit =
-        runBlocking {
-            val fragmentScenario =
-                launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            val rgbCircleHeight = fragmentScenario.getHeightOfView(R.id.iv_rgb_circle)
-            val rgbCircleWidth = fragmentScenario.getWidthOfView(R.id.iv_rgb_circle)
-
-            onView(withId(R.id.iv_rgb_circle)).perform(
-                relativeClickAt((rgbCircleWidth / 2), rgbCircleHeight - 10)
-            )
-            val expectedTint = RgbCircle().calculateColorAtAngle(180)
-            onView(withId(R.id.iv_bulb)).check(matches(withTint(expectedTint)))
-        }
-
-    @Test
-    fun touch_on_rgb_circle_image_view_at_270_degrees_should_display_right_color_in_bulb_image_view(): Unit =
-        runBlocking {
-            val fragmentScenario =
-                launchFragmentInContainer<ControllerFragment>(themeResId = R.style.Theme_LedController)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            val rgbCircleHeight = fragmentScenario.getHeightOfView(R.id.iv_rgb_circle)
-
-            onView(withId(R.id.iv_rgb_circle)).perform(
-                relativeClickAt(1F, rgbCircleHeight / 2)
-            )
-            val expectedTint = RgbCircle().calculateColorAtAngle(270)
-            onView(withId(R.id.iv_bulb)).check(matches(withTint(expectedTint)))
-        }
-
-
-    private fun FragmentScenario<ControllerFragment>.getHeightOfView(@IdRes id: Int): Float {
-        var viewHeight = 0
-        onFragment {
-            val view = it.activity?.findViewById<View>(id)
-            viewHeight = view?.height ?: 0
-        }
-        return viewHeight.toFloat()
-    }
-
-    private fun FragmentScenario<ControllerFragment>.getWidthOfView(@IdRes id: Int): Float {
-        var viewWidth = 0
-        onFragment {
-            val view = it.activity?.findViewById<View>(id)
-            viewWidth = view?.width ?: 0
-        }
-        return viewWidth.toFloat()
     }
 }
 

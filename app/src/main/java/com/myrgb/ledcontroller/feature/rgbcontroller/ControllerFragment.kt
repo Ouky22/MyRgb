@@ -1,8 +1,17 @@
 package com.myrgb.ledcontroller.feature.rgbcontroller
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,8 +23,10 @@ import com.myrgb.ledcontroller.App
 import com.myrgb.ledcontroller.R
 import com.myrgb.ledcontroller.databinding.FragmentControllerBinding
 import com.myrgb.ledcontroller.domain.RgbStrip
+import com.myrgb.ledcontroller.domain.RgbTriplet
 import com.myrgb.ledcontroller.extensions.collectLatestLifecycleFlow
-import com.myrgb.ledcontroller.extensions.coordinateIsInsideView
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import javax.inject.Inject
 
 class ControllerFragment : Fragment() {
@@ -40,31 +51,29 @@ class ControllerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        binding.root.setOnTouchListener { v, e ->
-            v.performClick()
-
-            if (e.action != MotionEvent.ACTION_DOWN && e.action != MotionEvent.ACTION_MOVE)
-                return@setOnTouchListener true
-
-            val touchPositionX = e.x
-            val touchPositionY = e.y
-            if (binding.ivRgbCircle.coordinateIsInsideView(touchPositionX, touchPositionY))
-                viewModel.onRgbCircleTouch(touchPositionX.toInt(), touchPositionY.toInt())
-
-            return@setOnTouchListener true
-        }
-
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
-            viewModel.rgbCircleCenterX = binding.ivRgbCircle.left + (binding.ivRgbCircle.width / 2)
-            viewModel.rgbCircleCenterY = binding.ivRgbCircle.top + (binding.ivRgbCircle.height / 2)
-        }
+        binding.colorPickerView.setColorListener(object : ColorEnvelopeListener {
+            override fun onColorSelected(colorEnvelope: ColorEnvelope, fromUser: Boolean) {
+                if (fromUser)
+                    viewModel.onColorChange(
+                        RgbTriplet(
+                            colorEnvelope.color.red,
+                            colorEnvelope.color.green,
+                            colorEnvelope.color.blue
+                        )
+                    )
+            }
+        })
+        binding.colorPickerView.attachBrightnessSlider(binding.brightnessSlide)
 
         setupMenu()
 
         viewModel.settingsLoadingStatus.observe(viewLifecycleOwner) { status ->
             when (status) {
-                SettingsLoadingStatus.DONE -> {} // TODO hide loading spinner
-                SettingsLoadingStatus.LOADING -> {} //  TODO display loading spinner
+                SettingsLoadingStatus.DONE -> {
+                    setInitialColor()
+                }
+
+                SettingsLoadingStatus.LOADING -> {}
                 else -> {}
             }
         }
@@ -77,6 +86,16 @@ class ControllerFragment : Fragment() {
 
         (requireActivity().application as App).appComponent.controllerComponent().create()
             .inject(this)
+    }
+
+    private fun setInitialColor() {
+        val currentColor = viewModel.currentlySelectedColor.value ?: return
+        val initialColor = Color.valueOf(
+            currentColor.red / 255f,
+            currentColor.green / 255f,
+            currentColor.blue / 255f
+        )
+        binding.colorPickerView.setInitialColor(initialColor.toArgb())
     }
 
     private fun setupMenu() {

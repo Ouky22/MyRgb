@@ -115,6 +115,9 @@ dependencies {
     // proto datastore
     implementation "androidx.datastore:datastore:$dataStoreVersion"
     implementation "com.google.protobuf:protobuf-javalite:$protobufVersion"
+
+    // color picker
+    implementation "com.github.skydoves:colorpickerview:2.2.4"
 }
 
 protobuf {
